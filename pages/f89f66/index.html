@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="Elasticsearch 聚合Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elasticsearch 的基本功能。事实上，Elasticsearch 的聚合（Aggregations）功能也十分强大，允许在数据上做复杂的分析统计。Elasticsearch 提供的聚合分析功能主要有指标聚合(metrics aggregations)、桶聚合(bucket aggrega">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 聚合">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/f89f66/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="Elasticsearch 聚合Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elasticsearch 的基本功能。事实上，Elasticsearch 的聚合（Aggregations）功能也十分强大，允许在数据上做复杂的分析统计。Elasticsearch 提供的聚合分析功能主要有指标聚合(metrics aggregations)、桶聚合(bucket aggrega">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-19T14:49:16.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.423Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="搜索引擎数据库">
+<meta property="article:tag" content="聚合">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/f89f66/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/f89f66/","path":"/pages/f89f66/","title":"Elasticsearch 聚合"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Elasticsearch 聚合 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Elasticsearch-%E8%81%9A%E5%90%88"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch 聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%9A%84%E5%85%B7%E4%BD%93%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">聚合的具体结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E6%A0%87%E8%81%9A%E5%90%88"><span class="nav-number">1.2.</span> <span class="nav-text">指标聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Max-Aggregation"><span class="nav-number">1.2.1.</span> <span class="nav-text">Max Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Min-Aggregation"><span class="nav-number">1.2.2.</span> <span class="nav-text">Min Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avg-Aggregation"><span class="nav-number">1.2.3.</span> <span class="nav-text">Avg Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sum-Aggregation"><span class="nav-number">1.2.4.</span> <span class="nav-text">Sum Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Value-Count-Aggregation"><span class="nav-number">1.2.5.</span> <span class="nav-text">Value Count Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cardinality-Aggregation"><span class="nav-number">1.2.6.</span> <span class="nav-text">Cardinality Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stats-Aggregation"><span class="nav-number">1.2.7.</span> <span class="nav-text">Stats Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extended-Stats-Aggregation"><span class="nav-number">1.2.8.</span> <span class="nav-text">Extended Stats Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Percentiles-Aggregation"><span class="nav-number">1.2.9.</span> <span class="nav-text">Percentiles Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Percentiles-Ranks-Aggregation"><span class="nav-number">1.2.10.</span> <span class="nav-text">Percentiles Ranks Aggregation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%B6%E8%81%9A%E5%90%88"><span class="nav-number">1.3.</span> <span class="nav-text">桶聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Terms-Aggregation"><span class="nav-number">1.3.1.</span> <span class="nav-text">Terms Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter-Aggregation"><span class="nav-number">1.3.2.</span> <span class="nav-text">Filter Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filters-Aggregation"><span class="nav-number">1.3.3.</span> <span class="nav-text">Filters Aggregation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Range-Aggregation"><span class="nav-number">1.3.4.</span> <span class="nav-text">Range Aggregation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.4.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/f89f66/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Elasticsearch 聚合 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elasticsearch 聚合<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/07.%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/01.Elasticsearch/08.Elasticsearch%E8%81%9A%E5%90%88.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-19 22:49:16" itemprop="dateCreated datePublished" datetime="2022-01-19T22:49:16+08:00">2022-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">搜索引擎数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Elasticsearch-聚合"><a href="#Elasticsearch-聚合" class="headerlink" title="Elasticsearch 聚合"></a>Elasticsearch 聚合</h1><p>Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elasticsearch 的基本功能。事实上，Elasticsearch 的聚合（Aggregations）功能也十分强大，允许在数据上做复杂的分析统计。Elasticsearch 提供的聚合分析功能主要有<strong>指标聚合(metrics aggregations)<strong>、</strong>桶聚合(bucket aggregations)<strong>、</strong>管道聚合(pipeline aggregations)</strong> 和 <strong>矩阵聚合(matrix aggregations)</strong> 四大类，管道聚合和矩阵聚合官方说明是在试验阶段，后期会完全更改或者移除，这里不再对管道聚合和矩阵聚合进行讲解。</p>
+<h2 id="聚合的具体结构"><a href="#聚合的具体结构" class="headerlink" title="聚合的具体结构"></a>聚合的具体结构</h2><p>所有的聚合，无论它们是什么类型，都遵从以下的规则。</p>
+<ul>
+<li>使用查询中同样的 JSON 请求来定义它们，而且你是使用键 aggregations 或者是 aggs 来进行标记。需要给每个聚合起一个名字，指定它的类型以及和该类型相关的选项。</li>
+<li>它们运行在查询的结果之上。和查询不匹配的文档不会计算在内，除非你使用 global 聚集将不匹配的文档囊括其中。</li>
+<li>可以进一步过滤查询的结果，而不影响聚集。</li>
+</ul>
+<p>以下是聚合的基本结构：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;aggregations&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span> &lt;!-- 最外层的聚合键，也可以缩写为 aggs --&gt;</span><br><span class="line">    <span class="attr">&quot;&lt;aggregation_name&gt;&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span> &lt;!-- 聚合的自定义名字 --&gt;</span><br><span class="line">        <span class="attr">&quot;&lt;aggregation_type&gt;&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span> &lt;!-- 聚合的类型，指标相关的，如 max、min、avg、sum，桶相关的 terms、filter 等 --&gt;</span><br><span class="line">            &lt;aggregation_body&gt; &lt;!-- 聚合体：对哪些字段进行聚合，可以取字段的值，也可以是脚本计算的结果 --&gt;</span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">[</span><span class="punctuation">,</span><span class="attr">&quot;meta&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span>  <span class="punctuation">[</span>&lt;meta_data_body&gt;<span class="punctuation">]</span> <span class="punctuation">&#125;</span> <span class="punctuation">]</span>? &lt;!-- 元 --&gt;</span><br><span class="line">        <span class="punctuation">[</span><span class="punctuation">,</span><span class="attr">&quot;aggregations&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="punctuation">[</span>&lt;sub_aggregation&gt;<span class="punctuation">]</span>+ <span class="punctuation">&#125;</span> <span class="punctuation">]</span>? &lt;!-- 在聚合里面在定义子聚合 --&gt;</span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">[</span><span class="punctuation">,</span><span class="attr">&quot;&lt;aggregation_name_2&gt;&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... <span class="punctuation">&#125;</span> <span class="punctuation">]</span>* &lt;!-- 聚合的自定义名字 <span class="number">2</span> --&gt;</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>在最上层有一个 aggregations 的键，可以缩写为 aggs</strong>。</li>
+<li>在下面一层，需要为聚合指定一个名字。可以在请求的返回中看到这个名字。在同一个请求中使用多个聚合时，这一点非常有用，它让你可以很容易地理解每组结果的含义。</li>
+<li>最后，必须要指定聚合的类型。</li>
+</ul>
+<blockquote>
+<p>关于聚合分析的值来源，可以<strong>取字段的值</strong>，也可以是<strong>脚本计算的结果</strong>。</p>
+<p>但是用脚本计算的结果时，需要注意脚本的性能和安全性；尽管多数聚集类型允许使用脚本，但是脚本使得聚集变得缓慢，因为脚本必须在每篇文档上运行。为了避免脚本的运行，可以在索引阶段进行计算。</p>
+<p>此外，脚本也可以被人可能利用进行恶意代码攻击，尽量使用沙盒（sandbox）内的脚本语言。</p>
+</blockquote>
+<p>示例：查询所有球员的平均年龄是多少，并对球员的平均薪水加 188（也可以理解为每名球员加 188 后的平均薪水）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">POST /player/_search?size=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;avg_age&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;avg&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span>: <span class="string">&quot;age&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;avg_salary_188&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;avg&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;script&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;source&quot;</span>: <span class="string">&quot;doc.salary.value + 188&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="指标聚合"><a href="#指标聚合" class="headerlink" title="指标聚合"></a>指标聚合</h2><p>指标聚合（又称度量聚合）主要从不同文档的分组中提取统计数据，或者，从来自其他聚合的文档桶来提取统计数据。</p>
+<p>这些统计数据通常来自数值型字段，如最小或者平均价格。用户可以单独获取每项统计数据，或者也可以使用 stats 聚合来同时获取它们。更高级的统计数据，如平方和或者是标准差，可以通过 extended stats 聚合来获取。</p>
+<h3 id="Max-Aggregation"><a href="#Max-Aggregation" class="headerlink" title="Max Aggregation"></a>Max Aggregation</h3><p>Max Aggregation 用于最大值统计。例如，统计 sales 索引中价格最高的是哪本书，并且计算出对应的价格的 2 倍值，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /sales/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;max_price&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;max&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : <span class="string">&quot;price&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;max_price_2&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;max&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : <span class="string">&quot;price&quot;</span>,</span><br><span class="line">        <span class="string">&quot;script&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;source&quot;</span>: <span class="string">&quot;_value * 2.0&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>指定的 field，在脚本中可以用 _value 取字段的值</strong>。</p>
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;max_price&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 188.0</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;max_price_2&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 376.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Min-Aggregation"><a href="#Min-Aggregation" class="headerlink" title="Min Aggregation"></a>Min Aggregation</h3><p>Min Aggregation 用于最小值统计。例如，统计 sales 索引中价格最低的是哪本书，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /sales/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;min_price&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;min&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : <span class="string">&quot;price&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;min_price&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 18.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Avg-Aggregation"><a href="#Avg-Aggregation" class="headerlink" title="Avg Aggregation"></a>Avg Aggregation</h3><p>Avg Aggregation 用于计算平均值。例如，统计 exams 索引中考试的平均分数，如未存在分数，默认为 60 分，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /exams/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;avg_grade&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;avg&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : <span class="string">&quot;grade&quot;</span>,</span><br><span class="line">        <span class="string">&quot;missing&quot;</span>: 60</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果指定字段没有值，可以通过 missing 指定默认值；若未指定默认值，缺失该字段值的文档将被忽略（计算）</strong>。</p>
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;avg_grade&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 78.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了常规的平均值聚合计算外，elasticsearch 还提供了加权平均值的聚合计算，详情参见 <a target="_blank" rel="noopener" href="https://www.knowledgedict.com/tutorial/elasticsearch-aggregations-metrics-weighted-avg-aggregation.html">Elasticsearch 指标聚合之 Weighted Avg Aggregation</a>。</p>
+<h3 id="Sum-Aggregation"><a href="#Sum-Aggregation" class="headerlink" title="Sum Aggregation"></a>Sum Aggregation</h3><p>Sum Aggregation 用于计算总和。例如，统计 sales 索引中 type 字段中匹配 hat 的价格总和，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /exams/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;query&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;constant_score&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;filter&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;match&quot;</span> : &#123; <span class="string">&quot;type&quot;</span> : <span class="string">&quot;hat&quot;</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;hat_prices&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;sum&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;price&quot;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;hat_prices&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 567.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Value-Count-Aggregation"><a href="#Value-Count-Aggregation" class="headerlink" title="Value Count Aggregation"></a>Value Count Aggregation</h3><p>Value Count Aggregation 可按字段统计文档数量。例如，统计 books 索引中包含 author 字段的文档数量，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /books/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;doc_count&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;value_count&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;author&quot;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;doc_count&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 5</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cardinality-Aggregation"><a href="#Cardinality-Aggregation" class="headerlink" title="Cardinality Aggregation"></a>Cardinality Aggregation</h3><p>Cardinality Aggregation 用于基数统计，其作用是先执行类似 SQL 中的 distinct 操作，去掉集合中的重复项，然后统计去重后的集合长度。例如，在 books 索引中对 language 字段进行 cardinality 操作可以统计出编程语言的种类数，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /books/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;all_lan&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;cardinality&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;language&quot;</span> &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;title_cnt&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;cardinality&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;title.keyword&quot;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>假设 title 字段为文本类型（text），去重时需要指定 keyword，表示把 title 作为整体去重，即不分词统计</strong>。</p>
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;all_lan&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;title_cnt&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;value&quot;</span>: 18</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Stats-Aggregation"><a href="#Stats-Aggregation" class="headerlink" title="Stats Aggregation"></a>Stats Aggregation</h3><p>Stats Aggregation 用于基本统计，会一次返回 count、max、min、avg 和 sum 这 5 个指标。例如，在 exams 索引中对 grade 字段进行分数相关的基本统计，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /exams/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;grades_stats&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;stats&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;grade&quot;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;grades_stats&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;count&quot;</span>: 2,</span><br><span class="line">      <span class="string">&quot;min&quot;</span>: 50.0,</span><br><span class="line">      <span class="string">&quot;max&quot;</span>: 100.0,</span><br><span class="line">      <span class="string">&quot;avg&quot;</span>: 75.0,</span><br><span class="line">      <span class="string">&quot;sum&quot;</span>: 150.0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Extended-Stats-Aggregation"><a href="#Extended-Stats-Aggregation" class="headerlink" title="Extended Stats Aggregation"></a>Extended Stats Aggregation</h3><p>Extended Stats Aggregation 用于高级统计，和基本统计功能类似，但是会比基本统计多出以下几个统计结果，sum_of_squares（平方和）、variance（方差）、std_deviation（标准差）、std_deviation_bounds（平均值加&#x2F;减两个标准差的区间）。在 exams 索引中对 grade 字段进行分数相关的高级统计，查询语句如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> /exams/_search?<span class="attribute">size</span>=0</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;grades_stats&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;extended_stats&quot;</span> : &#123; <span class="string">&quot;field&quot;</span> : <span class="string">&quot;grade&quot;</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>聚合结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;grades_stats&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;count&quot;</span>: 2,</span><br><span class="line">      <span class="string">&quot;min&quot;</span>: 50.0,</span><br><span class="line">      <span class="string">&quot;max&quot;</span>: 100.0,</span><br><span class="line">      <span class="string">&quot;avg&quot;</span>: 75.0,</span><br><span class="line">      <span class="string">&quot;sum&quot;</span>: 150.0,</span><br><span class="line">      <span class="string">&quot;sum_of_squares&quot;</span>: 12500.0,</span><br><span class="line">      <span class="string">&quot;variance&quot;</span>: 625.0,</span><br><span class="line">      <span class="string">&quot;std_deviation&quot;</span>: 25.0,</span><br><span class="line">      <span class="string">&quot;std_deviation_bounds&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;upper&quot;</span>: 125.0,</span><br><span class="line">        <span class="string">&quot;lower&quot;</span>: 25.0</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Percentiles-Aggregation"><a href="#Percentiles-Aggregation" class="headerlink" title="Percentiles Aggregation"></a>Percentiles Aggregation</h3><p>Percentiles Aggregation 用于百分位统计。百分位数是一个统计学术语，如果将一组数据从大到小排序，并计算相应的累计百分位，某一百分位所对应数据的值就称为这一百分位的百分位数。默认情况下，累计百分位为 [ 1, 5, 25, 50, 75, 95, 99 ]。以下例子给出了在 latency 索引中对 load_time 字段进行加载时间的百分位统计，查询语句如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET latency/_search</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;size&quot;</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;load_time_outlier&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;percentiles&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : &quot;<span class="type">load_time</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>需要注意的是，如上的 <code>load_time</code> 字段必须是数字类型</strong>。</p>
+<p>聚合结果如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;load_time_outlier&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;values&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;1.0&quot;</span>: <span class="number">5.0</span>,</span><br><span class="line">        <span class="string">&quot;5.0&quot;</span>: <span class="number">25.0</span>,</span><br><span class="line">        <span class="string">&quot;25.0&quot;</span>: <span class="number">165.0</span>,</span><br><span class="line">        <span class="string">&quot;50.0&quot;</span>: <span class="number">445.0</span>,</span><br><span class="line">        <span class="string">&quot;75.0&quot;</span>: <span class="number">725.0</span>,</span><br><span class="line">        <span class="string">&quot;95.0&quot;</span>: <span class="number">945.0</span>,</span><br><span class="line">        <span class="string">&quot;99.0&quot;</span>: <span class="number">985.0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>百分位的统计也可以指定 percents 参数指定百分位，如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET latency/_search</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;size&quot;</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">    <span class="string">&quot;load_time_outlier&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;percentiles&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span> : &quot;<span class="type">load_time</span><span class="string">&quot;,</span></span><br><span class="line"><span class="string">        &quot;</span>percents<span class="string">&quot;: [60, 80, 95]</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Percentiles-Ranks-Aggregation"><a href="#Percentiles-Ranks-Aggregation" class="headerlink" title="Percentiles Ranks Aggregation"></a>Percentiles Ranks Aggregation</h3><p>Percentiles Ranks Aggregation 与 Percentiles Aggregation 统计恰恰相反，就是想看当前数值处在什么范围内（百分位）， 假如你查一下当前值 500 和 600 所处的百分位，发现是 90.01 和 100，那么说明有 90.01 % 的数值都在 500 以内，100 % 的数值在 600 以内。</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">GET latency/_search</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;size&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;aggs&quot;</span> : &#123;</span><br><span class="line">      <span class="string">&quot;load_time_ranks&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;percentile_ranks&quot;</span> : &#123;</span><br><span class="line">          <span class="string">&quot;field&quot;</span> : &quot;<span class="type">load_time</span><span class="string">&quot;,</span></span><br><span class="line"><span class="string">          &quot;</span>values<span class="string">&quot; : [500, 600]</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong><code>同样 load_time</code> 字段必须是数字类型</strong>。</p>
+<p>返回结果大概类似如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;load_time_ranks&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;values&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;500.0&quot;</span>: <span class="number">90.01</span>,</span><br><span class="line">        <span class="string">&quot;600.0&quot;</span>: <span class="number">100.0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以设置 <code>keyed</code> 参数为 <code>true</code>，将对应的 values 作为桶 key 一起返回，默认是 <code>false</code>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">GET</span> latency/_search</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;size&quot;</span>: 0,</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;load_time_ranks&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;percentile_ranks&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span>: <span class="string">&quot;load_time&quot;</span>,</span><br><span class="line">        <span class="string">&quot;values&quot;</span>: [500, 600],</span><br><span class="line">        <span class="string">&quot;keyed&quot;</span>: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回结果如下：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;load_time_ranks&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;values&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">&quot;key&quot;</span>: <span class="number">500.0</span>,</span><br><span class="line">          <span class="string">&quot;value&quot;</span>: <span class="number">90.01</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">&quot;key&quot;</span>: <span class="number">600.0</span>,</span><br><span class="line">          <span class="string">&quot;value&quot;</span>: <span class="number">100.0</span></span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="桶聚合"><a href="#桶聚合" class="headerlink" title="桶聚合"></a>桶聚合</h2><p>bucket 可以理解为一个桶，它会遍历文档中的内容，凡是符合某一要求的就放入一个桶中，分桶相当于 SQL 中的 group by。从另外一个角度，可以将指标聚合看成单桶聚合，即把所有文档放到一个桶中，而桶聚合是多桶型聚合，它根据相应的条件进行分组。</p>
+<table>
+<thead>
+<tr>
+<th align="left">种类</th>
+<th align="left">描述&#x2F;场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">词项聚合（Terms Aggregation）</td>
+<td align="left">用于分组聚合，让用户得知文档中每个词项的频率，它返回每个词项出现的次数。</td>
+</tr>
+<tr>
+<td align="left">差异词项聚合（Significant Terms Aggregation）</td>
+<td align="left">它会返回某个词项在整个索引中和在查询结果中的词频差异，这有助于我们发现搜索场景中有意义的词。</td>
+</tr>
+<tr>
+<td align="left">过滤器聚合（Filter Aggregation）</td>
+<td align="left">指定过滤器匹配的所有文档到单个桶（bucket），通常这将用于将当前聚合上下文缩小到一组特定的文档。</td>
+</tr>
+<tr>
+<td align="left">多过滤器聚合（Filters Aggregation）</td>
+<td align="left">指定多个过滤器匹配所有文档到多个桶（bucket）。</td>
+</tr>
+<tr>
+<td align="left">范围聚合（Range Aggregation）</td>
+<td align="left">范围聚合，用于反映数据的分布情况。</td>
+</tr>
+<tr>
+<td align="left">日期范围聚合（Date Range Aggregation）</td>
+<td align="left">专门用于日期类型的范围聚合。</td>
+</tr>
+<tr>
+<td align="left">IP 范围聚合（IP Range Aggregation）</td>
+<td align="left">用于对 IP 类型数据范围聚合。</td>
+</tr>
+<tr>
+<td align="left">直方图聚合（Histogram Aggregation）</td>
+<td align="left">可能是数值，或者日期型，和范围聚集类似。</td>
+</tr>
+<tr>
+<td align="left">时间直方图聚合（Date Histogram Aggregation）</td>
+<td align="left">时间直方图聚合，常用于按照日期对文档进行统计并绘制条形图。</td>
+</tr>
+<tr>
+<td align="left">空值聚合（Missing Aggregation）</td>
+<td align="left">空值聚合，可以把文档集中所有缺失字段的文档分到一个桶中。</td>
+</tr>
+<tr>
+<td align="left">地理点范围聚合（Geo Distance Aggregation）</td>
+<td align="left">用于对地理点（geo point）做范围统计。</td>
+</tr>
+</tbody></table>
+<h3 id="Terms-Aggregation"><a href="#Terms-Aggregation" class="headerlink" title="Terms Aggregation"></a>Terms Aggregation</h3><p>Terms Aggregation 用于词项的分组聚合。最为经典的用例是获取 X 中最频繁（top frequent）的项目，其中 X 是文档中的某个字段，如用户的名称、标签或分类。由于 terms 聚集统计的是每个词条，而不是整个字段值，因此通常需要在一个非分析型的字段上运行这种聚集。原因是, 你期望“big data”作为词组统计，而不是“big”单独统计一次，“data”再单独统计一次。</p>
+<p>用户可以使用 terms 聚集，从分析型字段（如内容）中抽取最为频繁的词条。还可以使用这种信息来生成一个单词云。</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;profit_terms&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;terms&quot;</span>: &#123; <span class="comment">// terms 聚合 关键字</span></span><br><span class="line">        <span class="string">&quot;field&quot;</span>: <span class="string">&quot;profit&quot;</span>,</span><br><span class="line">        <span class="params">...</span><span class="params">...</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 terms 分桶的基础上，还可以对每个桶进行指标统计，也可以基于一些指标或字段值进行排序。示例如下：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;item_terms&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;terms&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;field&quot;</span>: <span class="string">&quot;item_id&quot;</span>,</span><br><span class="line">        <span class="string">&quot;size&quot;</span>: <span class="number">1000</span>,</span><br><span class="line">        <span class="string">&quot;order&quot;</span>:[&#123;</span><br><span class="line">          <span class="string">&quot;gmv_stat&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">        &#125;,&#123;</span><br><span class="line">          <span class="string">&quot;gmv_180d&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;gmv_stat&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;sum&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;field&quot;</span>: <span class="string">&quot;gmv&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;gmv_180d&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;sum&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;script&quot;</span>: <span class="string">&quot;doc[&#x27;gmv_90d&#x27;].value*2&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回的结果如下：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;hospital_id_agg&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;doc_count_error_upper_bound&quot;</span>: 0,</span><br><span class="line">      <span class="string">&quot;sum_other_doc_count&quot;</span>: 260,</span><br><span class="line">      <span class="string">&quot;buckets&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">&quot;key&quot;</span>: 23388,</span><br><span class="line">          <span class="string">&quot;doc_count&quot;</span>: 18,</span><br><span class="line">          <span class="string">&quot;gmv_stat&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;value&quot;</span>: 176220</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">&quot;gmv_180d&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;value&quot;</span>: 89732</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="string">&quot;key&quot;</span>: 96117,</span><br><span class="line">          <span class="string">&quot;doc_count&quot;</span>: 16,</span><br><span class="line">          <span class="string">&quot;gmv_stat&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;value&quot;</span>: 129306</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">&quot;gmv_180d&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;value&quot;</span>: 56988</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">...</span></span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下返回按文档计数从高到低的前 10 个分组，可以通过 size 参数指定返回的分组数。</p>
+<h3 id="Filter-Aggregation"><a href="#Filter-Aggregation" class="headerlink" title="Filter Aggregation"></a>Filter Aggregation</h3><p>Filter Aggregation 是过滤器聚合，可以把符合过滤器中的条件的文档分到一个桶中，即是单分组聚合。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;age_terms&quot;: &#123;</span><br><span class="line">      &quot;<span class="attribute">filter</span>&quot;: &#123;&quot;match&quot;:&#123;&quot;gender&quot;:<span class="string">&quot;F&quot;</span>&#125;&#125;,</span><br><span class="line">      &quot;aggs&quot;: &#123;</span><br><span class="line">        &quot;avg_age&quot;: &#123;</span><br><span class="line">          &quot;avg&quot;: &#123;</span><br><span class="line">            &quot;field&quot;: <span class="string">&quot;age&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Filters-Aggregation"><a href="#Filters-Aggregation" class="headerlink" title="Filters Aggregation"></a>Filters Aggregation</h3><p>Filters Aggregation 是多过滤器聚合，可以把符合多个过滤条件的文档分到不同的桶中，即每个分组关联一个过滤条件，并收集所有满足自身过滤条件的文档。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;size&quot;: <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;aggs&quot;</span>: &#123;</span><br><span class="line">    &quot;messages&quot;: &#123;</span><br><span class="line">      &quot;filters&quot;: &#123;</span><br><span class="line">        &quot;filters&quot;: &#123;</span><br><span class="line">          &quot;errors&quot;: &#123; &quot;match&quot;: &#123; &quot;<span class="selector-tag">body</span>&quot;: <span class="string">&quot;error&quot;</span> &#125; &#125;,</span><br><span class="line">          &quot;warnings&quot;: &#123; &quot;match&quot;: &#123; &quot;<span class="selector-tag">body</span>&quot;: <span class="string">&quot;warning&quot;</span> &#125; &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子里，我们分析日志信息。聚合会创建两个关于日志数据的分组，一个收集包含错误信息的文档，另一个收集包含告警信息的文档。而且每个分组会按月份划分。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">...</span></span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;messages&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;buckets&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;errors&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;doc_count&quot;</span>: 1</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;warnings&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;doc_count&quot;</span>: 2</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Range-Aggregation"><a href="#Range-Aggregation" class="headerlink" title="Range Aggregation"></a>Range Aggregation</h3><p>Range Aggregation 范围聚合是一个基于多组值来源的聚合，可以让用户定义一系列范围，每个范围代表一个分组。在聚合执行的过程中，从每个文档提取出来的值都会检查每个分组的范围，并且使相关的文档落入分组中。注意，范围聚合的每个范围内包含 from 值但是排除 to 值。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;aggs&quot;: &#123;</span><br><span class="line">    &quot;age_range&quot;: &#123;</span><br><span class="line">      &quot;range&quot;: &#123;</span><br><span class="line">        &quot;field&quot;: <span class="string">&quot;age&quot;</span>,</span><br><span class="line">          <span class="string">&quot;ranges&quot;</span>: [&#123;</span><br><span class="line">            &quot;<span class="selector-tag">to</span>&quot;: <span class="number">25</span></span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            &quot;<span class="selector-tag">from</span>&quot;: <span class="number">25</span>,</span><br><span class="line">            <span class="string">&quot;to&quot;</span>: <span class="number">35</span></span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">            &quot;<span class="selector-tag">from</span>&quot;: <span class="number">35</span></span><br><span class="line">          &#125;]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;aggs&quot;: &#123;</span><br><span class="line">          &quot;bmax&quot;: &#123;</span><br><span class="line">            &quot;max&quot;: &#123;</span><br><span class="line">              &quot;field&quot;: <span class="string">&quot;balance&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回结果如下：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="string">&quot;aggregations&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;age_range&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;buckets&quot;</span>: [&#123;</span><br><span class="line">        <span class="string">&quot;key&quot;</span>: <span class="string">&quot;*-25.0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;to&quot;</span>: <span class="number">25</span>,</span><br><span class="line">        <span class="string">&quot;doc_count&quot;</span>: <span class="number">225</span>,</span><br><span class="line">        <span class="string">&quot;bmax&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;value&quot;</span>: <span class="number">49587</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;key&quot;</span>: <span class="string">&quot;25.0-35.0&quot;</span>,</span><br><span class="line">        <span class="string">&quot;from&quot;</span>: <span class="number">25</span>,</span><br><span class="line">        <span class="string">&quot;to&quot;</span>: <span class="number">35</span>,</span><br><span class="line">        <span class="string">&quot;doc_count&quot;</span>: <span class="number">485</span>,</span><br><span class="line">        <span class="string">&quot;bmax&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;value&quot;</span>: <span class="number">49795</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;key&quot;</span>: <span class="string">&quot;35.0-*&quot;</span>,</span><br><span class="line">        <span class="string">&quot;from&quot;</span>: <span class="number">35</span>,</span><br><span class="line">        <span class="string">&quot;doc_count&quot;</span>: <span class="number">290</span>,</span><br><span class="line">        <span class="string">&quot;bmax&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;value&quot;</span>: <span class="number">49989</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.knowledgedict.com/tutorial/elasticsearch-intro.html">Elasticsearch 教程</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/f89f66/" title="Elasticsearch 聚合">https://dunwu.github.io/blog/pages/f89f66/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 搜索引擎数据库</a>
+              <a href="/blog/tags/%E8%81%9A%E5%90%88/" rel="tag"># 聚合</a>
+              <a href="/blog/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/83bd15/" rel="prev" title="Elasticsearch 查询">
+                  <i class="fa fa-angle-left"></i> Elasticsearch 查询
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/24baff/" rel="next" title="Elasticsearch 排序">
+                  Elasticsearch 排序 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9dee26b66a889195c6dbcf38d49b33a0"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

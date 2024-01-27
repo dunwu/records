@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="MongoDB 的聚合操作聚合操作处理数据记录并返回计算结果。聚合操作将来自多个 document 的值分组，并可以对分组的数据执行各种操作以返回单个结果。 MongoDB 提供了三种执行聚合的方式：聚合管道，map-reduce 函数和单一目的聚合方法。 PipelinePipeline 简介MongoDB 的聚合框架以数据处理管道（Pipeline）的概念为模型。 MongoDB 通过 db.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB 的聚合操作">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/75daa5/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="MongoDB 的聚合操作聚合操作处理数据记录并返回计算结果。聚合操作将来自多个 document 的值分组，并可以对分组的数据执行各种操作以返回单个结果。 MongoDB 提供了三种执行聚合的方式：聚合管道，map-reduce 函数和单一目的聚合方法。 PipelinePipeline 简介MongoDB 的聚合框架以数据处理管道（Pipeline）的概念为模型。 MongoDB 通过 db.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921092725.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921155546.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921155935.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921200556.png">
+<meta property="article:published_time" content="2020-09-21T13:22:57.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.419Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="文档数据库">
+<meta property="article:tag" content="MongoDB">
+<meta property="article:tag" content="聚合">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921092725.png">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/75daa5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/75daa5/","path":"/pages/75daa5/","title":"MongoDB 的聚合操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MongoDB 的聚合操作 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MongoDB-%E7%9A%84%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">MongoDB 的聚合操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipeline"><span class="nav-number">1.1.</span> <span class="nav-text">Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipeline-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">Pipeline 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipeline-%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.2.</span> <span class="nav-text">Pipeline 优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%95%E5%BD%B1%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">投影优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline-%E4%B8%B2%E8%A1%8C%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">Pipeline 串行优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline-%E5%B9%B6%E8%A1%8C%E4%BC%98%E5%8C%96"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">Pipeline 并行优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sort-limit"><span class="nav-number">1.1.2.3.1.</span> <span class="nav-text">$sort + $limit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#limit-limit"><span class="nav-number">1.1.2.3.2.</span> <span class="nav-text">$limit + $limit</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#skip-skip"><span class="nav-number">1.1.2.3.3.</span> <span class="nav-text">$skip + $skip</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#match-match"><span class="nav-number">1.1.2.3.4.</span> <span class="nav-text">$match + $match</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lookup-unwind"><span class="nav-number">1.1.2.3.5.</span> <span class="nav-text">$lookup + $unwind</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pipeline-%E9%99%90%E5%88%B6"><span class="nav-number">1.1.3.</span> <span class="nav-text">Pipeline 限制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map-Reduce"><span class="nav-number">1.2.</span> <span class="nav-text">Map-Reduce</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E7%9B%AE%E7%9A%84%E8%81%9A%E5%90%88%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">单一目的聚合方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-%E5%92%8C-MongoDB-%E8%81%9A%E5%90%88%E5%AF%B9%E6%AF%94"><span class="nav-number">1.4.</span> <span class="nav-text">SQL 和 MongoDB 聚合对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/75daa5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MongoDB 的聚合操作 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MongoDB 的聚合操作<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/03.MongoDB%E7%9A%84%E8%81%9A%E5%90%88%E6%93%8D%E4%BD%9C.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-21 21:22:57" itemprop="dateCreated datePublished" datetime="2020-09-21T21:22:57+08:00">2020-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">文档数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MongoDB-的聚合操作"><a href="#MongoDB-的聚合操作" class="headerlink" title="MongoDB 的聚合操作"></a>MongoDB 的聚合操作</h1><p>聚合操作处理数据记录并返回计算结果。聚合操作将来自多个 document 的值分组，并可以对分组的数据执行各种操作以返回单个结果。 MongoDB 提供了三种执行聚合的方式：聚合管道，map-reduce 函数和单一目的聚合方法。</p>
+<h2 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h2><h3 id="Pipeline-简介"><a href="#Pipeline-简介" class="headerlink" title="Pipeline 简介"></a>Pipeline 简介</h3><p>MongoDB 的聚合框架以数据处理管道（Pipeline）的概念为模型。</p>
+<p><strong>MongoDB 通过 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/#db.collection.aggregate"><code>db.collection.aggregate()</code></a> 方法支持聚合操作</strong>。并提供了 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/command/aggregate/#dbcmd.aggregate"><code>aggregate</code></a> 命令来执行 pipeline。</p>
+<p>MongoDB Pipeline 由多个阶段（<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/#aggregation-pipeline-operator-reference">stages</a>）组成。每个阶段在 document 通过 pipeline 时都会对其进行转换。pipeline 阶段不需要为每个输入 document 都生成一个输出 document。例如，某些阶段可能会生成新 document 或过滤 document。</p>
+<p>同一个阶段可以在 pipeline 中出现多次，但 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/out/#pipe._S_out"><code>$out</code></a>、<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/merge/#pipe._S_merge"><code>$merge</code></a>,和 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/geoNear/#pipe._S_geoNear"><code>$geoNear</code></a> 阶段除外。所有可用 pipeline 阶段可以参考：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/#aggregation-pipeline-operator-reference">Aggregation Pipeline Stages</a>。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921092725.png" alt="img"></p>
+<ul>
+<li>第一阶段：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段按状态字段过滤 document，然后将状态等于“ A”的那些 document 传递到下一阶段。</li>
+<li>第二阶段：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pipe._S_group"><code>$group</code></a> 阶段按 cust_id 字段对 document 进行分组，以计算每个唯一 cust_id 的金额总和。</li>
+</ul>
+<p>最基本的管道阶段提供过滤器，其操作类似于查询和 document 转换（修改输出 document 形式）。</p>
+<p>其他管道操作提供了用于按特定字段对 document 进行分组和排序的工具，以及用于汇总数组（包括 document 数组）内容的工具。另外，管道阶段可以将运算符用于诸如计算平均值或连接字符串之类的任务。</p>
+<p>聚合管道也可以在分片 collection 上操作。</p>
+<h3 id="Pipeline-优化"><a href="#Pipeline-优化" class="headerlink" title="Pipeline 优化"></a>Pipeline 优化</h3><h4 id="投影优化"><a href="#投影优化" class="headerlink" title="投影优化"></a>投影优化</h4><p>Pipeline 可以确定是否仅需要 document 中必填字段即可获得结果。</p>
+<h4 id="Pipeline-串行优化"><a href="#Pipeline-串行优化" class="headerlink" title="Pipeline 串行优化"></a>Pipeline 串行优化</h4><p>（<code>$project</code>、<code>$unset</code>、<code>$addFields</code>、<code>$set</code>） + <code>$match</code> 串行优化</p>
+<p>对于包含投影阶段（<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/project/#pipe._S_project"><code>$project</code></a> 或 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unset/#pipe._S_unset"><code>$unset</code></a> 或 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#pipe._S_addFields"><code>$addFields</code></a> 或 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/set/#pipe._S_set"><code>$set</code></a>），且后续跟随着 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段的 Pipeline ，MongoDB 会将所有 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段中不需要在投影阶段中计算出的值的过滤器，移动一个在投影阶段之前的新 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段。</p>
+<p>如果 Pipeline 包含多个投影阶段 和 &#x2F; 或 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段，则 MongoDB 将为每个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段执行此优化，将每个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 过滤器移动到该过滤器不依赖的所有投影阶段之前。</p>
+<p>【示例】Pipeline 串行优化示例</p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$addFields</span>: &#123;</span><br><span class="line">    <span class="attr">maxTime</span>: &#123; <span class="attr">$max</span>: <span class="string">&quot;$times&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">minTime</span>: &#123; <span class="attr">$min</span>: <span class="string">&quot;$times&quot;</span> &#125;</span><br><span class="line">&#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$project</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="number">1</span>, <span class="attr">times</span>: <span class="number">1</span>, <span class="attr">maxTime</span>: <span class="number">1</span>, <span class="attr">minTime</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">avgTime</span>: &#123; <span class="attr">$avg</span>: [<span class="string">&quot;$maxTime&quot;</span>, <span class="string">&quot;$minTime&quot;</span>] &#125;</span><br><span class="line">&#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$match</span>: &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;Joe Schmoe&quot;</span>,</span><br><span class="line">    <span class="attr">maxTime</span>: &#123; <span class="attr">$lt</span>: <span class="number">20</span> &#125;,</span><br><span class="line">    <span class="attr">minTime</span>: &#123; <span class="attr">$gt</span>: <span class="number">5</span> &#125;,</span><br><span class="line">    <span class="attr">avgTime</span>: &#123; <span class="attr">$gt</span>: <span class="number">7</span> &#125;</span><br><span class="line">&#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$match</span>: &#123; <span class="attr">name</span>: <span class="string">&quot;Joe Schmoe&quot;</span> &#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$addFields</span>: &#123;</span><br><span class="line">    <span class="attr">maxTime</span>: &#123; <span class="attr">$max</span>: <span class="string">&quot;$times&quot;</span> &#125;,</span><br><span class="line">    <span class="attr">minTime</span>: &#123; <span class="attr">$min</span>: <span class="string">&quot;$times&quot;</span> &#125;</span><br><span class="line">&#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$match</span>: &#123; <span class="attr">maxTime</span>: &#123; <span class="attr">$lt</span>: <span class="number">20</span> &#125;, <span class="attr">minTime</span>: &#123; <span class="attr">$gt</span>: <span class="number">5</span> &#125; &#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$project</span>: &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="number">1</span>, <span class="attr">times</span>: <span class="number">1</span>, <span class="attr">maxTime</span>: <span class="number">1</span>, <span class="attr">minTime</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">avgTime</span>: &#123; <span class="attr">$avg</span>: [<span class="string">&quot;$maxTime&quot;</span>, <span class="string">&quot;$minTime&quot;</span>] &#125;</span><br><span class="line">&#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$match</span>: &#123; <span class="attr">avgTime</span>: &#123; <span class="attr">$gt</span>: <span class="number">7</span> &#125; &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<p><code>&#123; name: &quot;Joe Schmoe&quot; &#125;</code> 不需要计算任何投影阶段的值，所以可以放在最前面。</p>
+<p><code>&#123; avgTime: &#123; $gt: 7 &#125; &#125;</code> 依赖 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/project/#pipe._S_project"><code>$project</code></a> 阶段的 <code>avgTime</code> 字段，所以不能移动。</p>
+<p><code>maxTime</code> 和 <code>minTime</code> 字段被 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#pipe._S_addFields"><code>$addFields</code></a> 阶段所依赖，但自身不依赖其他，所以会新建一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a> 阶段，并将其置于 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/project/#pipe._S_project"><code>$project</code></a> 阶段之前。</p>
+<h4 id="Pipeline-并行优化"><a href="#Pipeline-并行优化" class="headerlink" title="Pipeline 并行优化"></a>Pipeline 并行优化</h4><p>如果可能，优化阶段会将 Pipeline 阶段合并到其前身。通常，合并发生在任意序列重新排序优化之后。</p>
+<h5 id="sort-limit"><a href="#sort-limit" class="headerlink" title="$sort + $limit"></a><code>$sort</code> + <code>$limit</code></h5><p>当 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#pipe._S_sort"><code>$sort</code></a> 在 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a> 之前时，如果没有中间阶段修改文档数量（例如 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/#pipe._S_unwind"><code>$unwind</code></a>、<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pipe._S_group"><code>$group</code></a>），则优化程序可以将 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a> 合并到 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#pipe._S_sort"><code>$sort</code></a> 中。如果有管道阶段更改了 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#pipe._S_sort"><code>$sort</code></a> 和 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a> 阶段之间的文档数，则 MongoDB 不会将 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a> 合并到 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#pipe._S_sort"><code>$sort</code></a> 中。</p>
+<p>【示例】<code>$sort</code> + <code>$limit</code></p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; $sort : &#123; age : -<span class="number">1</span> &#125; &#125;,</span><br><span class="line">&#123; $project : &#123; age : <span class="number">1</span>, status : <span class="number">1</span>, name : <span class="number">1</span> &#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$limit</span>: <span class="number">5</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;$sort&quot;</span> : &#123;</span><br><span class="line">       <span class="string">&quot;sortKey&quot;</span> : &#123;</span><br><span class="line">          <span class="string">&quot;age&quot;</span> : -<span class="number">1</span></span><br><span class="line">       &#125;,</span><br><span class="line">       <span class="string">&quot;limit&quot;</span> : <span class="title class_">NumberLong</span>(<span class="number">5</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123; <span class="string">&quot;$project&quot;</span> : &#123;</span><br><span class="line">         <span class="string">&quot;age&quot;</span> : <span class="number">1</span>,</span><br><span class="line">         <span class="string">&quot;status&quot;</span> : <span class="number">1</span>,</span><br><span class="line">         <span class="string">&quot;name&quot;</span> : <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="limit-limit"><a href="#limit-limit" class="headerlink" title="$limit + $limit"></a><code>$limit</code> + <code>$limit</code></h5><p>如果一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a> 紧随另一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a>，那么它们可以合并为一。</p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$limit</span>: <span class="number">100</span> &#125;,</span><br><span class="line">&#123; <span class="attr">$limit</span>: <span class="number">10</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$limit</span>: <span class="number">10</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="skip-skip"><a href="#skip-skip" class="headerlink" title="$skip + $skip"></a><code>$skip</code> + <code>$skip</code></h5><p>如果一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/skip/#pipe._S_skip"><code>$skip</code></a> 紧随另一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/skip/#pipe._S_skip"><code>$skip</code></a> ，那么它们可以合并为一。</p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$skip</span>: <span class="number">5</span> &#125;,</span><br><span class="line">&#123; <span class="attr">$skip</span>: <span class="number">2</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$skip</span>: <span class="number">7</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="match-match"><a href="#match-match" class="headerlink" title="$match + $match"></a><code>$match</code> + <code>$match</code></h5><p>如果一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/skip/#pipe._S_skip"><code>$skip</code></a> 紧随另一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/skip/#pipe._S_skip"><code>$skip</code></a> ，那么它们可以通过 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/and/#exp._S_and"><code>$and</code></a> 合并为一。</p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">$match</span>: &#123; <span class="attr">year</span>: <span class="number">2014</span> &#125; &#125;,</span><br><span class="line">&#123; <span class="attr">$match</span>: &#123; <span class="attr">status</span>: <span class="string">&quot;A&quot;</span> &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$match</span>: &#123;</span><br><span class="line">    <span class="attr">$and</span>: [&#123; <span class="attr">year</span>: <span class="number">2014</span> &#125;, &#123; <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span> &#125;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="lookup-unwind"><a href="#lookup-unwind" class="headerlink" title="$lookup + $unwind"></a><code>$lookup</code> + <code>$unwind</code></h5><p>如果一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/#pipe._S_unwind"><code>$unwind</code></a> 紧随另一个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup"><code>$lookup</code></a>，并且 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/#pipe._S_unwind"><code>$unwind</code></a> 在 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup"><code>$lookup</code></a> 的 as 字段上运行时，优化程序可以将 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/#pipe._S_unwind"><code>$unwind</code></a> 合并到 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup"><code>$lookup</code></a> 阶段。这样可以避免创建较大的中间文档。</p>
+<p>优化前：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$lookup</span>: &#123;</span><br><span class="line">    <span class="attr">from</span>: <span class="string">&quot;otherCollection&quot;</span>,</span><br><span class="line">    <span class="attr">as</span>: <span class="string">&quot;resultingArray&quot;</span>,</span><br><span class="line">    <span class="attr">localField</span>: <span class="string">&quot;x&quot;</span>,</span><br><span class="line">    <span class="attr">foreignField</span>: <span class="string">&quot;y&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123; <span class="attr">$unwind</span>: <span class="string">&quot;$resultingArray&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优化后：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">$lookup</span>: &#123;</span><br><span class="line">    <span class="attr">from</span>: <span class="string">&quot;otherCollection&quot;</span>,</span><br><span class="line">    <span class="attr">as</span>: <span class="string">&quot;resultingArray&quot;</span>,</span><br><span class="line">    <span class="attr">localField</span>: <span class="string">&quot;x&quot;</span>,</span><br><span class="line">    <span class="attr">foreignField</span>: <span class="string">&quot;y&quot;</span>,</span><br><span class="line">    <span class="attr">unwinding</span>: &#123; <span class="attr">preserveNullAndEmptyArrays</span>: <span class="literal">false</span> &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pipeline-限制"><a href="#Pipeline-限制" class="headerlink" title="Pipeline 限制"></a>Pipeline 限制</h3><p>结果集中的每个文档均受 BSON 文档大小限制（当前为 16 MB）</p>
+<p>Pipeline 的内存限制为 100 MB。</p>
+<h2 id="Map-Reduce"><a href="#Map-Reduce" class="headerlink" title="Map-Reduce"></a>Map-Reduce</h2><blockquote>
+<p>聚合 pipeline 比 map-reduce 提供更好的性能和更一致的接口。</p>
+</blockquote>
+<p>Map-reduce 是一种数据处理范式，用于将大量数据汇总为有用的聚合结果。为了执行 map-reduce 操作，MongoDB 提供了 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/command/mapReduce/#dbcmd.mapReduce"><code>mapReduce</code></a> 数据库命令。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921155546.svg" alt="img"></p>
+<p>在上面的操作中，MongoDB 将 map 阶段应用于每个输入 document（即 collection 中与查询条件匹配的 document）。 map 函数分发出多个键-值对。对于具有多个值的那些键，MongoDB 应用 reduce 阶段，该阶段收集并汇总聚合的数据。然后，MongoDB 将结果存储在 collection 中。可选地，reduce 函数的输出可以通过 finalize 函数来进一步汇总聚合结果。</p>
+<p>MongoDB 中的所有 map-reduce 函数都是 JavaScript，并在 mongod 进程中运行。 Map-reduce 操作将单个 collection 的 document 作为输入，并且可以在开始 map 阶段之前执行任意排序和限制。 mapReduce 可以将 map-reduce 操作的结果作为 document 返回，也可以将结果写入 collection。</p>
+<h2 id="单一目的聚合方法"><a href="#单一目的聚合方法" class="headerlink" title="单一目的聚合方法"></a>单一目的聚合方法</h2><p>MongoDB 支持一下单一目的的聚合操作：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.estimatedDocumentCount/#db.collection.estimatedDocumentCount"><code>db.collection.estimatedDocumentCount()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.count/#db.collection.count"><code>db.collection.count()</code></a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.distinct/#db.collection.distinct"><code>db.collection.distinct()</code></a></li>
+</ul>
+<p>所有这些操作都汇总了单个 collection 中的 document。尽管这些操作提供了对常见聚合过程的简单访问，但是它们相比聚合 pipeline 和 map-reduce，缺少灵活性和丰富的功能性。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921155935.svg" alt="img"></p>
+<h2 id="SQL-和-MongoDB-聚合对比"><a href="#SQL-和-MongoDB-聚合对比" class="headerlink" title="SQL 和 MongoDB 聚合对比"></a>SQL 和 MongoDB 聚合对比</h2><p>MongoDB pipeline 提供了许多等价于 SQL 中常见聚合语句的操作。</p>
+<p>下表概述了常见的 SQL 聚合语句或函数和 MongoDB 聚合操作的映射表：</p>
+<table>
+<thead>
+<tr>
+<th align="left">SQL Terms, Functions, and Concepts</th>
+<th align="left">MongoDB Aggregation Operators</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>WHERE</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>GROUP BY</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pipe._S_group"><code>$group</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>HAVING</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match"><code>$match</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>SELECT</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/project/#pipe._S_project"><code>$project</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>ORDER BY</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#pipe._S_sort"><code>$sort</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>LIMIT</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit"><code>$limit</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>SUM()</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sum/#grp._S_sum"><code>$sum</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>COUNT()</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sum/#grp._S_sum"><code>$sum</code></a><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/sortByCount/#pipe._S_sortByCount"><code>$sortByCount</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>JOIN</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup"><code>$lookup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>SELECT INTO NEW_TABLE</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/out/#pipe._S_out"><code>$out</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>MERGE INTO TABLE</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/merge/#pipe._S_merge"><code>$merge</code></a> (Available starting in MongoDB 4.2)</td>
+</tr>
+<tr>
+<td align="left"><code>UNION ALL</code></td>
+<td align="left"><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/unionWith/#pipe._S_unionWith"><code>$unionWith</code></a> (Available starting in MongoDB 4.4)</td>
+</tr>
+</tbody></table>
+<p>【示例】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">insertMany</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Ant O. Knee&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-01&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;apples&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Ant O. Knee&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-08&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">70</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">8</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;chocolates&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">10</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Busby Bee&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-08&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">50</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;pears&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">4</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Busby Bee&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-18&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">items</span>: [&#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Busby Bee&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-19&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">50</span>,</span><br><span class="line">    <span class="attr">items</span>: [&#123; <span class="attr">sku</span>: <span class="string">&#x27;chocolates&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">10</span> &#125;],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">6</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Cam Elot&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-19&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">35</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;carrots&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">1.0</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;apples&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">7</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Cam Elot&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-20&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">items</span>: [&#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">8</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Don Quis&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-20&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">75</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;chocolates&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">10</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;apples&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">9</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Don Quis&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-20&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">55</span>,</span><br><span class="line">    <span class="attr">items</span>: [</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;carrots&#x27;</span>, <span class="attr">qty</span>: <span class="number">5</span>, <span class="attr">price</span>: <span class="number">1.0</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;apples&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;,</span><br><span class="line">      &#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">cust_id</span>: <span class="string">&#x27;Don Quis&#x27;</span>,</span><br><span class="line">    <span class="attr">ord_date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-03-23&#x27;</span>),</span><br><span class="line">    <span class="attr">price</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="attr">items</span>: [&#123; <span class="attr">sku</span>: <span class="string">&#x27;oranges&#x27;</span>, <span class="attr">qty</span>: <span class="number">10</span>, <span class="attr">price</span>: <span class="number">2.5</span> &#125;],</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;A&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<p>SQL 和 MongoDB 聚合方式对比：</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200921200556.png" alt="img"></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><strong>官方</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mongodb.com/">MongoDB 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mongodb/mongo">MongoDB Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://university.mongodb.com/">MongoDB 官方免费教程</a></li>
+</ul>
+</li>
+<li><strong>教程</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/mongodb/mongodb-tutorial.html">MongoDB 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/course/intro/100040001">MongoDB 高手课</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/75daa5/" title="MongoDB 的聚合操作">https://dunwu.github.io/blog/pages/75daa5/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 文档数据库</a>
+              <a href="/blog/tags/MongoDB/" rel="tag"># MongoDB</a>
+              <a href="/blog/tags/%E8%81%9A%E5%90%88/" rel="tag"># 聚合</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/10c674/" rel="prev" title="MongoDB 索引">
+                  <i class="fa fa-angle-left"></i> MongoDB 索引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/7efbac/" rel="next" title="MongoDB 的 CRUD 操作">
+                  MongoDB 的 CRUD 操作 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"8583ed0fe2823f09626adb15d83aaf31"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

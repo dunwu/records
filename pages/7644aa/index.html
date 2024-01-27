@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="MapReduceMapReduce 简介 Hadoop MapReduce 是一个分布式计算框架，用于编写批处理应用程序。编写好的程序可以提交到 Hadoop 集群上用于并行处理大规模的数据集。  MapReduce 的设计思路是：  分而治之，并行计算 移动计算，而非移动数据  MapReduce 作业通过将输入的数据集拆分为独立的块，这些块由 map 以并行的方式处理，框架对 map 的输出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/7644aa/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="MapReduceMapReduce 简介 Hadoop MapReduce 是一个分布式计算框架，用于编写批处理应用程序。编写好的程序可以提交到 Hadoop 集群上用于并行处理大规模的数据集。  MapReduce 的设计思路是：  分而治之，并行计算 移动计算，而非移动数据  MapReduce 作业通过将输入的数据集拆分为独立的块，这些块由 map 以并行的方式处理，框架对 map 的输出">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601162305.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601163846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601164709.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601164804.png">
+<meta property="og:image" content="https://camo.githubusercontent.com/fcf3ac016579c1fbb050d97309660aaa3b9550cc/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d6d617070696e672e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/bf6ad9c970812b1db6f6f86d12d783db75eaa9fb/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d726564756365722e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/cecb00eef3b951794fbf92b8308d8b6601faf5a0/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e746170702e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/e4849556db34d3a02b82b546af7296154920dfff/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d6e6f2d636f6d62696e65722e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/17f20f481bc4bd01252bc3ccb3b2aceb7d0eca63/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f6d62696e65722e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/202b1eb7065e18a513db5b2a50b22ab62a7d6692/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e74636f6d62696e6572706172746974696f6e2e706e67">
+<meta property="article:published_time" content="2020-06-21T16:22:25.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.435Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="MapReduce">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601162305.png">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/7644aa/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/7644aa/","path":"/pages/7644aa/","title":"MapReduce"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MapReduce | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MapReduce"><span class="nav-number">1.</span> <span class="nav-text">MapReduce</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">MapReduce 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce-%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">MapReduce 编程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#combiner-partitioner"><span class="nav-number">1.3.</span> <span class="nav-text">combiner &amp; partitioner</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#InputFormat-RecordReaders"><span class="nav-number">1.3.1.</span> <span class="nav-text">InputFormat &amp; RecordReaders</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Combiner"><span class="nav-number">1.3.2.</span> <span class="nav-text">Combiner</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapReduce-%E8%AF%8D%E9%A2%91%E7%BB%9F%E8%AE%A1%E6%A1%88%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">MapReduce 词频统计案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">1.4.1.</span> <span class="nav-text">项目简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%BE%9D%E8%B5%96"><span class="nav-number">1.4.2.</span> <span class="nav-text">项目依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordCountMapper"><span class="nav-number">1.4.3.</span> <span class="nav-text">WordCountMapper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordCountReducer"><span class="nav-number">1.4.4.</span> <span class="nav-text">WordCountReducer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordCountApp"><span class="nav-number">1.4.5.</span> <span class="nav-text">WordCountApp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C"><span class="nav-number">1.4.6.</span> <span class="nav-text">提交到服务器运行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E9%A2%91%E7%BB%9F%E8%AE%A1%E6%A1%88%E4%BE%8B%E8%BF%9B%E9%98%B6%E4%B9%8B-Combiner"><span class="nav-number">1.5.</span> <span class="nav-text">词频统计案例进阶之 Combiner</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">1.5.2.</span> <span class="nav-text">执行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%8D%E9%A2%91%E7%BB%9F%E8%AE%A1%E6%A1%88%E4%BE%8B%E8%BF%9B%E9%98%B6%E4%B9%8B-Partitioner"><span class="nav-number">1.6.</span> <span class="nav-text">词频统计案例进阶之 Partitioner</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84-Partitioner"><span class="nav-number">1.6.1.</span> <span class="nav-text">默认的 Partitioner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-Partitioner"><span class="nav-number">1.6.2.</span> <span class="nav-text">自定义 Partitioner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C-1"><span class="nav-number">1.6.3.</span> <span class="nav-text">执行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.7.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/7644aa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MapReduce | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MapReduce<a href="https://github.com/dunwu/blog/blob/master/source/_posts/16.%E5%A4%A7%E6%95%B0%E6%8D%AE/01.hadoop/03.mapreduce.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-22 00:22:25" itemprop="dateCreated datePublished" datetime="2020-06-22T00:22:25+08:00">2020-06-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/hadoop/" itemprop="url" rel="index"><span itemprop="name">hadoop</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><h2 id="MapReduce-简介"><a href="#MapReduce-简介" class="headerlink" title="MapReduce 简介"></a>MapReduce 简介</h2><blockquote>
+<p>Hadoop MapReduce 是一个分布式计算框架，用于编写批处理应用程序。编写好的程序可以提交到 Hadoop 集群上用于并行处理大规模的数据集。</p>
+</blockquote>
+<p>MapReduce 的设计思路是：</p>
+<ul>
+<li>分而治之，并行计算</li>
+<li>移动计算，而非移动数据</li>
+</ul>
+<p>MapReduce 作业通过将输入的数据集拆分为独立的块，这些块由 <code>map</code> 以并行的方式处理，框架对 <code>map</code> 的输出进行排序，然后输入到 <code>reduce</code> 中。MapReduce 框架专门用于 <code>&lt;key，value&gt;</code> 键值对处理，它将作业的输入视为一组 <code>&lt;key，value&gt;</code> 对，并生成一组 <code>&lt;key，value&gt;</code> 对作为输出。输出和输出的 <code>key</code> 和 <code>value</code> 都必须实现<a target="_blank" rel="noopener" href="http://hadoop.apache.org/docs/stable/api/org/apache/hadoop/io/Writable.html">Writable</a> 接口。</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="title">input</span>) &lt;k1, v1&gt; -&gt;</span> <span class="function"><span class="title">map</span> -&gt;</span> &lt;<span class="function"><span class="title">k2</span>, v2&gt; -&gt;</span> <span class="function"><span class="title">combine</span> -&gt;</span> &lt;<span class="function"><span class="title">k2</span>, v2&gt; -&gt;</span> <span class="function"><span class="title">reduce</span> -&gt;</span> &lt;k3, v3&gt; (output)</span><br></pre></td></tr></table></figure>
+
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>计算跟着数据走</li>
+<li>良好的扩展性：计算能力随着节点数增加，近似线性递增</li>
+<li>高容错</li>
+<li>状态监控</li>
+<li>适合海量数据的离线批处理</li>
+<li>降低了分布式编程的门槛</li>
+</ul>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>适用场景：</p>
+<ul>
+<li>数据统计，如：网站的 PV、UV 统计</li>
+<li>搜索引擎构建索引</li>
+<li>海量数据查询</li>
+</ul>
+<p>不适用场景：</p>
+<ul>
+<li>OLAP<ul>
+<li>要求毫秒或秒级返回结果</li>
+</ul>
+</li>
+<li>流计算<ul>
+<li>流计算的输入数据集是动态的，而 MapReduce 是静态的</li>
+</ul>
+</li>
+<li>DAG 计算<ul>
+<li>多个作业存在依赖关系，后一个的输入是前一个的输出，构成有向无环图 DAG</li>
+<li>每个 MapReduce 作业的输出结果都会落盘，造成大量磁盘 IO，导致性能非常低下</li>
+</ul>
+</li>
+</ul>
+<h2 id="MapReduce-编程模型"><a href="#MapReduce-编程模型" class="headerlink" title="MapReduce 编程模型"></a>MapReduce 编程模型</h2><p>MapReduce 编程模型：MapReduce 程序被分为 Map（映射）阶段和 Reduce（化简）阶段。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601162305.png" alt="img"></p>
+<ol>
+<li><strong>input</strong> : 读取文本文件；</li>
+<li><strong>splitting</strong> : 将文件按照行进行拆分，此时得到的 <code>K1</code> 行数，<code>V1</code> 表示对应行的文本内容；</li>
+<li><strong>mapping</strong> : 并行将每一行按照空格进行拆分，拆分得到的 <code>List(K2,V2)</code>，其中 <code>K2</code> 代表每一个单词，由于是做词频统计，所以 <code>V2</code> 的值为 1，代表出现 1 次；</li>
+<li><strong>shuffling</strong>：由于 <code>Mapping</code> 操作可能是在不同的机器上并行处理的，所以需要通过 <code>shuffling</code> 将相同 <code>key</code> 值的数据分发到同一个节点上去合并，这样才能统计出最终的结果，此时得到 <code>K2</code> 为每一个单词，<code>List(V2)</code> 为可迭代集合，<code>V2</code> 就是 Mapping 中的 V2；</li>
+<li><strong>Reducing</strong> : 这里的案例是统计单词出现的总次数，所以 <code>Reducing</code> 对 <code>List(V2)</code> 进行归约求和操作，最终输出。</li>
+</ol>
+<p>MapReduce 编程模型中 <code>splitting</code> 和 <code>shuffing</code> 操作都是由框架实现的，需要我们自己编程实现的只有 <code>mapping</code> 和 <code>reducing</code>，这也就是 MapReduce 这个称呼的来源。</p>
+<h2 id="combiner-partitioner"><a href="#combiner-partitioner" class="headerlink" title="combiner &amp; partitioner"></a>combiner &amp; partitioner</h2><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601163846.png" alt="img"></p>
+<h3 id="InputFormat-RecordReaders"><a href="#InputFormat-RecordReaders" class="headerlink" title="InputFormat &amp; RecordReaders"></a>InputFormat &amp; RecordReaders</h3><p><code>InputFormat</code> 将输出文件拆分为多个 <code>InputSplit</code>，并由 <code>RecordReaders</code> 将 <code>InputSplit</code> 转换为标准的&lt;key，value&gt;键值对，作为 map 的输出。这一步的意义在于只有先进行逻辑拆分并转为标准的键值对格式后，才能为多个 <code>map</code> 提供输入，以便进行并行处理。</p>
+<h3 id="Combiner"><a href="#Combiner" class="headerlink" title="Combiner"></a>Combiner</h3><p><code>combiner</code> 是 <code>map</code> 运算后的可选操作，它实际上是一个本地化的 <code>reduce</code> 操作，它主要是在 <code>map</code> 计算出中间文件后做一个简单的合并重复 <code>key</code> 值的操作。这里以词频统计为例：</p>
+<p><code>map</code> 在遇到一个 hadoop 的单词时就会记录为 1，但是这篇文章里 hadoop 可能会出现 n 多次，那么 <code>map</code> 输出文件冗余就会很多，因此在 <code>reduce</code> 计算前对相同的 key 做一个合并操作，那么需要传输的数据量就会减少，传输效率就可以得到提升。</p>
+<p>但并非所有场景都适合使用 <code>combiner</code>，使用它的原则是 <code>combiner</code> 的输出不会影响到 <code>reduce</code> 计算的最终输入，例如：求总数，最大值，最小值时都可以使用 <code>combiner</code>，但是做平均值计算则不能使用 <code>combiner</code>。</p>
+<p>不使用 combiner 的情况：</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601164709.png" alt="img"></p>
+<p>使用 combiner 的情况：</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200601164804.png" alt="img"></p>
+<p>可以看到使用 combiner 的时候，需要传输到 reducer 中的数据由 12keys，降低到 10keys。降低的幅度取决于你 keys 的重复率，下文词频统计案例会演示用 combiner 降低数百倍的传输量。</p>
+<h2 id="MapReduce-词频统计案例"><a href="#MapReduce-词频统计案例" class="headerlink" title="MapReduce 词频统计案例"></a>MapReduce 词频统计案例</h2><h3 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h3><p>这里给出一个经典的词频统计的案例：统计如下样本数据中每个单词出现的次数。</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Spark	HBase</span></span><br><span class="line"><span class="attribute">Hive	Flink	Storm	Hadoop	HBase	Spark</span></span><br><span class="line"><span class="attribute">Flink</span></span><br><span class="line"><span class="attribute">HBase	Storm</span></span><br><span class="line"><span class="attribute">HBase	Hadoop	Hive	Flink</span></span><br><span class="line"><span class="attribute">HBase	Flink	Hive	Storm</span></span><br><span class="line"><span class="attribute">Hive	Flink	Hadoop</span></span><br><span class="line"><span class="attribute">HBase	Hive</span></span><br><span class="line"><span class="attribute">Hadoop	Spark	HBase	Storm</span></span><br><span class="line"><span class="attribute">HBase	Hadoop	Hive	Flink</span></span><br><span class="line"><span class="attribute">HBase	Flink	Hive	Storm</span></span><br><span class="line"><span class="attribute">Hive	Flink	Hadoop</span></span><br><span class="line"><span class="attribute">HBase	Hive</span></span><br></pre></td></tr></table></figure>
+
+<p>为方便大家开发，我在项目源码中放置了一个工具类 <code>WordCountDataUtils</code>，用于模拟产生词频统计的样本，生成的文件支持输出到本地或者直接写到 HDFS 上。</p>
+<blockquote>
+<p>项目完整源码下载地址：<a target="_blank" rel="noopener" href="https://github.com/heibaiying/BigData-Notes/tree/master/code/Hadoop/hadoop-word-count">hadoop-word-count</a></p>
+</blockquote>
+<h3 id="项目依赖"><a href="#项目依赖" class="headerlink" title="项目依赖"></a>项目依赖</h3><p>想要进行 MapReduce 编程，需要导入 <code>hadoop-client</code> 依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hadoop.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="WordCountMapper"><a href="#WordCountMapper" class="headerlink" title="WordCountMapper"></a>WordCountMapper</h3><p>将每行数据按照指定分隔符进行拆分。这里需要注意在 MapReduce 中必须使用 Hadoop 定义的类型，因为 Hadoop 预定义的类型都是可序列化，可比较的，所有类型均实现了 <code>WritableComparable</code> 接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WordCountMapper</span> <span class="keyword">extends</span> <span class="title class_">Mapper</span>&lt;LongWritable, Text, Text, IntWritable&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">map</span><span class="params">(LongWritable key, Text value, Context context)</span> <span class="keyword">throws</span> IOException,</span><br><span class="line">                                                                      InterruptedException &#123;</span><br><span class="line">        String[] words = value.toString().split(<span class="string">&quot;\t&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (String word : words) &#123;</span><br><span class="line">            context.write(<span class="keyword">new</span> <span class="title class_">Text</span>(word), <span class="keyword">new</span> <span class="title class_">IntWritable</span>(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>WordCountMapper</code> 对应下图的 Mapping 操作：</p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/fcf3ac016579c1fbb050d97309660aaa3b9550cc/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d6d617070696e672e706e67"><img src="https://camo.githubusercontent.com/fcf3ac016579c1fbb050d97309660aaa3b9550cc/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d6d617070696e672e706e67" alt="img"></a></p>
+<p><code>WordCountMapper</code> 继承自 <code>Mappe</code> 类，这是一个泛型类，定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WordCountMapper <span class="keyword">extends</span> <span class="title class_">Mapper</span>&lt;LongWritable, Text, Text, IntWritable&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Mapper</span>&lt;KEYIN, VALUEIN, KEYOUT, VALUEOUT&gt; &#123;</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>KEYIN</strong> : <code>mapping</code> 输入 key 的类型，即每行的偏移量 (每行第一个字符在整个文本中的位置)，<code>Long</code> 类型，对应 Hadoop 中的 <code>LongWritable</code> 类型；</li>
+<li><strong>VALUEIN</strong> : <code>mapping</code> 输入 value 的类型，即每行数据；<code>String</code> 类型，对应 Hadoop 中 <code>Text</code> 类型；</li>
+<li><strong>KEYOUT</strong> ：<code>mapping</code> 输出的 key 的类型，即每个单词；<code>String</code> 类型，对应 Hadoop 中 <code>Text</code> 类型；</li>
+<li><strong>VALUEOUT</strong>：<code>mapping</code> 输出 value 的类型，即每个单词出现的次数；这里用 <code>int</code> 类型，对应 <code>IntWritable</code> 类型。</li>
+</ul>
+<h3 id="WordCountReducer"><a href="#WordCountReducer" class="headerlink" title="WordCountReducer"></a>WordCountReducer</h3><p>在 Reduce 中进行单词出现次数的统计：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WordCountReducer</span> <span class="keyword">extends</span> <span class="title class_">Reducer</span>&lt;Text, IntWritable, Text, IntWritable&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">reduce</span><span class="params">(Text key, Iterable&lt;IntWritable&gt; values, Context context)</span> <span class="keyword">throws</span> IOException,</span><br><span class="line">                                                                                  InterruptedException &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (IntWritable value : values) &#123;</span><br><span class="line">            count += value.get();</span><br><span class="line">        &#125;</span><br><span class="line">        context.write(key, <span class="keyword">new</span> <span class="title class_">IntWritable</span>(count));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如下图，<code>shuffling</code> 的输出是 reduce 的输入。这里的 key 是每个单词，values 是一个可迭代的数据类型，类似 <code>(1,1,1,...)</code>。</p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/bf6ad9c970812b1db6f6f86d12d783db75eaa9fb/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d726564756365722e706e67"><img src="https://camo.githubusercontent.com/bf6ad9c970812b1db6f6f86d12d783db75eaa9fb/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f64652d726564756365722e706e67" alt="img"></a></p>
+<h3 id="WordCountApp"><a href="#WordCountApp" class="headerlink" title="WordCountApp"></a>WordCountApp</h3><p>组装 MapReduce 作业，并提交到服务器运行，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 组装作业 并提交到集群运行</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WordCountApp</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这里为了直观显示参数 使用了硬编码，实际开发中可以通过外部传参</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">HDFS_URL</span> <span class="operator">=</span> <span class="string">&quot;hdfs://192.168.0.107:8020&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">HADOOP_USER_NAME</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//  文件输入路径和输出路径由外部传参指定</span></span><br><span class="line">        <span class="keyword">if</span> (args.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Input and output paths are necessary!&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 需要指明 hadoop 用户名，否则在 HDFS 上创建目录时可能会抛出权限不足的异常</span></span><br><span class="line">        System.setProperty(<span class="string">&quot;HADOOP_USER_NAME&quot;</span>, HADOOP_USER_NAME);</span><br><span class="line"></span><br><span class="line">        <span class="type">Configuration</span> <span class="variable">configuration</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Configuration</span>();</span><br><span class="line">        <span class="comment">// 指明 HDFS 的地址</span></span><br><span class="line">        configuration.set(<span class="string">&quot;fs.defaultFS&quot;</span>, HDFS_URL);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建一个 Job</span></span><br><span class="line">        <span class="type">Job</span> <span class="variable">job</span> <span class="operator">=</span> Job.getInstance(configuration);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置运行的主类</span></span><br><span class="line">        job.setJarByClass(WordCountApp.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置 Mapper 和 Reducer</span></span><br><span class="line">        job.setMapperClass(WordCountMapper.class);</span><br><span class="line">        job.setReducerClass(WordCountReducer.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置 Mapper 输出 key 和 value 的类型</span></span><br><span class="line">        job.setMapOutputKeyClass(Text.class);</span><br><span class="line">        job.setMapOutputValueClass(IntWritable.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置 Reducer 输出 key 和 value 的类型</span></span><br><span class="line">        job.setOutputKeyClass(Text.class);</span><br><span class="line">        job.setOutputValueClass(IntWritable.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果输出目录已经存在，则必须先删除，否则重复运行程序时会抛出异常</span></span><br><span class="line">        <span class="type">FileSystem</span> <span class="variable">fileSystem</span> <span class="operator">=</span> FileSystem.get(<span class="keyword">new</span> <span class="title class_">URI</span>(HDFS_URL), configuration, HADOOP_USER_NAME);</span><br><span class="line">        <span class="type">Path</span> <span class="variable">outputPath</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Path</span>(args[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">if</span> (fileSystem.exists(outputPath)) &#123;</span><br><span class="line">            fileSystem.delete(outputPath, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置作业输入文件和输出文件的路径</span></span><br><span class="line">        FileInputFormat.setInputPaths(job, <span class="keyword">new</span> <span class="title class_">Path</span>(args[<span class="number">0</span>]));</span><br><span class="line">        FileOutputFormat.setOutputPath(job, outputPath);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将作业提交到群集并等待它完成，参数设置为 true 代表打印显示对应的进度</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> job.waitForCompletion(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 关闭之前创建的 fileSystem</span></span><br><span class="line">        fileSystem.close();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 根据作业结果,终止当前运行的 Java 虚拟机,退出程序</span></span><br><span class="line">        System.exit(result ? <span class="number">0</span> : -<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是：如果不设置 <code>Mapper</code> 操作的输出类型，则程序默认它和 <code>Reducer</code> 操作输出的类型相同。</p>
+<h3 id="提交到服务器运行"><a href="#提交到服务器运行" class="headerlink" title="提交到服务器运行"></a>提交到服务器运行</h3><p>在实际开发中，可以在本机配置 hadoop 开发环境，直接在 IDE 中启动进行测试。这里主要介绍一下打包提交到服务器运行。由于本项目没有使用除 Hadoop 外的第三方依赖，直接打包即可：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># mvn clean package</span></span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令提交作业：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar /usr/appjar/hadoop-word-count-<span class="number">1.0</span><span class="selector-class">.jar</span> \</span><br><span class="line">com<span class="selector-class">.heibaiying</span><span class="selector-class">.WordCountApp</span> \</span><br><span class="line">/wordcount/<span class="selector-tag">input</span><span class="selector-class">.txt</span> /wordcount/output/WordCountApp</span><br></pre></td></tr></table></figure>
+
+<p>作业完成后查看 HDFS 上生成目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看目录</span></span><br><span class="line">hadoop fs -<span class="built_in">ls</span> /wordcount/output/WordCountApp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看统计结果</span></span><br><span class="line">hadoop fs -<span class="built_in">cat</span> /wordcount/output/WordCountApp/part-r-00000</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/cecb00eef3b951794fbf92b8308d8b6601faf5a0/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e746170702e706e67"><img src="https://camo.githubusercontent.com/cecb00eef3b951794fbf92b8308d8b6601faf5a0/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e746170702e706e67" alt="img"></a></p>
+<h2 id="词频统计案例进阶之-Combiner"><a href="#词频统计案例进阶之-Combiner" class="headerlink" title="词频统计案例进阶之 Combiner"></a>词频统计案例进阶之 Combiner</h2><h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p>想要使用 <code>combiner</code> 功能只要在组装作业时，添加下面一行代码即可：</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置 Combiner</span></span><br><span class="line"><span class="keyword">job</span>.setCombinerClass(WordCountReducer.<span class="keyword">class</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><p>加入 <code>combiner</code> 后统计结果是不会有变化的，但是可以从打印的日志看出 <code>combiner</code> 的效果：</p>
+<p>没有加入 <code>combiner</code> 的打印日志：</p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/e4849556db34d3a02b82b546af7296154920dfff/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d6e6f2d636f6d62696e65722e706e67"><img src="https://camo.githubusercontent.com/e4849556db34d3a02b82b546af7296154920dfff/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d6e6f2d636f6d62696e65722e706e67" alt="img"></a></p>
+<p>加入 <code>combiner</code> 后的打印日志如下：</p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/17f20f481bc4bd01252bc3ccb3b2aceb7d0eca63/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f6d62696e65722e706e67"><img src="https://camo.githubusercontent.com/17f20f481bc4bd01252bc3ccb3b2aceb7d0eca63/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d636f6d62696e65722e706e67" alt="img"></a></p>
+<p>这里我们只有一个输入文件并且小于 128M，所以只有一个 Map 进行处理。可以看到经过 combiner 后，records 由 <code>3519</code> 降低为 <code>6</code>(样本中单词种类就只有 6 种)，在这个用例中 combiner 就能极大地降低需要传输的数据量。</p>
+<h2 id="词频统计案例进阶之-Partitioner"><a href="#词频统计案例进阶之-Partitioner" class="headerlink" title="词频统计案例进阶之 Partitioner"></a>词频统计案例进阶之 Partitioner</h2><h3 id="默认的-Partitioner"><a href="#默认的-Partitioner" class="headerlink" title="默认的 Partitioner"></a>默认的 Partitioner</h3><p>这里假设有个需求：将不同单词的统计结果输出到不同文件。这种需求实际上比较常见，比如统计产品的销量时，需要将结果按照产品种类进行拆分。要实现这个功能，就需要用到自定义 <code>Partitioner</code>。</p>
+<p>这里先介绍下 MapReduce 默认的分类规则：在构建 job 时候，如果不指定，默认的使用的是 <code>HashPartitioner</code>：对 key 值进行哈希散列并对 <code>numReduceTasks</code> 取余。其实现如下：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">HashPartitioner</span>&lt;<span class="symbol">K, <span class="symbol">V</span></span>&gt; <span class="symbol">extends</span> <span class="symbol">Partitioner</span>&lt;<span class="symbol">K, <span class="symbol">V</span></span>&gt; &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">int</span> getPartition(K key, V value,</span><br><span class="line">                          <span class="built_in">int</span> numReduceTasks) &#123;</span><br><span class="line">    <span class="keyword">return</span> (key.hashCode() &amp; Integer.MAX_VALUE) % numReduceTasks;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义-Partitioner"><a href="#自定义-Partitioner" class="headerlink" title="自定义 Partitioner"></a>自定义 Partitioner</h3><p>这里我们继承 <code>Partitioner</code> 自定义分类规则，这里按照单词进行分类：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">CustomPartitioner</span> <span class="symbol">extends</span> <span class="symbol">Partitioner</span>&lt;<span class="symbol">Text, <span class="symbol">IntWritable</span></span>&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> getPartition(Text text, IntWritable <span class="built_in">int</span>Writable, <span class="built_in">int</span> numPartitions) &#123;</span><br><span class="line">        <span class="keyword">return</span> WordCountDataUtils.WORD_LIST.indexOf(text.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在构建 <code>job</code> 时候指定使用我们自己的分类规则，并设置 <code>reduce</code> 的个数：</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置自定义分区规则</span></span><br><span class="line"><span class="keyword">job</span>.setPartitionerClass(CustomPartitioner.<span class="keyword">class</span>)<span class="comment">;</span></span><br><span class="line"><span class="comment">// 设置 reduce 个数</span></span><br><span class="line"><span class="keyword">job</span>.setNumReduceTasks(WordCountDataUtils.WORD_LIST.size())<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="执行结果-1"><a href="#执行结果-1" class="headerlink" title="执行结果"></a>执行结果</h3><p>执行结果如下，分别生成 6 个文件，每个文件中为对应单词的统计结果：</p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/202b1eb7065e18a513db5b2a50b22ab62a7d6692/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e74636f6d62696e6572706172746974696f6e2e706e67"><img src="https://camo.githubusercontent.com/202b1eb7065e18a513db5b2a50b22ab62a7d6692/68747470733a2f2f67697465652e636f6d2f68656962616979696e672f426967446174612d4e6f7465732f7261772f6d61737465722f70696374757265732f6861646f6f702d776f7264636f756e74636f6d62696e6572706172746974696f6e2e706e67" alt="img"></a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/heibaiying/BigData-Notes/blob/master/notes/Hadoop-MapReduce.md">分布式计算框架——MapReduce</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/7644aa/" title="MapReduce">https://dunwu.github.io/blog/pages/7644aa/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/blog/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/blog/tags/MapReduce/" rel="tag"># MapReduce</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/cf625d/" rel="prev" title="Flink 入门">
+                  <i class="fa fa-angle-left"></i> Flink 入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/e0d035/" rel="next" title="大数据学习">
+                  大数据学习 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"b2fd944fe609fc1a1e5224e9f00bea8e"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

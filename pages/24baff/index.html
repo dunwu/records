@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="Elasticsearch 排序在 Elasticsearch 中，默认排序是按照相关性的评分（_score）进行降序排序，也可以按照字段的值排序、多级排序、多值字段排序、基于 geo（地理位置）排序以及自定义脚本排序，除此之外，对于相关性的评分也可以用 rescore 二次、三次打分，它可以限定重新打分的窗口大小（window size），并针对作用范围内的文档修改其得分，从而达到精细化控制结果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 排序">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/24baff/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="Elasticsearch 排序在 Elasticsearch 中，默认排序是按照相关性的评分（_score）进行降序排序，也可以按照字段的值排序、多级排序、多值字段排序、基于 geo（地理位置）排序以及自定义脚本排序，除此之外，对于相关性的评分也可以用 rescore 二次、三次打分，它可以限定重新打分的窗口大小（window size），并针对作用范围内的文档修改其得分，从而达到精细化控制结果">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-19T14:49:16.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.423Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="排序">
+<meta property="article:tag" content="搜索引擎数据库">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/24baff/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/24baff/","path":"/pages/24baff/","title":"Elasticsearch 排序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Elasticsearch 排序 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Elasticsearch-%E6%8E%92%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch 排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9B%B8%E5%85%B3%E6%80%A7%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">默认相关性排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TF-IDF-%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">TF-IDF 模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BM25-%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">BM25 模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E7%9A%84%E5%80%BC%E6%8E%92%E5%BA%8F"><span class="nav-number">1.2.</span> <span class="nav-text">字段的值排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%AD%97%E6%AE%B5%E6%8E%92%E5%BA%8F"><span class="nav-number">1.3.</span> <span class="nav-text">多字段排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%80%BC%E5%AD%97%E6%AE%B5%E7%9A%84%E6%8E%92%E5%BA%8F"><span class="nav-number">1.4.</span> <span class="nav-text">多值字段的排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E4%B8%8A%E7%9A%84%E8%B7%9D%E7%A6%BB%E6%8E%92%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text">地理位置上的距离排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.6.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/24baff/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Elasticsearch 排序 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elasticsearch 排序<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/07.%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/01.Elasticsearch/07.Elasticsearch%E6%8E%92%E5%BA%8F.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-19 22:49:16" itemprop="dateCreated datePublished" datetime="2022-01-19T22:49:16+08:00">2022-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">搜索引擎数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Elasticsearch-排序"><a href="#Elasticsearch-排序" class="headerlink" title="Elasticsearch 排序"></a>Elasticsearch 排序</h1><p>在 Elasticsearch 中，默认排序是<strong>按照相关性的评分（_score）</strong>进行降序排序，也可以按照<strong>字段的值排序</strong>、<strong>多级排序</strong>、<strong>多值字段排序、基于 geo（地理位置）排序以及自定义脚本排序</strong>，除此之外，对于相关性的评分也可以用 rescore 二次、三次打分，它可以限定重新打分的窗口大小（window size），并针对作用范围内的文档修改其得分，从而达到精细化控制结果相关性的目的。</p>
+<h2 id="默认相关性排序"><a href="#默认相关性排序" class="headerlink" title="默认相关性排序"></a>默认相关性排序</h2><p>在 Elasticsearch 中，默认情况下，文档是按照相关性得分倒序排列的，其对应的相关性得分字段用 <code>_score</code> 来表示，它是浮点数类型，<code>_score</code> 评分越高，相关性越高。评分模型的选择可以通过 <code>similarity</code> 参数在映射中指定。</p>
+<p>相似度算法可以按字段指定，只需在映射中为不同字段选定即可，如果要修改已有字段的相似度算法，只能通过为数据重新建立索引来达到目的。关于更多 es 相似度算法可以参考 <a target="_blank" rel="noopener" href="https://www.knowledgedict.com/tutorial/elasticsearch-similarity.html">深入理解 es 相似度算法（相关性得分计算）</a>。</p>
+<h3 id="TF-IDF-模型"><a href="#TF-IDF-模型" class="headerlink" title="TF-IDF 模型"></a>TF-IDF 模型</h3><p>Elasticsearch 在 5.4 版本以前，text 类型的字段，默认采用基于 tf-idf 的向量空间模型。</p>
+<p>在开始计算得分之时，Elasticsearch 使用了被搜索词条的频率以及它有多常见来影响得分。一个简短的解释是，<strong>一个词条出现在某个文档中的次数越多，它就越相关；但是，如果该词条出现在不同的文档的次数越多，它就越不相关</strong>。这一点被称为 TF-IDF，TF 是<strong>词频</strong>（term frequency），IDF 是<strong>逆文档频率</strong>（inverse document frequency）。</p>
+<p>考虑给一篇文档打分的首要方式，是统计一个词条在文本中出现的次数。举个例子，如果在用户的区域搜索关于 Elasticsearch 的 get-together，用户希望频繁提及 Elasticsearch 的分组被优先展示出来。</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&quot;We will discuss Elasticsearch at the next Big Data group.&quot;</span></span><br><span class="line"><span class="comment">&quot;Tuesday the Elasticsearch team will gather to answer questions about Elasticsearch.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>第一个句子提到 Elasticsearch 一次，而第二个句子提到 Elasticsearch 两次，所以包含第二句话的文档应该比包含第一句话的文档拥有更高的得分。如果我们要按照数量来讨论，第一句话的词频（TF）是 1，而第二句话的词频将是 2。</p>
+<p>逆文档频率比文档词频稍微复杂一点。这个听上去很酷炫的描述意味着，如果一个分词（通常是单词，但不一定是）在索引的不同文档中出现越多的次数，那么它就越不重要。使用如下例子更容易解释这一点。</p>
+<figure class="highlight smalltalk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&quot;We use Elasticsearch to power the search for our website.&quot;</span></span><br><span class="line"><span class="comment">&quot;The developers like Elasticsearch so far.&quot;</span></span><br><span class="line"><span class="comment">&quot;The scoring of documents is calculated by the scoring formula.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如上述例子，需要理解以下几点：</p>
+<ul>
+<li>词条 “Elasticsearch” 的文档频率是 2（因为它出现在两篇文档中）。文档频率的逆源自得分乘以 1&#x2F;DF，这里 DF 是该词条的文档频率。这就意味着，由于词条拥有更高的文档频率，它的权重就会降低。</li>
+<li>词条 “the” 的文档频率是 3，因为它出现在所有的三篇文档中。请注意，尽管 “the” 在最后一篇文档中出现了两次，它的文档频率还是 3。这是因为，逆文档频率只检查一个词条是否出现在某文档中，而不检查它出现多少次。那个应该是词频所关心的事情。</li>
+</ul>
+<p>逆文档频率是一个重要的因素，用于平衡词条的词频。举个例子，考虑有一个用户搜索词条 “the score”，单词 the 几乎出现在每个普通的英语文本中，如果它不被均衡一下，单词 the 的频率要完全淹没单词 score 的频率。逆文档频率 IDF 均衡了 the 这种常见词的相关性影响，所以实际的相关性得分将会对查询的词条有一个更准确的描述。</p>
+<p>一旦词频 TF 和逆文档频率 IDF 计算完成，就可以使用 TF-IDF 公式来计算文档的得分。</p>
+<h3 id="BM25-模型"><a href="#BM25-模型" class="headerlink" title="BM25 模型"></a>BM25 模型</h3><p>Elasticsearch 在 5.4 版本之后，针对 text 类型的字段，默认采用的是 BM25 评分模型，而不是基于 tf-idf 的向量空间模型，评分模型的选择可以通过 <code>similarity</code> 参数在映射中指定。</p>
+<h2 id="字段的值排序"><a href="#字段的值排序" class="headerlink" title="字段的值排序"></a>字段的值排序</h2><p>在 Elasticsearch 中按照字段的值排序，可以利用 <code>sort</code> 参数实现。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET books/_search</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;sort&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;price&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;order&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回结果如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">132</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;timed_out&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;_shards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">10</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;successful&quot;</span><span class="punctuation">:</span> <span class="number">10</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;skipped&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;failed&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">749244</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;max_score&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;_index&quot;</span><span class="punctuation">:</span> <span class="string">&quot;books&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;_type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;book&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8456479&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;_score&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;_source&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">8456479</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;price&quot;</span><span class="punctuation">:</span> <span class="number">1580.00</span><span class="punctuation">,</span></span><br><span class="line">          ...</span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;sort&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="number">1580.00</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      ...</span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>从如上返回结果，可以看出，<code>max_score</code> 和 <code>_score</code> 字段都返回 <code>null</code>，返回字段多出 <code>sort</code> 字段，包含排序字段的分值。计算 _<code>score</code> 的花销巨大，如果不根据相关性排序，记录 _<code>score</code> 是没有意义的。如果无论如何都要计算 _<code>score</code>，可以将 <code>track_scores</code> 参数设置为 <code>true</code>。</p>
+<h2 id="多字段排序"><a href="#多字段排序" class="headerlink" title="多字段排序"></a>多字段排序</h2><p>如果我们想要结合使用 price、date 和 _score 进行查询，并且匹配的结果首先按照价格排序，然后按照日期排序，最后按照相关性排序，具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">GET books/_search</span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">&quot;query&quot;</span>: &#123;</span><br><span class="line">		<span class="string">&quot;bool&quot;</span>: &#123;</span><br><span class="line">			<span class="string">&quot;must&quot;</span>: &#123;</span><br><span class="line">				<span class="string">&quot;match&quot;</span>: &#123; <span class="string">&quot;content&quot;</span>: <span class="string">&quot;java&quot;</span> &#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">&quot;filter&quot;</span>: &#123;</span><br><span class="line">				<span class="string">&quot;term&quot;</span>: &#123; <span class="string">&quot;user_id&quot;</span>: 4868438 &#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">&quot;sort&quot;</span>: [&#123;</span><br><span class="line">			<span class="string">&quot;price&quot;</span>: &#123;</span><br><span class="line">				<span class="string">&quot;order&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="string">&quot;date&quot;</span>: &#123;</span><br><span class="line">				<span class="string">&quot;order&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="string">&quot;_score&quot;</span>: &#123;</span><br><span class="line">				<span class="string">&quot;order&quot;</span>: <span class="string">&quot;desc&quot;</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>排序条件的顺序是很重要的。结果首先按第一个条件排序，仅当结果集的第一个 <code>sort</code> 值完全相同时才会按照第二个条件进行排序，以此类推。</p>
+<p>多级排序并不一定包含 <code>_score</code>。你可以根据一些不同的字段进行排序，如地理距离或是脚本计算的特定值。</p>
+<h2 id="多值字段的排序"><a href="#多值字段的排序" class="headerlink" title="多值字段的排序"></a>多值字段的排序</h2><p>一种情形是字段有多个值的排序，需要记住这些值并没有固有的顺序；一个多值的字段仅仅是多个值的包装，这时应该选择哪个进行排序呢？</p>
+<p>对于数字或日期，你可以将多值字段减为单值，这可以通过使用 <code>min</code>、<code>max</code>、<code>avg</code> 或是 <code>sum</code> 排序模式。例如你可以按照每个 date 字段中的最早日期进行排序，通过以下方法：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;sort&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;dates&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;order&quot;</span><span class="punctuation">:</span> <span class="string">&quot;asc&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mode&quot;</span><span class="punctuation">:</span>  <span class="string">&quot;min&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="地理位置上的距离排序"><a href="#地理位置上的距离排序" class="headerlink" title="地理位置上的距离排序"></a>地理位置上的距离排序</h2><p>es 的地理位置排序使用 <strong><code>_geo_distance</code></strong> 来进行距离排序，如下示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sort&quot;</span> <span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;_geo_distance&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;es_location_field&quot;</span> <span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">116.407526</span><span class="punctuation">,</span> <span class="number">39.904030</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;order&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;asc&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;unit&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;km&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;mode&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;min&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;distance_type&quot;</span> <span class="punctuation">:</span> <span class="string">&quot;plane&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;query&quot;</span> <span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    ......</span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><em>_geo_distance</em> 的选项具体如下：</p>
+<ul>
+<li>如上的 <em>es_location_field</em> 指的是 es 存储经纬度数据的字段名。</li>
+<li>**_<code>order</code><em>**：指定按距离升序或降序，分别对应 **</em><code>asc</code><em>** 和 **</em><code>desc</code>_**。</li>
+<li>**_<code>unit</code><em>**：计算距离值的单位，默认是 **</em><code>m</code><em>**，表示米（meters），其它可选项有 **</em><code>mi</code><em><strong>、</strong></em><code>cm</code><em><strong>、</strong></em><code>mm</code><em><strong>、</strong></em><code>NM</code><em><strong>、</strong></em><code>km</code><em><strong>、</strong></em><code>ft</code><em><strong>、</strong></em><code>yd</code><em>** 和 **</em><code>in</code>_**。</li>
+<li>**_<code>mode</code><em>**：针对数组数据（多个值）时，指定的取值模式，可选值有 **</em><code>min</code><em><strong>、</strong></em><code>max</code><em><strong>、</strong></em><code>sum</code><em><strong>、</strong></em><code>avg</code><em>** 和 **</em><code>median</code>_**，当排序采用升序时，默认为 _min_；排序采用降序时，默认为 _max_。</li>
+<li>**_<code>distance_type</code><em>**：用来设置如何计算距离，它的可选项有 **</em><code>sloppy_arc</code><em><strong>、</strong></em><code>arc</code><em>** 和 **</em><code>plane</code><em>**，默认为 <em>sloppy_arc_，_arc</em> 它相对更精确些，但速度会明显下降，_plane</em> 则是计算快，但是长距离计算相对不准确。</li>
+<li>**_<code>ignore_unmapped</code><em>**：未映射字段时，是否忽略处理，可选项有 **</em><code>true</code><em>** 和 **</em><code>false</code>_**；默认为 _false_，表示如果未映射字段，查询将引发异常；若设置 _true_，将忽略未映射的字段，并且不匹配此查询的任何文档。</li>
+<li>**_<code>validation_method</code><em>**：指定检验经纬度数据的方式，可选项有 **</em><code>IGNORE_MALFORMED</code><em><strong>、</strong></em><code>COERCE</code><em>** 和 **</em><code>STRICT</code><em>**；_IGNORE_MALFORMED</em> 表示可接受纬度或经度无效的地理点，即忽略数据；<em>COERCE</em> 表示另外尝试并推断正确的地理坐标；<em>STRICT</em> 为默认值，表示遇到不正确的地理坐标直接抛出异常。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.knowledgedict.com/tutorial/elasticsearch-intro.html">Elasticsearch 教程</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/24baff/" title="Elasticsearch 排序">https://dunwu.github.io/blog/pages/24baff/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%8E%92%E5%BA%8F/" rel="tag"># 排序</a>
+              <a href="/blog/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 搜索引擎数据库</a>
+              <a href="/blog/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/f89f66/" rel="prev" title="Elasticsearch 聚合">
+                  <i class="fa fa-angle-left"></i> Elasticsearch 聚合
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/2d95ce/" rel="next" title="Elasticsearch 性能优化">
+                  Elasticsearch 性能优化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"78075b9dfa19554e82d262c0260e0674"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

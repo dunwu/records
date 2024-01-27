@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="分布式 大型软件为了应对海量数据、高并发，一般都会被设计为分布式系统。 分布式系统需要解决很多不同领域的问题。  📖 内容分布式综合 分布式面试总结  分布式理论 理论 分布式基础理论 - 关键词：拜占庭将军、CAP、BASE、错误的分布式假设   算法 分布式算法 Paxos - 关键词：共识性算法 分布式算法 Raft - 关键词：共识性算法 分布式算法 Gossip - 关键词：数据传播">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/f21e8c/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="分布式 大型软件为了应对海量数据、高并发，一般都会被设计为分布式系统。 分布式系统需要解决很多不同领域的问题。  📖 内容分布式综合 分布式面试总结  分布式理论 理论 分布式基础理论 - 关键词：拜占庭将军、CAP、BASE、错误的分布式假设   算法 分布式算法 Paxos - 关键词：共识性算法 分布式算法 Raft - 关键词：共识性算法 分布式算法 Gossip - 关键词：数据传播">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-03-08T05:16:53.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.435Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/f21e8c/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/f21e8c/","path":"/pages/f21e8c/","title":"分布式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分布式 | Dunwu Blog</title><meta name="robots" content="noindex">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%96-%E5%86%85%E5%AE%B9"><span class="nav-number">1.1.</span> <span class="nav-text">📖 内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%BB%BC%E5%90%88"><span class="nav-number">1.1.1.</span> <span class="nav-text">分布式综合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">分布式理论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C"><span class="nav-number">1.1.3.</span> <span class="nav-text">分布式协同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6"><span class="nav-number">1.1.4.</span> <span class="nav-text">分布式调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="nav-number">1.1.5.</span> <span class="nav-text">分布式高可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1"><span class="nav-number">1.1.6.</span> <span class="nav-text">分布式通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC"><span class="nav-number">1.1.7.</span> <span class="nav-text">RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RPC-%E7%BB%BC%E5%90%88"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">RPC 综合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQ"><span class="nav-number">1.1.8.</span> <span class="nav-text">MQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MQ-%E7%BB%BC%E5%90%88"><span class="nav-number">1.1.8.1.</span> <span class="nav-text">MQ 综合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kafka"><span class="nav-number">1.1.8.2.</span> <span class="nav-text">Kafka</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RocketMQ"><span class="nav-number">1.1.8.3.</span> <span class="nav-text">RocketMQ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-MQ"><span class="nav-number">1.1.8.4.</span> <span class="nav-text">其他 MQ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8"><span class="nav-number">1.1.9.</span> <span class="nav-text">分布式存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%9A-%E8%B5%84%E6%96%99"><span class="nav-number">1.2.</span> <span class="nav-text">📚 资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA%E8%B5%84%E6%96%99"><span class="nav-number">1.2.1.</span> <span class="nav-text">分布式理论资料</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA%E7%BB%BC%E5%90%88%E8%B5%84%E6%96%99"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">分布式理论综合资料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">分布式一致性算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Goosip-%E8%B5%84%E6%96%99"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">Goosip 资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E6%9E%B6%E6%9E%84%E8%B5%84%E6%96%99"><span class="nav-number">1.2.2.</span> <span class="nav-text">分布式架构资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1%E8%B5%84%E6%96%99"><span class="nav-number">1.2.3.</span> <span class="nav-text">分布式通信资料</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RPC-%E8%B5%84%E6%96%99"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">RPC 资料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MQ-%E8%B5%84%E6%96%99"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">MQ 资料</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E8%B5%84%E6%96%99"><span class="nav-number">1.2.4.</span> <span class="nav-text">分布式存储资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98"><span class="nav-number">1.2.5.</span> <span class="nav-text">分布式系统实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9A%AA-%E4%BC%A0%E9%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">🚪 传送</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/f21e8c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分布式 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式<a href="https://github.com/dunwu/blog/blob/master/source/_posts/15.%E5%88%86%E5%B8%83%E5%BC%8F/README.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-08 13:16:53" itemprop="dateCreated datePublished" datetime="2019-03-08T13:16:53+08:00">2019-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h1><blockquote>
+<p>大型软件为了应对海量数据、高并发，一般都会被设计为分布式系统。</p>
+<p>分布式系统需要解决很多不同领域的问题。</p>
+</blockquote>
+<h2 id="📖-内容"><a href="#📖-内容" class="headerlink" title="📖 内容"></a>📖 内容</h2><h3 id="分布式综合"><a href="#分布式综合" class="headerlink" title="分布式综合"></a>分布式综合</h3><ul>
+<li><a href="00.%E5%88%86%E5%B8%83%E5%BC%8F%E7%BB%BC%E5%90%88/99.%E5%88%86%E5%B8%83%E5%BC%8F%E9%9D%A2%E8%AF%95.md">分布式面试总结</a></li>
+</ul>
+<h3 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h3><ul>
+<li><strong>理论</strong><ul>
+<li><a href="01.%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/01.%E5%88%86%E5%B8%83%E5%BC%8F%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA.md">分布式基础理论</a> - 关键词：<code>拜占庭将军</code>、<code>CAP</code>、<code>BASE</code>、<code>错误的分布式假设</code></li>
+</ul>
+</li>
+<li><strong>算法</strong><ul>
+<li><a href="01.%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/11.Paxos%E7%AE%97%E6%B3%95.md">分布式算法 Paxos</a> - 关键词：<code>共识性算法</code></li>
+<li><a href="01.%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/12.Raft%E7%AE%97%E6%B3%95.md">分布式算法 Raft</a> - 关键词：<code>共识性算法</code></li>
+<li><a href="01.%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/13.Gossip%E7%AE%97%E6%B3%95.md">分布式算法 Gossip</a> - 关键词：<code>数据传播</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="分布式协同"><a href="#分布式协同" class="headerlink" title="分布式协同"></a>分布式协同</h3><ul>
+<li><strong>分布式协同综合</strong><ul>
+<li>集群</li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/01.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C%E7%BB%BC%E5%90%88/02.%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%8D%E5%88%B6.md">分布式复制</a></li>
+<li>分区</li>
+<li>选主</li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/01.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C%E7%BB%BC%E5%90%88/05.%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.md">分布式事务</a> - 关键词：<code>2PC</code>、<code>3PC</code>、<code>TCC</code>、<code>本地消息表</code>、<code>MQ 消息</code>、<code>SAGA</code></li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/01.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C%E7%BB%BC%E5%90%88/06.%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.md">分布式锁</a> - 关键词：<code>数据库</code>、<code>Redis</code>、<code>ZooKeeper</code>、<code>互斥</code>、<code>可重入</code>、<code>死锁</code>、<code>容错</code>、<code>自旋尝试</code></li>
+</ul>
+</li>
+<li><strong>ZooKeeper</strong><ul>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/02.ZooKeeper/01.ZooKeeper%E5%8E%9F%E7%90%86.md">ZooKeeper 原理</a></li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/02.ZooKeeper/02.ZooKeeperJavaApi.md">ZooKeeper Java Api</a></li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/02.ZooKeeper/03.ZooKeeper%E5%91%BD%E4%BB%A4.md">ZooKeeper 命令</a></li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/02.ZooKeeper/04.ZooKeeper%E8%BF%90%E7%BB%B4.md">ZooKeeper 运维</a></li>
+<li><a href="11.%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E5%90%8C/02.ZooKeeper/05.ZooKeeperAcl.md">ZooKeeper Acl</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="分布式调度"><a href="#分布式调度" class="headerlink" title="分布式调度"></a>分布式调度</h3><ul>
+<li><a href="12.%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6/01.%E6%9C%8D%E5%8A%A1%E8%B7%AF%E7%94%B1.md">服务路由</a> - 关键词：<code>路由</code>、<code>条件路由</code>、<code>脚本路由</code>、<code>标签路由</code></li>
+<li><a href="12.%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6/02.%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1.md">负载均衡</a> - 关键词：<code>轮询</code>、<code>随机</code>、<code>最少连接</code>、<code>源地址哈希</code>、<code>一致性哈希</code>、<code>虚拟 hash 槽</code></li>
+<li><a href="12.%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6/03.%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6.md">流量控制</a> - 关键词：<code>限流</code>、<code>熔断</code>、<code>降级</code>、<code>计数器法</code>、<code>时间窗口法</code>、<code>令牌桶法</code>、<code>漏桶法</code></li>
+<li><a href="12.%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6/10.%E5%88%86%E5%B8%83%E5%BC%8F%E4%BC%9A%E8%AF%9D.md">分布式会话</a> - 关键词：<code>粘性 Session</code>、<code>Session 复制共享</code>、<code>基于缓存的 session 共享</code></li>
+<li><a href="12.%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6/04.%E5%88%86%E5%B8%83%E5%BC%8FID.md">分布式 ID</a> - 关键词：<code>UUID</code>、<code>自增序列</code>、<code>雪花算法</code>、<code>Leaf</code></li>
+</ul>
+<h3 id="分布式高可用"><a href="#分布式高可用" class="headerlink" title="分布式高可用"></a>分布式高可用</h3><ul>
+<li><a href="13.%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E5%8F%AF%E7%94%A8/02.%E6%9C%8D%E5%8A%A1%E5%AE%B9%E9%94%99.md">服务容错</a></li>
+</ul>
+<h3 id="分布式通信"><a href="#分布式通信" class="headerlink" title="分布式通信"></a>分布式通信</h3><h3 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h3><h4 id="RPC-综合"><a href="#RPC-综合" class="headerlink" title="RPC 综合"></a>RPC 综合</h4><ul>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/01.RPC/00.RPC%E7%BB%BC%E5%90%88/01.RPC%E5%9F%BA%E7%A1%80.md">RPC 基础</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/01.RPC/00.RPC%E7%BB%BC%E5%90%88/02.RPC%E8%BF%9B%E9%98%B6.md">RPC 进阶</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/01.RPC/00.RPC%E7%BB%BC%E5%90%88/03.RPC%E9%AB%98%E7%BA%A7.md">RPC 高级</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/01.RPC/00.RPC%E7%BB%BC%E5%90%88/11.%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E5%8F%91%E7%8E%B0.md">服务注册和发现</a></li>
+</ul>
+<h3 id="MQ"><a href="#MQ" class="headerlink" title="MQ"></a>MQ</h3><h4 id="MQ-综合"><a href="#MQ-综合" class="headerlink" title="MQ 综合"></a>MQ 综合</h4><ul>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/00.MQ%E7%BB%BC%E5%90%88/01.%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E9%9D%A2%E8%AF%95.md">消息队列面试</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/00.MQ%E7%BB%BC%E5%90%88/02.%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.md">消息队列基本原理</a></li>
+</ul>
+<h4 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h4><ul>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/01.Kafka%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.md">Kafka 快速入门</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/02.Kafka%E7%94%9F%E4%BA%A7%E8%80%85.md">Kafka 生产者</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/03.Kafka%E6%B6%88%E8%B4%B9%E8%80%85.md">Kafka 消费者</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/04.Kafka%E9%9B%86%E7%BE%A4.md">Kafka 集群</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/05.Kafka%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93.md">Kafka 可靠传输</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/06.Kafka%E5%AD%98%E5%82%A8.md">Kafka 存储</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/07.Kafka%E6%B5%81%E5%BC%8F%E5%A4%84%E7%90%86.md">Kafka 流式处理</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/01.Kafka/08.Kafka%E8%BF%90%E7%BB%B4.md">Kafka 运维</a></li>
+</ul>
+<h4 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h4><ul>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/02.RocketMQ/01.RocketMQ%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.md">RocketMQ 快速入门</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/02.RocketMQ/02.RocketMQ%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.md">RocketMQ 基本原理</a></li>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/02.RocketMQ/99.RocketMQFaq.md">RocketMQ Faq</a></li>
+</ul>
+<h4 id="其他-MQ"><a href="#其他-MQ" class="headerlink" title="其他 MQ"></a>其他 MQ</h4><ul>
+<li><a href="21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/02.MQ/99.%E5%85%B6%E4%BB%96MQ/01.ActiveMQ.md">ActiveMQ</a></li>
+</ul>
+<h3 id="分布式存储"><a href="#分布式存储" class="headerlink" title="分布式存储"></a>分布式存储</h3><ul>
+<li><a href="22.%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/01.%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98.md">分布式缓存</a> - 关键词：<code>进程内缓存</code>、<code>分布式缓存</code>、<code>缓存雪崩</code>、<code>缓存穿透</code>、<code>缓存击穿</code>、<code>缓存更新</code>、<code>缓存预热</code>、<code>缓存降级</code></li>
+<li><a href="22.%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/02.%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB.md">读写分离</a></li>
+<li><a href="22.%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/03.%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8.md">分库分表</a> - 关键词：<code>分片</code>、<code>路由</code>、<code>迁移</code>、<code>扩容</code>、<code>双写</code>、<code>聚合</code></li>
+</ul>
+<h2 id="📚-资料"><a href="#📚-资料" class="headerlink" title="📚 资料"></a>📚 资料</h2><h3 id="分布式理论资料"><a href="#分布式理论资料" class="headerlink" title="分布式理论资料"></a>分布式理论资料</h3><h4 id="分布式理论综合资料"><a href="#分布式理论综合资料" class="headerlink" title="分布式理论综合资料"></a>分布式理论综合资料</h4><ul>
+<li><strong>教程</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100036401">分布式技术原理与算法解析</a> - 极客时间教程</li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100046101">分布式协议与算法实战</a> - 极客时间教程</li>
+<li><a target="_blank" rel="noopener" href="http://book.mixu.net/distsys/single-page.html">Distributed Systems for fun and profit</a>：分为五章，讲述了扩展性、可用性、性能和容错等基础知识，FLP 不可能性和 CAP 定理，探讨了大量的一致性模型；讨论了时间和顺序，及时钟的各种用法。随后，探讨了复制问题，如何防止差异，以及如何接受差异。此外，每章末尾都给出了针对本章内容的扩展阅读资源列表，这些资料是对本书内容的很好补充。</li>
+</ul>
+</li>
+<li><strong>书籍</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/11691266/">分布式系统原理与范型</a>：书原名 Distributed Systems Principles and Paradigms。经典分布式教程，介绍了分布式系统的七大核心原理，并给出了大量的例子；系统讲述了分布式系统的概念和技术，包括通信、进程、命名、同步化、一致性和复制、容错以及安全等。</li>
+</ul>
+</li>
+<li><strong>文章</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf">The Google File System</a>：Google 三大经典论文之一</li>
+<li><a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf">Bigtable: A Distributed Storage System for Structured Data</a>：Google 三大经典论文之一</li>
+<li><a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce: Simplifed Data Processing on Large Clusters</a>：Google 三大经典论文之一</li>
+<li><a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a></li>
+<li><a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/pubs/byz.pdf">The Byzantine Generals Problem</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf">Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services</a> - CAP 论文</li>
+<li>CAP Twelve Years Later: How the “Rules” Have Changed</li>
+<li>BASE: An Acid Alternative</li>
+<li>A Simple Totally Ordered Broadcast Protocol</li>
+<li>Virtual Time and Global States of Distributed Systems</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing">The fallacies of distributed computing</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="分布式一致性算法"><a href="#分布式一致性算法" class="headerlink" title="分布式一致性算法"></a>分布式一致性算法</h4><ul>
+<li><p><strong>教程</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://thesecretlivesofdata.com/raft">Raft: Understandable Distributed Consensus</a> - 一个动画教程</li>
+<li><a target="_blank" rel="noopener" href="https://raft.github.io/">The Raft Consensus Algorithm</a> - 一个交互式动画教程</li>
+</ul>
+</li>
+<li><p><strong>视频</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av36556594">Raft 作者讲解 Paxos 视频</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=d7nAGI_NZPk">Paxos 算法讲解视频</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=YbZ3zDzDnrw&feature=youtu.be">Raft 作者讲解视频</a></li>
+<li><a target="_blank" rel="noopener" href="http://www2.cs.uh.edu/~paris/6360/PowerPoint/Raft.ppt">Raft 作者讲解视频对应的 PPT</a></li>
+</ul>
+</li>
+<li><p>文章</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://research.microsoft.com/en-us/um/people/lamport/pubs/lamport-paxos.pdf">Part-time Parliament 论文</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://lamport.azurewebsites.net/pubs/paxos-simple.pdf">Paxos Made Simple 论文</a></p>
+</li>
+<li><p>Paxos Made Practical</p>
+</li>
+<li><p>Paxos Made Live: An Engineering Perspective</p>
+</li>
+<li><p>Using Paxos to Build a Scalable, Consistent, and Highly Available Datastore<br>Impossibility of Distributed Consensus With One Faulty Process</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31780743">Paxos 算法详解</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TW411M7Fx?from=search&seid=11524608198747599965">一致性算法（Paxos、Raft、Zab）</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100046101">分布式协议与算法实战</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://ramcloud.atlassian.net/wiki/download/attachments/6586375/raft.pdf">Raft: In Search of an Understandable Consensus Algorithm</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/maemual/raft-zh_cn/blob/master/raft-zh_cn.md">Raft 算法论文译文</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.jdon.com/artichect/raft.html">分布式系统的 Raft 算法</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32052223">Raft 算法详解</a></p>
+</li>
+<li><p>A Brief History of Consensus, 2PC and Transaction Commit</p>
+</li>
+<li><p>Consensus in the Presence of Partial Synchrony</p>
+</li>
+</ul>
+</li>
+<li><p>工具</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/sofastack/sofa-jraft">sofa-jraft</a> - 蚂蚁金服的 Raft 算法实现库（Java 版）</li>
+</ul>
+</li>
+</ul>
+<h4 id="Goosip-资料"><a href="#Goosip-资料" class="headerlink" title="Goosip 资料"></a>Goosip 资料</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://bitsavers.trailing-edge.com/pdf/xerox/parc/techReports/CSL-89-1_Epidemic_Algorithms_for_Replicated_Database_Maintenance.pdf">Epidemic Algorithms for Replicated Database Maintenance</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/41228196">P2P 网络核心技术：Gossip 协议</a></li>
+<li><a target="_blank" rel="noopener" href="https://managementfromscratch.wordpress.com/2016/04/01/introduction-to-gossip/">INTRODUCTION TO GOSSIP</a></li>
+<li><a target="_blank" rel="noopener" href="https://flopezluis.github.io/gossip-simulator/">Goosip 协议仿真动画</a></li>
+</ul>
+<h3 id="分布式架构资料"><a href="#分布式架构资料" class="headerlink" title="分布式架构资料"></a>分布式架构资料</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/aphyr/distsys-class">An introduction to distributed systems</a> - 这是一份分布式系统的提纲挈领的介绍，几乎涵盖了所有知识点，并辅以简洁并切中要害的说明文字，适合初学者了解知识全貌，快速与现有知识结合，形成知识体系。</li>
+</ul>
+<h3 id="分布式通信资料"><a href="#分布式通信资料" class="headerlink" title="分布式通信资料"></a>分布式通信资料</h3><h4 id="RPC-资料"><a href="#RPC-资料" class="headerlink" title="RPC 资料"></a>RPC 资料</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100046201">RPC 实战与核心原理</a> - 极客时间教程</li>
+</ul>
+<h4 id="MQ-资料"><a href="#MQ-资料" class="headerlink" title="MQ 资料"></a>MQ 资料</h4><ul>
+<li><p><strong>教程</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100032301">消息队列高手课</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/apachecn/kafka-doc-zh">Kafka 中文文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100029201">Kafka 核心技术与实战</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/304">Kafka 核心源码解读</a></li>
+</ul>
+</li>
+<li><p><strong>文章</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">The Log: What every software engineer should know about real-time data’s unifying abstraction</a></li>
+<li><a target="_blank" rel="noopener" href="https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">《日志：每个软件工程师都应该知道的有关实时数据的统一抽象》</a> - 上面文章的译文</li>
+<li><a target="_blank" rel="noopener" href="https://www.slideshare.net/mumrah/kafka-talk-tri-hug">Introduction and Overview of Apache Kafka</a></li>
+</ul>
+</li>
+<li><p><strong>官方</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://kafka.apache.org/">Kafka 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/apache/kafka">Kafka Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://kafka.apache.org/documentation/">Kafka 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="http://kafka.apache.org/">Kafka Confluent 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://issues.apache.org/jira/projects/KAFKA?selectedItem=com.atlassian.jira.jira-projects-plugin:components-page">Kafka Jira</a></li>
+</ul>
+</li>
+<li><p><strong>书籍</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://item.jd.com/12270295.html">《Kafka 权威指南》</a></li>
+<li><a target="_blank" rel="noopener" href="https://item.jd.com/12489649.html">《深入理解 Kafka：核心设计与实践原理》</a></li>
+<li><a target="_blank" rel="noopener" href="https://item.jd.com/12234113.html">《Kafka 技术内幕》</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="分布式存储资料"><a href="#分布式存储资料" class="headerlink" title="分布式存储资料"></a>分布式存储资料</h3><ul>
+<li><strong>书籍</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/30329536/">《数据密集型应用系统设计》</a> - 这可能是目前最好的分布式存储书籍，强力推荐【进阶】</li>
+</ul>
+</li>
+<li><strong>文章</strong><ul>
+<li>Chord: A Scalable Peer-to-Peer Lookup Service for Internet Applications</li>
+<li>Pastry: Scalable, Distributed Object Location, and Routing for Large-Scale Peerto-Peer Systems</li>
+<li>Kademlia: A Peer-to-Peer Information System Based on the XOR Metric</li>
+<li>A Scalable Content-Addressable Network</li>
+<li>Ceph: A Scalable, High-Performance Distributed File System</li>
+<li><a href="chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.cs.umb.edu/~poneil/lsmtree.pdf">The Log-Structured-Merge-Tree</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.researchgate.net/publication/317399857_HBase_A_NoSQL_Database">HBase: A NoSQL Database</a></li>
+<li>Tango: Distributed Data Structure over a Shared Log</li>
+</ul>
+</li>
+</ul>
+<h3 id="分布式系统实战"><a href="#分布式系统实战" class="headerlink" title="分布式系统实战"></a>分布式系统实战</h3><ul>
+<li>The Google File System</li>
+<li>BigTable: A Distributed Storage System for Structured Data</li>
+<li>The Chubby Lock Service for Loosely-Coupled Distributed Systems</li>
+<li>Finding a Needle in Haystack: Facebook’s Photo Storage</li>
+<li>Windows Azure Storage: A Highly Available Cloud Storage Service with Strong Consistency</li>
+<li>Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing</li>
+<li>Scaling Distributed Machine Learning with the Parameter Server</li>
+<li>Dremel: Interactive Analysis of Web-Scale Datasets</li>
+<li>Pregel: A System for Large-Scale Graph Processing</li>
+<li>Spanner: Google’s Globally-Distributed Database</li>
+<li>Dynamo: Amazon’s Highly Available Key-value Store</li>
+<li>S4: Distributed Stream Computing Platform</li>
+<li>Storm @Twitter</li>
+<li>Large-scale Cluster Management at Google with Borg</li>
+<li>F1 - The Fault-Tolerant Distributed RDBMS Supporting Google’s Ad Business</li>
+<li>Cassandra: A Decentralized Structured Storage System</li>
+<li>MegaStore: Providing Scalable, Highly Available Storage for Interactive Services</li>
+<li>Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</li>
+<li>Kafka: A distributed Messaging System for Log Processing</li>
+<li>Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases</li>
+</ul>
+<h2 id="🚪-传送"><a href="#🚪-传送" class="headerlink" title="🚪 传送"></a>🚪 传送</h2><p>◾ 💧 <a href="https://dunwu.github.io/waterdrop/">钝悟的 IT 知识图谱</a> ◾</p>
+<!-- flag of hidden posts -->
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/f21e8c/" title="分布式">https://dunwu.github.io/blog/pages/f21e8c/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"518cdfcbb36aadcb14c5adcb19092b5b"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

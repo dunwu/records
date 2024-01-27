@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="Iptables 应用 iptables 是一个配置 Linux 内核 防火墙 的命令行工具，是 netfilter 项目的一部分。 可以直接配置，也可以通过许多前端和图形界面配置。 iptables 也经常代指该内核级防火墙。iptables 用于 ipv4，ip6tables 用于 ipv6。 nftables 已经包含在 Linux kernel 3.13 中，以后会取代 iptables">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iptables">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/eb9176/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="Iptables 应用 iptables 是一个配置 Linux 内核 防火墙 的命令行工具，是 netfilter 项目的一部分。 可以直接配置，也可以通过许多前端和图形界面配置。 iptables 也经常代指该内核级防火墙。iptables 用于 ipv4，ip6tables 用于 ipv6。 nftables 已经包含在 Linux kernel 3.13 中，以后会取代 iptables">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-25T09:25:00.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.427Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="防火墙">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/eb9176/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/eb9176/","path":"/pages/eb9176/","title":"iptables"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>iptables | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Iptables-%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Iptables 应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-iptables"><span class="nav-number">1.2.</span> <span class="nav-text">安装 iptables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables-%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">iptables 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E7%A9%BA%E5%BD%93%E5%89%8D%E7%9A%84%E6%89%80%E6%9C%89%E8%A7%84%E5%88%99%E5%92%8C%E8%AE%A1%E6%95%B0"><span class="nav-number">1.4.1.</span> <span class="nav-text">清空当前的所有规则和计数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%85%81%E8%AE%B8-ssh-%E7%AB%AF%E5%8F%A3%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.4.2.</span> <span class="nav-text">配置允许 ssh 端口连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%81%E8%AE%B8%E6%9C%AC%E5%9C%B0%E5%9B%9E%E7%8E%AF%E5%9C%B0%E5%9D%80%E5%8F%AF%E4%BB%A5%E6%AD%A3%E5%B8%B8%E4%BD%BF%E7%94%A8"><span class="nav-number">1.4.3.</span> <span class="nav-text">允许本地回环地址可以正常使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%BB%98%E8%AE%A4%E7%9A%84%E8%A7%84%E5%88%99"><span class="nav-number">1.4.4.</span> <span class="nav-text">设置默认的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%99%BD%E5%90%8D%E5%8D%95"><span class="nav-number">1.4.5.</span> <span class="nav-text">配置白名单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%9B%B8%E5%BA%94%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.4.6.</span> <span class="nav-text">开启相应的服务端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E8%A7%84%E5%88%99%E5%88%B0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="nav-number">1.4.7.</span> <span class="nav-text">保存规则到配置文件中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E5%B7%B2%E8%AE%BE%E7%BD%AE%E7%9A%84%E8%A7%84%E5%88%99"><span class="nav-number">1.4.8.</span> <span class="nav-text">列出已设置的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E5%B7%B2%E6%9C%89%E8%A7%84%E5%88%99"><span class="nav-number">1.4.9.</span> <span class="nav-text">清除已有规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%B7%B2%E6%B7%BB%E5%8A%A0%E7%9A%84%E8%A7%84%E5%88%99"><span class="nav-number">1.4.10.</span> <span class="nav-text">删除已添加的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E6%8C%87%E5%AE%9A%E7%9A%84%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.4.11.</span> <span class="nav-text">开放指定的端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%8F%E8%94%BD-IP"><span class="nav-number">1.4.12.</span> <span class="nav-text">屏蔽 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%8C%85%E5%87%BA%E5%8E%BB%E7%9A%84%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.4.13.</span> <span class="nav-text">指定数据包出去的网络接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E6%B7%BB%E5%8A%A0%E7%9A%84%E8%A7%84%E5%88%99"><span class="nav-number">1.4.14.</span> <span class="nav-text">查看已添加的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E7%BD%91%E7%BB%9C%E8%BD%AC%E5%8F%91%E8%A7%84%E5%88%99"><span class="nav-number">1.4.15.</span> <span class="nav-text">启动网络转发规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84"><span class="nav-number">1.4.16.</span> <span class="nav-text">端口映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D"><span class="nav-number">1.4.17.</span> <span class="nav-text">字符串匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E6%AD%A2-Windows-%E8%A0%95%E8%99%AB%E7%9A%84%E6%94%BB%E5%87%BB"><span class="nav-number">1.4.18.</span> <span class="nav-text">阻止 Windows 蠕虫的攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2-SYN-%E6%B4%AA%E6%B0%B4%E6%94%BB%E5%87%BB"><span class="nav-number">1.4.19.</span> <span class="nav-text">防止 SYN 洪水攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/eb9176/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="iptables | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iptables<a href="https://github.com/dunwu/blog/blob/master/source/_posts/14.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/02.Linux/02.%E5%B7%A5%E5%85%B7/05.iptables.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-25 17:25:00" itemprop="dateCreated datePublished" datetime="2019-11-25T17:25:00+08:00">2019-11-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Linux/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Iptables-应用"><a href="#Iptables-应用" class="headerlink" title="Iptables 应用"></a>Iptables 应用</h1><blockquote>
+<p><em>iptables</em> 是一个配置 Linux 内核 <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Firewall">防火墙</a> 的命令行工具，是 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Netfilter">netfilter</a> 项目的一部分。 可以直接配置，也可以通过许多前端和图形界面配置。</p>
+<p>iptables 也经常代指该内核级防火墙。iptables 用于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ipv4">ipv4</a>，<em>ip6tables</em> 用于 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ipv6">ipv6</a>。</p>
+<p><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Nftables">nftables</a> 已经包含在 <a target="_blank" rel="noopener" href="http://www.phoronix.com/scan.php?page=news_item&px=MTQ5MDU">Linux kernel 3.13</a> 中，以后会取代 iptables 成为主要的 Linux 防火墙工具。</p>
+<p>环境：CentOS7</p>
+</blockquote>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>iptables 可以检测、修改、转发、重定向和丢弃 IPv4 数据包</strong>。</p>
+<p>过滤 IPv4 数据包的代码已经内置于内核中，并且按照不同的目的被组织成 <strong>表</strong> 的集合。<strong>表</strong> 由一组预先定义的 <strong>链</strong> 组成，<strong>链</strong>包含遍历顺序规则。每一条规则包含一个谓词的潜在匹配和相应的动作（称为 <strong>目标</strong>），如果谓词为真，该动作会被执行。也就是说条件匹配。</p>
+<h2 id="安装-iptables"><a href="#安装-iptables" class="headerlink" title="安装 iptables"></a>安装 iptables</h2><p>（1）禁用 firewalld</p>
+<p>CentOS 7 上默认安装了 firewalld 作为防火墙，使用 iptables 建议关闭并禁用 firewalld。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br></pre></td></tr></table></figure>
+
+<p>（2）安装 iptables</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y iptables-services</span><br></pre></td></tr></table></figure>
+
+<p>（3）服务管理</p>
+<ul>
+<li>查看服务状态：<code>systemctl status iptables</code></li>
+<li>启用服务：<code>systemctl enable iptables</code></li>
+<li>禁用服务：<code>systemctl disable iptables</code></li>
+<li>启动服务：<code>systemctl start iptables</code></li>
+<li>重启服务：<code>systemctl restart iptables</code></li>
+<li>关闭服务: <code>systemctl stop iptables</code></li>
+</ul>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>基本语法：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">iptables</span><span class="params">(选项)</span><span class="params">(参数)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>基本选项说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-P</td>
+<td>设置默认策略:iptables -P INPUT (DROP</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>清空规则链</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>查看规则链</td>
+</tr>
+<tr>
+<td>-A</td>
+<td>在规则链的末尾加入新规则</td>
+</tr>
+<tr>
+<td>-I</td>
+<td>num 在规则链的头部加入新规则</td>
+</tr>
+<tr>
+<td>-D</td>
+<td>num 删除某一条规则</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>匹配来源地址 IP&#x2F;MASK，加叹号”!”表示除这个 IP 外。</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>匹配目标地址</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>网卡名称 匹配从这块网卡流入的数据</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>网卡名称 匹配从这块网卡流出的数据</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>匹配协议,如 tcp,udp,icmp</td>
+</tr>
+<tr>
+<td>–dport num</td>
+<td>匹配目标端口号</td>
+</tr>
+<tr>
+<td>–sport num</td>
+<td>匹配来源端口号</td>
+</tr>
+</tbody></table>
+<p>顺序：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t 表名 &lt;-<span class="selector-tag">A</span>/<span class="selector-tag">I</span>/D/R&gt; 规则链名 <span class="selector-attr">[规则号]</span> &lt;-<span class="selector-tag">i</span>/o 网卡名&gt; -<span class="selector-tag">p</span> 协议名 &lt;-s 源IP/源子网&gt; <span class="attr">--sport</span> 源端口 &lt;-d 目标IP/目标子网&gt; <span class="attr">--dport</span> 目标端口 -j 动作</span><br></pre></td></tr></table></figure>
+
+<h2 id="iptables-示例"><a href="#iptables-示例" class="headerlink" title="iptables 示例"></a>iptables 示例</h2><h3 id="清空当前的所有规则和计数"><a href="#清空当前的所有规则和计数" class="headerlink" title="清空当前的所有规则和计数"></a>清空当前的所有规则和计数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -F  # 清空所有的防火墙规则</span><br><span class="line">iptables -X  # 删除用户自定义的空链</span><br><span class="line">iptables -Z  # 清空计数</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置允许-ssh-端口连接"><a href="#配置允许-ssh-端口连接" class="headerlink" title="配置允许 ssh 端口连接"></a>配置允许 ssh 端口连接</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -s 192.168.1.0/24 -p tcp --dport 22 -j ACCEPT</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">22为你的ssh端口， -s 192.168.1.0/24表示允许这个网段的机器来连接，其它网段的ip地址是登陆不了你的机器的。 -j ACCEPT表示接受这样的请求</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="允许本地回环地址可以正常使用"><a href="#允许本地回环地址可以正常使用" class="headerlink" title="允许本地回环地址可以正常使用"></a>允许本地回环地址可以正常使用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -i lo -j ACCEPT</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">本地圆环地址就是那个127.0.0.1，是本机上使用的,它进与出都设置为允许</span></span><br><span class="line">iptables -A OUTPUT -o lo -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置默认的规则"><a href="#设置默认的规则" class="headerlink" title="设置默认的规则"></a>设置默认的规则</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -P INPUT DROP # 配置默认的不让进</span><br><span class="line">iptables -P FORWARD DROP # 默认的不允许转发</span><br><span class="line">iptables -P OUTPUT ACCEPT # 默认的可以出去</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置白名单"><a href="#配置白名单" class="headerlink" title="配置白名单"></a>配置白名单</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p all -s 192.168.1.0/24 -j ACCEPT  # 允许机房内网机器可以访问</span><br><span class="line">iptables -A INPUT -p all -s 192.168.140.0/24 -j ACCEPT  # 允许机房内网机器可以访问</span><br><span class="line">iptables -A INPUT -p tcp -s 183.121.3.7 --dport 3380 -j ACCEPT # 允许183.121.3.7访问本机的3380端口</span><br></pre></td></tr></table></figure>
+
+<h3 id="开启相应的服务端口"><a href="#开启相应的服务端口" class="headerlink" title="开启相应的服务端口"></a>开启相应的服务端口</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --dport 80 -j ACCEPT # 开启80端口，因为web对外都是这个端口</span><br><span class="line">iptables -A INPUT -p icmp --icmp-type 8 -j ACCEPT # 允许被ping</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # 已经建立的连接得让它进来</span><br></pre></td></tr></table></figure>
+
+<h3 id="保存规则到配置文件中"><a href="#保存规则到配置文件中" class="headerlink" title="保存规则到配置文件中"></a>保存规则到配置文件中</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/sysconfig/iptables /etc/sysconfig/iptables.bak # 任何改动之前先备份，请保持这一优秀的习惯</span><br><span class="line">iptables-save &gt; /etc/sysconfig/iptables</span><br><span class="line">cat /etc/sysconfig/iptables</span><br></pre></td></tr></table></figure>
+
+<h3 id="列出已设置的规则"><a href="#列出已设置的规则" class="headerlink" title="列出已设置的规则"></a>列出已设置的规则</h3><blockquote>
+<p>iptables -L [-t 表名][链名]</p>
+</blockquote>
+<ul>
+<li>四个表名 <code>raw</code>，<code>nat</code>，<code>filter</code>，<code>mangle</code></li>
+<li>五个规则链名 <code>INPUT</code>、<code>OUTPUT</code>、<code>FORWARD</code>、<code>PREROUTING</code>、<code>POSTROUTING</code></li>
+<li>filter 表包含<code>INPUT</code>、<code>OUTPUT</code>、<code>FORWARD</code>三个规则链</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">iptables -L -t nat                  # 列出 nat 上面的所有规则</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">           ^ -t 参数指定，必须是 raw， nat，filter，mangle 中的一个</span></span><br><span class="line">iptables -L -t nat  --line-numbers  # 规则带编号</span><br><span class="line">iptables -L INPUT</span><br><span class="line"></span><br><span class="line">iptables -L -nv  # 查看，这个列表看起来更详细</span><br></pre></td></tr></table></figure>
+
+<h3 id="清除已有规则"><a href="#清除已有规则" class="headerlink" title="清除已有规则"></a>清除已有规则</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptables -F INPUT  # 清空指定链 INPUT 上面的所有规则</span><br><span class="line">iptables -X INPUT  # 删除指定的链，这个链必须没有被其它任何规则引用，而且这条上必须没有任何规则。</span><br><span class="line">                   # 如果没有指定链名，则会删除该表中所有非内置的链。</span><br><span class="line">iptables -Z INPUT  # 把指定链，或者表中的所有链上的所有计数器清零。</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除已添加的规则"><a href="#删除已添加的规则" class="headerlink" title="删除已添加的规则"></a>删除已添加的规则</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加一条规则</span></span><br><span class="line">iptables -A INPUT -s 192.168.1.5 -j DROP</span><br></pre></td></tr></table></figure>
+
+<p>将所有 iptables 以序号标记显示，执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -L -n --line-numbers</span><br></pre></td></tr></table></figure>
+
+<p>比如要删除 INPUT 里序号为 8 的规则，执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -D INPUT 8</span><br></pre></td></tr></table></figure>
+
+<h3 id="开放指定的端口"><a href="#开放指定的端口" class="headerlink" title="开放指定的端口"></a>开放指定的端口</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -s 127.0.0.1 -d 127.0.0.1 -j ACCEPT               #允许本地回环接口(即运行本机访问本机)</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT    #允许已建立的或相关连的通行</span><br><span class="line">iptables -A OUTPUT -j ACCEPT         #允许所有本机向外的访问</span><br><span class="line">iptables -A INPUT -p tcp --dport 22 -j ACCEPT    #允许访问22端口</span><br><span class="line">iptables -A INPUT -p tcp --dport 80 -j ACCEPT    #允许访问80端口</span><br><span class="line">iptables -A INPUT -p tcp --dport 21 -j ACCEPT    #允许ftp服务的21端口</span><br><span class="line">iptables -A INPUT -p tcp --dport 20 -j ACCEPT    #允许FTP服务的20端口</span><br><span class="line">iptables -A INPUT -j reject       #禁止其他未允许的规则访问</span><br><span class="line">iptables -A FORWARD -j REJECT     #禁止其他未允许的规则访问</span><br></pre></td></tr></table></figure>
+
+<h3 id="屏蔽-IP"><a href="#屏蔽-IP" class="headerlink" title="屏蔽 IP"></a>屏蔽 IP</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp -m tcp -s 192.168.0.8 -j DROP  # 屏蔽恶意主机（比如，192.168.0.8</span><br><span class="line">iptables -I INPUT -s 123.45.6.7 -j DROP       #屏蔽单个IP的命令</span><br><span class="line">iptables -I INPUT -s 123.0.0.0/8 -j DROP      #封整个段即从123.0.0.1到123.255.255.254的命令</span><br><span class="line">iptables -I INPUT -s 124.45.0.0/16 -j DROP    #封IP段即从123.45.0.1到123.45.255.254的命令</span><br><span class="line">iptables -I INPUT -s 123.45.6.0/24 -j DROP    #封IP段即从123.45.6.1到123.45.6.254的命令是</span><br></pre></td></tr></table></figure>
+
+<h3 id="指定数据包出去的网络接口"><a href="#指定数据包出去的网络接口" class="headerlink" title="指定数据包出去的网络接口"></a>指定数据包出去的网络接口</h3><p>只对 OUTPUT，FORWARD，POSTROUTING 三个链起作用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A FORWARD -o eth0</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看已添加的规则"><a href="#查看已添加的规则" class="headerlink" title="查看已添加的规则"></a>查看已添加的规则</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">iptables -L -n -v</span><br><span class="line">Chain INPUT (policy DROP 48106 packets, 2690K bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination</span><br><span class="line"> 5075  589K ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0</span><br><span class="line"> 191K   90M ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:22</span><br><span class="line">1499K  133M ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:80</span><br><span class="line">4364K 6351M ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED</span><br><span class="line"> 6256  327K ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT 3382K packets, 1819M bytes)</span><br><span class="line"> pkts bytes target     prot opt in     out     source               destination</span><br><span class="line"> 5075  589K ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动网络转发规则"><a href="#启动网络转发规则" class="headerlink" title="启动网络转发规则"></a>启动网络转发规则</h3><p>公网<code>210.14.67.7</code>让内网<code>192.168.188.0/24</code>上网</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A POSTROUTING -s 192.168.188.0/24 -j SNAT --to-source 210.14.67.127</span><br></pre></td></tr></table></figure>
+
+<h3 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h3><p>本机的 2222 端口映射到内网 虚拟机的 22 端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -A PREROUTING -d 210.14.67.127 -p tcp --dport 2222  -j DNAT --to-dest 192.168.188.115:22</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串匹配"><a href="#字符串匹配" class="headerlink" title="字符串匹配"></a>字符串匹配</h3><p>比如，我们要过滤所有 TCP 连接中的字符串<code>test</code>，一旦出现它我们就终止这个连接，我们可以这么做：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp -m string --algo kmp --string &quot;test&quot; -j REJECT --reject-with tcp-reset</span><br><span class="line">iptables -L</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Chain INPUT (policy ACCEPT)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">target     prot opt <span class="built_in">source</span>               destination</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">REJECT     tcp  --  anywhere             anywhere            STRING match <span class="string">&quot;test&quot;</span> ALGO name kmp TO 65535 reject-with tcp-reset</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># Chain FORWARD (policy ACCEPT)</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">target     prot opt <span class="built_in">source</span>               destination</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># Chain OUTPUT (policy ACCEPT)</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">target     prot opt <span class="built_in">source</span>               destination</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="阻止-Windows-蠕虫的攻击"><a href="#阻止-Windows-蠕虫的攻击" class="headerlink" title="阻止 Windows 蠕虫的攻击"></a>阻止 Windows 蠕虫的攻击</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT -j DROP -p tcp -s 0.0.0.0/0 -m string --algo kmp --string &quot;cmd.exe&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="防止-SYN-洪水攻击"><a href="#防止-SYN-洪水攻击" class="headerlink" title="防止 SYN 洪水攻击"></a>防止 SYN 洪水攻击</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --syn -m limit --limit 5/second -j ACCEPT</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/iptables_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">https://wiki.archlinux.org/index.php/iptables_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wangchujiang.com/linux-command/c/iptables.html">https://wangchujiang.com/linux-command/c/iptables.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/eb9176/" title="iptables">https://dunwu.github.io/blog/pages/eb9176/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%B7%A5%E5%85%B7/" rel="tag"># 工具</a>
+              <a href="/blog/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+              <a href="/blog/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/blog/tags/%E9%98%B2%E7%81%AB%E5%A2%99/" rel="tag"># 防火墙</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/9d3091/" rel="prev" title="Spring Framework 综述">
+                  <i class="fa fa-angle-left"></i> Spring Framework 综述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/e33b92/" rel="next" title="Mysql 运维">
+                  Mysql 运维 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"1219e1adbec7ffa66256e83ba446c6b9"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

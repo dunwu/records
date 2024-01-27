@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="MongoDB 建模MongoDB 的数据模式是一种灵活模式，关系型数据库要求你在插入数据之前必须先定义好一个表的模式结构，而 MongoDB 的集合则并不限制 document 结构。这种灵活性让对象和数据库文档之间的映射变得很容易。即使数据记录之间有很大的变化，每个文档也可以很好的映射到各条不同的记录。 当然在实际使用中，同一个集合中的文档往往都有一个比较类似的结构。 数据模型设计中最具挑战性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB 建模">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/562f99/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="MongoDB 建模MongoDB 的数据模式是一种灵活模式，关系型数据库要求你在插入数据之前必须先定义好一个表的模式结构，而 MongoDB 的集合则并不限制 document 结构。这种灵活性让对象和数据库文档之间的映射变得很容易。即使数据记录之间有很大的变化，每个文档也可以很好的映射到各条不同的记录。 当然在实际使用中，同一个集合中的文档往往都有一个比较类似的结构。 数据模型设计中最具挑战性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200910193231.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200910193234.png">
+<meta property="article:published_time" content="2020-09-09T12:47:14.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.419Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="文档数据库">
+<meta property="article:tag" content="MongoDB">
+<meta property="article:tag" content="建模">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200910193231.png">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/562f99/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/562f99/","path":"/pages/562f99/","title":"MongoDB 建模"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MongoDB 建模 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MongoDB-%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.</span> <span class="nav-text">MongoDB 建模</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MongoDB-%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E5%85%A5%E9%97%A8"><span class="nav-number">1.1.</span> <span class="nav-text">MongoDB 数据建模入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">（一）定义数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E6%80%9D%E8%80%83-JSON-%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">（二）思考 JSON 结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E7%A1%AE%E5%AE%9A%E5%93%AA%E4%BA%9B%E5%AD%97%E6%AE%B5%E4%BD%9C%E4%B8%BA%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">（三）确定哪些字段作为嵌入式数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B"><span class="nav-number">1.2.</span> <span class="nav-text">数据模型简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%81%B5%E6%B4%BB%E7%9A%84-Schema"><span class="nav-number">1.2.1.</span> <span class="nav-text">灵活的 Schema</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Document-%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.2.</span> <span class="nav-text">Document 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">嵌入式数据模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E5%BC%8F%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">引用式数据模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E5%86%99%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.3.</span> <span class="nav-text">原子写操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95-document-%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">单 document 的原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A-document-%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">多 document 事务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BD%BF%E7%94%A8%E5%92%8C%E6%80%A7%E8%83%BD"><span class="nav-number">1.2.4.</span> <span class="nav-text">数据使用和性能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Schema-%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.3.</span> <span class="nav-text">Schema 校验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E6%A0%A1%E9%AA%8C%E8%A7%84%E5%88%99"><span class="nav-number">1.3.1.</span> <span class="nav-text">指定校验规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-Schema"><span class="nav-number">1.3.2.</span> <span class="nav-text">JSON Schema</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E6%9F%A5%E8%AF%A2%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.3.3.</span> <span class="nav-text">其它查询表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E4%B8%BA"><span class="nav-number">1.3.4.</span> <span class="nav-text">行为</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E7%9A%84-document"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">现有的 document</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A5%E5%8F%97%E6%88%96%E6%8B%92%E7%BB%9D%E6%97%A0%E6%95%88%E7%9A%84-document"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">接受或拒绝无效的 document</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%90%E5%88%B6"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">限制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.4.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/562f99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MongoDB 建模 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MongoDB 建模<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/05.MongoDB%E5%BB%BA%E6%A8%A1.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-09 20:47:14" itemprop="dateCreated datePublished" datetime="2020-09-09T20:47:14+08:00">2020-09-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">文档数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MongoDB-建模"><a href="#MongoDB-建模" class="headerlink" title="MongoDB 建模"></a>MongoDB 建模</h1><p>MongoDB 的数据模式是一种灵活模式，关系型数据库要求你在插入数据之前必须先定义好一个表的模式结构，而 MongoDB 的集合则并不限制 document 结构。这种灵活性让对象和数据库文档之间的映射变得很容易。即使数据记录之间有很大的变化，每个文档也可以很好的映射到各条不同的记录。 当然在实际使用中，同一个集合中的文档往往都有一个比较类似的结构。</p>
+<p>数据模型设计中最具挑战性的是在应用程序需求，数据库引擎性能要求和数据读写模式之间做权衡考量。当设计数据模型的时候，一定要考虑应用程序对数据的使用模式（如查询，更新和处理）以及数据本身的天然结构。</p>
+<h2 id="MongoDB-数据建模入门"><a href="#MongoDB-数据建模入门" class="headerlink" title="MongoDB 数据建模入门"></a>MongoDB 数据建模入门</h2><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/guides/server/introduction/#what-you-ll-need">https://docs.mongodb.com/guides/server/introduction/#what-you-ll-need</a></p>
+</blockquote>
+<h3 id="（一）定义数据集"><a href="#（一）定义数据集" class="headerlink" title="（一）定义数据集"></a>（一）定义数据集</h3><p>当需要建立数据存储时，首先应该思考以下问题：需要存储哪些数据？这些字段之间如何关联？</p>
+<p>这是一个数据建模的过程。目标是<strong>将业务需求抽象为逻辑模型</strong>。</p>
+<p>假设这样一个场景：我们需要建立数据库以跟踪物料及其数量，大小，标签和等级。</p>
+<p>如果是存储在 RDBMS，可能以下的数据表：</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">quantity</th>
+<th align="left">size</th>
+<th align="left">status</th>
+<th align="left">tags</th>
+<th align="left">rating</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">journal</td>
+<td align="left">25</td>
+<td align="left">14x21,cm</td>
+<td align="left">A</td>
+<td align="left">brown, lined</td>
+<td align="left">9</td>
+</tr>
+<tr>
+<td align="left">notebook</td>
+<td align="left">50</td>
+<td align="left">8.5x11,in</td>
+<td align="left">A</td>
+<td align="left">college-ruled,perforated</td>
+<td align="left">8</td>
+</tr>
+<tr>
+<td align="left">paper</td>
+<td align="left">100</td>
+<td align="left">8.5x11,in</td>
+<td align="left">D</td>
+<td align="left">watercolor</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">planner</td>
+<td align="left">75</td>
+<td align="left">22.85x30,cm</td>
+<td align="left">D</td>
+<td align="left">2019</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">postcard</td>
+<td align="left">45</td>
+<td align="left">10x,cm</td>
+<td align="left">D</td>
+<td align="left">double-sided,white</td>
+<td align="left">2</td>
+</tr>
+</tbody></table>
+<h3 id="（二）思考-JSON-结构"><a href="#（二）思考-JSON-结构" class="headerlink" title="（二）思考 JSON 结构"></a>（二）思考 JSON 结构</h3><p>从上例中可以看出，表似乎是存储数据的好地方，但该数据集中的字段需要多个值，如果在单个列中建模，则不容易搜索或显示（对于 例如–大小和标签）。</p>
+<p>在 SQL 数据库中，您可以通过创建关系表来解决此问题。</p>
+<p>在 MongoDB 中，数据存储为文档（document）。 这些文档以 JSON（JavaScript 对象表示法）格式存储在 MongoDB 中。 JSON 文档支持嵌入式字段，因此相关数据和数据列表可以与文档一起存储，而不是与外部表一起存储。</p>
+<p>JSON 格式为键&#x2F;值对。 在 JSON 文档中，字段名和值用冒号分隔，字段名和值对用逗号分隔，并且字段集封装在“大括号”（<code>&#123;&#125;</code>）中。</p>
+<p>如果要开始对上面的行之一进行建模，例如此行：</p>
+<table>
+<thead>
+<tr>
+<th align="left">name</th>
+<th align="left">quantity</th>
+<th align="left">size</th>
+<th align="left">status</th>
+<th align="left">tags</th>
+<th align="left">rating</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">notebook</td>
+<td align="left">50</td>
+<td align="left">8.5x11,in</td>
+<td align="left">A</td>
+<td align="left">college-ruled,perforated</td>
+<td align="left">8</td>
+</tr>
+</tbody></table>
+<p>您可以从 name 和 quantity 字段开始。 在 JSON 中，这些字段如下所示：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;notebook&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">50</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="（三）确定哪些字段作为嵌入式数据"><a href="#（三）确定哪些字段作为嵌入式数据" class="headerlink" title="（三）确定哪些字段作为嵌入式数据"></a>（三）确定哪些字段作为嵌入式数据</h3><p>接下来，需要确定哪些字段可能需要多个值。可以考虑将这些字段作为嵌入式文档或嵌入式文档中的 列表&#x2F;数组 对象。</p>
+<p>例如，在上面的示例中，size 可能包含三个字段：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;h&quot;</span><span class="punctuation">:</span> <span class="number">11</span><span class="punctuation">,</span> <span class="attr">&quot;w&quot;</span><span class="punctuation">:</span> <span class="number">8.5</span><span class="punctuation">,</span> <span class="attr">&quot;uom&quot;</span><span class="punctuation">:</span> <span class="string">&quot;in&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>And some items have multiple ratings, so <code>ratings</code> might be represented as a list of documents containing the field <code>scores</code>:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span><span class="punctuation">&#123;</span> <span class="attr">&quot;score&quot;</span><span class="punctuation">:</span> <span class="number">8</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;score&quot;</span><span class="punctuation">:</span> <span class="number">9</span> <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>And you might need to handle multiple tags per item. So you might store them in a list too.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span><span class="string">&quot;college-ruled&quot;</span><span class="punctuation">,</span> <span class="string">&quot;perforated&quot;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>Finally, a JSON document that stores an inventory item might look like this:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;notebook&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">50</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;rating&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span> <span class="attr">&quot;score&quot;</span><span class="punctuation">:</span> <span class="number">8</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;score&quot;</span><span class="punctuation">:</span> <span class="number">9</span> <span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;height&quot;</span><span class="punctuation">:</span> <span class="number">11</span><span class="punctuation">,</span> <span class="attr">&quot;width&quot;</span><span class="punctuation">:</span> <span class="number">8.5</span><span class="punctuation">,</span> <span class="attr">&quot;unit&quot;</span><span class="punctuation">:</span> <span class="string">&quot;in&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;A&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;tags&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;college-ruled&quot;</span><span class="punctuation">,</span> <span class="string">&quot;perforated&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>This looks very different from the tabular data structure you started with in Step 1.</p>
+<h2 id="数据模型简介"><a href="#数据模型简介" class="headerlink" title="数据模型简介"></a>数据模型简介</h2><p>数据建模中的关键挑战是平衡应用程序的需求、数据库引擎的性能以及数据检索模式。 在设计数据模型时，始终需要考虑数据的应用程序使用情况（即数据的查询，更新和处理）以及数据本身的固有结构。</p>
+<h3 id="灵活的-Schema"><a href="#灵活的-Schema" class="headerlink" title="灵活的 Schema"></a>灵活的 Schema</h3><p>在关系型数据库中，必须在插入数据之前确定并声明表的结构。而 MongoDB 的 collection 默认情况下不需要其文档具有相同的架构。也就是说：</p>
+<p>同一个 collection 中的 document 不需要具有相同的 field 集，并且 field 的数据类型可以在集合中的不同文档之间有所不同。</p>
+<p>要更改 collection 中的 document 结构，例如添加新 field，删除现有 field 或将 field 值更改为新类型，只需要将文档更新为新结构即可。</p>
+<p>这种灵活性有助于将 document 映射到实体或对象。每个 document 都可以匹配所表示实体的数据字段，即使该文档与集合中的其他文档有很大的不同。但是，实际上，集合中的文档具有相似的结构，并且您可以在更新和插入操作期间对 collection 强制执行 document 校验规则。</p>
+<h3 id="Document-结构"><a href="#Document-结构" class="headerlink" title="Document 结构"></a>Document 结构</h3><h4 id="嵌入式数据模型"><a href="#嵌入式数据模型" class="headerlink" title="嵌入式数据模型"></a>嵌入式数据模型</h4><p>嵌入式 document 通过将相关数据存储在单个 document 结构中来捕获数据之间的关系。 MongoDB document 可以将 document 结构嵌入到另一个 document 中的字段或数组中。这些非规范化的数据模型允许应用程序在单个数据库操作中检索和操纵相关数据。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200910193231.png" alt="img"></p>
+<p>对于 MongoDB 中的很多场景，非规范化数据模型都是最佳的。</p>
+<blockquote>
+<p>嵌入式 document 有大小限制：必须小于 16 MB。</p>
+<p>如果是较大的二进制数据，可以考虑 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/core/gridfs/">GridFS</a>。</p>
+</blockquote>
+<h4 id="引用式数据模型"><a href="#引用式数据模型" class="headerlink" title="引用式数据模型"></a>引用式数据模型</h4><p>引用通过包含从一个 document 到另一个 document 的链接或引用来存储数据之间的关系。 应用程序可以解析这些引用以访问相关数据。 广义上讲，这些是规范化的数据模型。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200910193234.png" alt="img"></p>
+<p>通常，在以下场景使用引用式的数据模型：</p>
+<ul>
+<li>嵌入时会导致数据重复，但无法提供足够的读取性能优势，无法胜过重复的含义。</li>
+<li>代表更复杂的多对多关系。</li>
+<li>为大规模分层数据集建模。</li>
+</ul>
+<p>为了 join collection，MongoDB 支持聚合 stage：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup"><code>$lookup</code></a>（MongoDB 3.2 开始支持）</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup"><code>$graphLookup</code></a>（MongoDB 3.4 开始支持）</li>
+</ul>
+<p>MongoDB 还提供了引用来支持跨集合 join 数据：</p>
+<ul>
+<li>引用数据模型示例，参考：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/tutorial/model-referenced-one-to-many-relationships-between-documents/#data-modeling-publisher-and-books">Model One-to-Many Relationships with Document References</a>.</li>
+<li>更多树形模型，参考：<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/applications/data-models-tree-structures/">Model Tree Structures</a>.</li>
+</ul>
+<h3 id="原子写操作"><a href="#原子写操作" class="headerlink" title="原子写操作"></a>原子写操作</h3><h4 id="单-document-的原子性"><a href="#单-document-的原子性" class="headerlink" title="单 document 的原子性"></a>单 document 的原子性</h4><p>在 MongoDB 中，针对单个 document 的写操作是原子性的，即使该 document 中嵌入了多个子 document。 具有嵌入数据的非规范化数据模型将所有相关数据合并在一个 document 中，而不是在多个 document 和 collection 中进行规范化。 该数据模型有助于原子操作。 当单个写入操作（例如 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.collection.updateMany/#db.collection.updateMany"><code>db.collection.updateMany()</code></a>）修改多个 document 时，每个 document 的独立修改是原子的，但整个操作不是原子的。</p>
+<h4 id="多-document-事务"><a href="#多-document-事务" class="headerlink" title="多 document 事务"></a>多 document 事务</h4><p>对于需要对多个 document（在单个或多个集合中）进行读写原子性的情况，MongoDB 支持多 document 事务。</p>
+<ul>
+<li>在版本 4.0 中，MongoDB 在副本集上支持多 document 事务。</li>
+<li>在版本 4.2 中，MongoDB 引入了分布式事务，它增加了对分片群集上多 document 事务的支持，并合并了对副本集上多 document 事务的现有支持。</li>
+</ul>
+<blockquote>
+<p>在大多数情况下，多 document 事务会比单 document 的写入产生更高的性能消耗，并且多 document 事务的可用性不能替代高效的结构设计。 在许多情况下，非规范化数据模型（嵌入式 document 和数组）仍是最佳选择。 也就是说，合理的数据建模，将最大程度地减少对多 document 事务的需求。</p>
+</blockquote>
+<h3 id="数据使用和性能"><a href="#数据使用和性能" class="headerlink" title="数据使用和性能"></a>数据使用和性能</h3><p>在设计数据模型时，请考虑应用程序将如何使用您的数据库。 例如，如果您的应用程序仅使用最近插入的 document，请考虑使用上限集合。 或者，如果您的应用程序主要是对 collection 的读取操作，则添加索引以提高性能。</p>
+<h2 id="Schema-校验"><a href="#Schema-校验" class="headerlink" title="Schema 校验"></a>Schema 校验</h2><h3 id="指定校验规则"><a href="#指定校验规则" class="headerlink" title="指定校验规则"></a>指定校验规则</h3><p>如果创建新 collection 时要指定校验规则，需要在使用 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/method/db.createCollection/#db.createCollection"><code>db.createCollection()</code></a> 时指定 <code>validator</code> 选项。</p>
+<p>如果要将 document 校验添加到现有 collection 中，需要使用带有 <code>validator</code> 选项的 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/command/collMod/#dbcmd.collMod"><code>collMod</code></a> 命令。</p>
+<p>MongoDB 还提供以下相关选项：</p>
+<ul>
+<li><code>validationLevel</code> 选项（用于确定 MongoDB 在更新过程中，对现有 document 应用校验规则的严格程度）</li>
+<li><code>validationAction</code> 选项（用于确定 MongoDB 发现违反校验规则的 document 时，是选择报错并拒绝，还是接受数据但在日志中告警）。</li>
+</ul>
+<h3 id="JSON-Schema"><a href="#JSON-Schema" class="headerlink" title="JSON Schema"></a>JSON Schema</h3><p>从 3.6 版本开始，MongoDB 开始支持 JSON Schema 校验。</p>
+<p>可以通过在 validator 表达式中使用 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/#op._S_jsonSchema"><code>$jsonSchema</code></a> 操作来指定 JSON Schema 校验。</p>
+<p>【示例】</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">createCollection</span>(<span class="string">&#x27;students&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">validator</span>: &#123;</span><br><span class="line">    <span class="attr">$jsonSchema</span>: &#123;</span><br><span class="line">      <span class="attr">bsonType</span>: <span class="string">&#x27;object&#x27;</span>,</span><br><span class="line">      <span class="attr">required</span>: [<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;year&#x27;</span>, <span class="string">&#x27;major&#x27;</span>, <span class="string">&#x27;address&#x27;</span>],</span><br><span class="line">      <span class="attr">properties</span>: &#123;</span><br><span class="line">        <span class="attr">name</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be a string and is required&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">year</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;int&#x27;</span>,</span><br><span class="line">          <span class="attr">minimum</span>: <span class="number">2017</span>,</span><br><span class="line">          <span class="attr">maximum</span>: <span class="number">3017</span>,</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be an integer in [ 2017, 3017 ] and is required&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">major</span>: &#123;</span><br><span class="line">          <span class="attr">enum</span>: [<span class="string">&#x27;Math&#x27;</span>, <span class="string">&#x27;English&#x27;</span>, <span class="string">&#x27;Computer Science&#x27;</span>, <span class="string">&#x27;History&#x27;</span>, <span class="literal">null</span>],</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;can only be one of the enum values and is required&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">gpa</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: [<span class="string">&#x27;double&#x27;</span>],</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be a double if the field exists&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">address</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;object&#x27;</span>,</span><br><span class="line">          <span class="attr">required</span>: [<span class="string">&#x27;city&#x27;</span>],</span><br><span class="line">          <span class="attr">properties</span>: &#123;</span><br><span class="line">            <span class="attr">street</span>: &#123;</span><br><span class="line">              <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">              <span class="attr">description</span>: <span class="string">&#x27;must be a string if the field exists&#x27;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">city</span>: &#123;</span><br><span class="line">              <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">              <span class="attr">description</span>: <span class="string">&#x27;must be a string and is required&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="其它查询表达式"><a href="#其它查询表达式" class="headerlink" title="其它查询表达式"></a>其它查询表达式</h3><p>除了使用 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/#op._S_jsonSchema"><code>$jsonSchema</code></a> 查询运算符的 JSON Schema 校验外，MongoDB 还支持其它查询运算符的校验，但以下情况除外：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/near/#op._S_near"><code>$near</code></a>,</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/nearSphere/#op._S_nearSphere"><code>$nearSphere</code></a>,</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/text/#op._S_text"><code>$text</code></a>,</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/where/#op._S_where"><code>$where</code></a>, and</li>
+<li>带有 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/aggregation/function/#exp._S_function"><code>$function</code></a> 表达式的 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/operator/query/expr/#op._S_expr"><code>$expr</code></a></li>
+</ul>
+<p>【示例】查询表达式中指定校验规则</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">createCollection</span>(<span class="string">&#x27;contacts&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">validator</span>: &#123;</span><br><span class="line">    <span class="attr">$or</span>: [</span><br><span class="line">      &#123; <span class="attr">phone</span>: &#123; <span class="attr">$type</span>: <span class="string">&#x27;string&#x27;</span> &#125; &#125;,</span><br><span class="line">      &#123; <span class="attr">email</span>: &#123; <span class="attr">$regex</span>: <span class="regexp">/@mongodb\.com$/</span> &#125; &#125;,</span><br><span class="line">      &#123; <span class="attr">status</span>: &#123; <span class="attr">$in</span>: [<span class="string">&#x27;Unknown&#x27;</span>, <span class="string">&#x27;Incomplete&#x27;</span>] &#125; &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="行为"><a href="#行为" class="headerlink" title="行为"></a>行为</h3><p>校验发生在更新和插入期间。添加校验规则到 collection 时，不会对现有的 document 进行校验，除非发生修改操作。</p>
+<h4 id="现有的-document"><a href="#现有的-document" class="headerlink" title="现有的 document"></a>现有的 document</h4><p><code>validationLevel</code> 选项确定 MongoDB 进行规则校验时执行的操作：</p>
+<ul>
+<li>如果 <code>validationLevel</code> 是 strict（严格级别。这是 MongoDB 默认级别），则 MongoDB 将校验规则应用于所有插入和更新。</li>
+<li>如果 <code>validationLevel</code> 是 moderate（中等级别），则 MongoDB 只对已满足校验条件的现有文档的插入和更新操作进行校验；对不符合校验标准的现有文档的更新操作不进行校验。</li>
+</ul>
+<p>【示例】</p>
+<p>下面是一个正常的插入操作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">contacts</span>.<span class="title function_">insert</span>([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">_id</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Anne&#x27;</span>,</span><br><span class="line">    <span class="attr">phone</span>: <span class="string">&#x27;+1 555 123 456&#x27;</span>,</span><br><span class="line">    <span class="attr">city</span>: <span class="string">&#x27;London&#x27;</span>,</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;Complete&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123; <span class="attr">_id</span>: <span class="number">2</span>, <span class="attr">name</span>: <span class="string">&#x27;Ivan&#x27;</span>, <span class="attr">city</span>: <span class="string">&#x27;Vancouver&#x27;</span> &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+
+<p>在 collection 上配置一个校验规则：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">runCommand</span>(&#123;</span><br><span class="line">  <span class="attr">collMod</span>: <span class="string">&#x27;contacts&#x27;</span>,</span><br><span class="line">  <span class="attr">validator</span>: &#123;</span><br><span class="line">    <span class="attr">$jsonSchema</span>: &#123;</span><br><span class="line">      <span class="attr">bsonType</span>: <span class="string">&#x27;object&#x27;</span>,</span><br><span class="line">      <span class="attr">required</span>: [<span class="string">&#x27;phone&#x27;</span>, <span class="string">&#x27;name&#x27;</span>],</span><br><span class="line">      <span class="attr">properties</span>: &#123;</span><br><span class="line">        <span class="attr">phone</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be a string and is required&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">name</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be a string and is required&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">validationLevel</span>: <span class="string">&#x27;moderate&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>则 <code>contacts</code> collection 现在添加了含中等级别（moderate） validationLevel 的 <code>validator</code>：</p>
+<ul>
+<li><p>如果尝试更新 <code>_id</code>为 1 的文档，则 MongoDB 将应用校验规则，因为现有文档符合条件。</p>
+</li>
+<li><p>相反，MongoDB 不会将校验 <code>_id</code> 为 2 的文档，因为它不符合校验规则。</p>
+</li>
+</ul>
+<p>如果要完全禁用校验，可以将 <code>validationLevel</code> 置为 <code>off</code>。</p>
+<h4 id="接受或拒绝无效的-document"><a href="#接受或拒绝无效的-document" class="headerlink" title="接受或拒绝无效的 document"></a>接受或拒绝无效的 document</h4><ul>
+<li>如果 validationAction 是 Error（默认），则 MongoDB 拒绝任何违反校验规则的插入或更新。</li>
+<li>如果 validationAction 是 Warn，MongoDB 会记录所有的违规，但允许进行插入或更新。</li>
+</ul>
+<p>【示例】</p>
+<p>创建集合时，配置 <code>validationAction</code> 为 warn。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="title function_">createCollection</span>(<span class="string">&#x27;contacts2&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">validator</span>: &#123;</span><br><span class="line">    <span class="attr">$jsonSchema</span>: &#123;</span><br><span class="line">      <span class="attr">bsonType</span>: <span class="string">&#x27;object&#x27;</span>,</span><br><span class="line">      <span class="attr">required</span>: [<span class="string">&#x27;phone&#x27;</span>],</span><br><span class="line">      <span class="attr">properties</span>: &#123;</span><br><span class="line">        <span class="attr">phone</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;must be a string and is required&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">email</span>: &#123;</span><br><span class="line">          <span class="attr">bsonType</span>: <span class="string">&#x27;string&#x27;</span>,</span><br><span class="line">          <span class="attr">pattern</span>: <span class="string">&#x27;@mongodb.com$&#x27;</span>,</span><br><span class="line">          <span class="attr">description</span>:</span><br><span class="line">            <span class="string">&#x27;must be a string and match the regular expression pattern&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">status</span>: &#123;</span><br><span class="line">          <span class="attr">enum</span>: [<span class="string">&#x27;Unknown&#x27;</span>, <span class="string">&#x27;Incomplete&#x27;</span>],</span><br><span class="line">          <span class="attr">description</span>: <span class="string">&#x27;can only be one of the enum values&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">validationAction</span>: <span class="string">&#x27;warn&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>尝试插入一条违规记录</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.<span class="property">contacts2</span>.<span class="title function_">insert</span>( &#123; <span class="attr">name</span>: <span class="string">&quot;Amanda&quot;</span>, <span class="attr">status</span>: <span class="string">&quot;Updated&quot;</span> &#125; )</span><br><span class="line"><span class="title class_">WriteResult</span>(&#123; <span class="string">&quot;nInserted&quot;</span> : <span class="number">1</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>MongoDB 允许这条操作执行，但是服务器会记录下告警信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&quot;t&quot;</span>:&#123;<span class="string">&quot;<span class="variable">$date</span>&quot;</span>:<span class="string">&quot;2020-09-11T16:35:57.754+08:00&quot;</span>&#125;,<span class="string">&quot;s&quot;</span>:<span class="string">&quot;W&quot;</span>,  <span class="string">&quot;c&quot;</span>:<span class="string">&quot;STORAGE&quot;</span>,  <span class="string">&quot;id&quot;</span>:20294,   <span class="string">&quot;ctx&quot;</span>:<span class="string">&quot;conn14&quot;</span>,<span class="string">&quot;msg&quot;</span>:<span class="string">&quot;Document would fail validation&quot;</span>,<span class="string">&quot;attr&quot;</span>:&#123;<span class="string">&quot;namespace&quot;</span>:<span class="string">&quot;test.contacts2&quot;</span>,<span class="string">&quot;document&quot;</span>:&#123;<span class="string">&quot;_id&quot;</span>:&#123;<span class="string">&quot;<span class="variable">$oid</span>&quot;</span>:<span class="string">&quot;5f5b36ed8ea53d62a0b51c4e&quot;</span>&#125;,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Amanda&quot;</span>,<span class="string">&quot;status&quot;</span>:<span class="string">&quot;Updated&quot;</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4><p>不能在 <code>admin</code>、<code>local</code>、<code>config</code> 这几个特殊的数据库中指定校验规则。</p>
+<p>不能在 <code>system.*</code> collection 中指定校验。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><strong>官方</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mongodb.com/">MongoDB 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mongodb/mongo">MongoDB Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://university.mongodb.com/">MongoDB 官方免费教程</a></li>
+</ul>
+</li>
+<li><strong>教程</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/mongodb/mongodb-tutorial.html">MongoDB 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/course/intro/100040001">MongoDB 高手课</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/562f99/" title="MongoDB 建模">https://dunwu.github.io/blog/pages/562f99/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 文档数据库</a>
+              <a href="/blog/tags/MongoDB/" rel="tag"># MongoDB</a>
+              <a href="/blog/tags/%E5%BB%BA%E6%A8%A1/" rel="tag"># 建模</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/5e3c30/" rel="prev" title="MongoDB 运维">
+                  <i class="fa fa-angle-left"></i> MongoDB 运维
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/88c7d3/" rel="next" title="MongoDB 建模示例">
+                  MongoDB 建模示例 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"aad4ceb8ebdcc89c298bf4545e395da3"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

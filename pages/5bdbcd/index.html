@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="Dubbo 快速入门简介Apache Dubbo 是一款高性能、轻量级的开源微服务框架。它提供了 RPC 通信 与 微服务治理 两大关键能力。 Dubbo 的核心功能Dubbo 提供了六大核心能力：  面向接口代理的高性能 RPC 调用：提供高性能的基于代理的远程调用能力，服务以接口为粒度，为开发者屏蔽远程调用底层细节。 智能容错和负载均衡：内置多种负载均衡策略，智能感知下游节点健康状况，显著减少">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dubbo 快速入门">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/5bdbcd/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="Dubbo 快速入门简介Apache Dubbo 是一款高性能、轻量级的开源微服务框架。它提供了 RPC 通信 与 微服务治理 两大关键能力。 Dubbo 的核心功能Dubbo 提供了六大核心能力：  面向接口代理的高性能 RPC 调用：提供高性能的基于代理的远程调用能力，服务以接口为粒度，为开发者屏蔽远程调用底层细节。 智能容错和负载均衡：内置多种负载均衡策略，智能感知下游节点健康状况，显著减少">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-25T11:12:19.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.431Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="微服务">
+<meta property="article:tag" content="Dubbo">
+<meta property="article:tag" content="分布式应用">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/5bdbcd/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/5bdbcd/","path":"/pages/5bdbcd/","title":"Dubbo 快速入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Dubbo 快速入门 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Dubbo-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Dubbo 快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dubbo-%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="nav-number">1.1.1.</span> <span class="nav-text">Dubbo 的核心功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dubbo-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">1.1.2.</span> <span class="nav-text">Dubbo 的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dubbo3-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">Dubbo3 新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E6%96%B0%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">全新服务发现模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E4%BB%A3-RPC-%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">下一代 RPC 通信协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%91%E5%8E%9F%E7%94%9F"><span class="nav-number">1.2.3.</span> <span class="nav-text">云原生</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="nav-number">1.3.</span> <span class="nav-text">快速开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.4.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/5bdbcd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Dubbo 快速入门 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dubbo 快速入门<a href="https://github.com/dunwu/blog/blob/master/source/_posts/15.%E5%88%86%E5%B8%83%E5%BC%8F/21.%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/01.RPC/01.Dubbo/01.Dubbo%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-25 19:12:19" itemprop="dateCreated datePublished" datetime="2022-04-25T19:12:19+08:00">2022-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">分布式通信</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/RPC/" itemprop="url" rel="index"><span itemprop="name">RPC</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E9%80%9A%E4%BF%A1/RPC/Dubbo/" itemprop="url" rel="index"><span itemprop="name">Dubbo</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Dubbo-快速入门"><a href="#Dubbo-快速入门" class="headerlink" title="Dubbo 快速入门"></a>Dubbo 快速入门</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Apache Dubbo 是一款高性能、轻量级的开源微服务框架。它提供了 <strong>RPC 通信</strong> 与 <strong>微服务治理</strong> 两大关键能力。</p>
+<h3 id="Dubbo-的核心功能"><a href="#Dubbo-的核心功能" class="headerlink" title="Dubbo 的核心功能"></a>Dubbo 的核心功能</h3><p>Dubbo 提供了六大核心能力：</p>
+<ul>
+<li><strong>面向接口代理的高性能 RPC 调用</strong>：提供高性能的基于代理的远程调用能力，服务以接口为粒度，为开发者屏蔽远程调用底层细节。</li>
+<li><strong>智能容错和负载均衡</strong>：内置多种负载均衡策略，智能感知下游节点健康状况，显著减少调用延迟，提高系统吞吐量。</li>
+<li><strong>服务自动注册和发现</strong>：支持多种注册中心服务，服务实例上下线实时感知。</li>
+<li><strong>高度可扩展能力</strong>：遵循微内核+插件的设计原则，所有核心能力如 Protocol、Transport、Serialization 被设计为扩展点，平等对待内置实现和第三方实现。</li>
+<li><strong>运行期流量调度</strong>：内置条件、脚本等路由策略，通过配置不同的路由规则，轻松实现灰度发布，同机房优先等功能。</li>
+<li><strong>可视化的服务治理与运维</strong>：提供丰富服务治理、运维工具：随时查询服务元数据、服务健康状态及调用统计，实时下发路由策略、调整配置参数。</li>
+</ul>
+<h3 id="Dubbo-的优势"><a href="#Dubbo-的优势" class="headerlink" title="Dubbo 的优势"></a>Dubbo 的优势</h3><p>Dubbo 提供了一站式微服务解决方案，包括服务定义、服务发现、服务通信到流量管控等几乎所有的服务治理能力，并且尝试从使用上对用户屏蔽底层细节，以提供更好的易用性。</p>
+<p><strong>定义服务</strong>在 Dubbo 中非常简单与直观:</p>
+<ul>
+<li>使用与某种语言绑定的方式（如 Java 中可直接定义 Interface）</li>
+<li>使用 Protobuf IDL 语言的方式。</li>
+</ul>
+<p>Dubbo 提供了丰富的<strong>通信模型</strong>：</p>
+<ul>
+<li>消费端异步请求(Client Side Asynchronous Request-Response)</li>
+<li>提供端异步执行（Server Side Asynchronous Request-Response）</li>
+<li>消费端请求流（Request Streaming）</li>
+<li>提供端响应流（Response Streaming）</li>
+<li>双向流式通信（Bidirectional Streaming）</li>
+</ul>
+<p>Dubbo 提供基于客户端的<strong>服务发现</strong>机制，可以采用多种方式启用服务发现：</p>
+<ul>
+<li>使用第三方的注册中心组件，如 Nacos、Zookeeper、Consul、Etcd 等。</li>
+<li>将服务的组织与注册交给底层容器平台，如 Kubernetes，这被理解是一种更云原生的方式</li>
+</ul>
+<p>Dubbo 提供了多种<strong>流量控制</strong>手段，包括负载均衡、流量路由、请求超时、流量降级、重试等策略。基于这些基础能力可以轻松的实现更多场景化的路由方案，包括金丝雀发布、A&#x2F;B 测试、权重路由、同区域优先等。</p>
+<p>Dubbo 的<strong>扩展性</strong>良好：通过 Filter、Router、Protocol 等几乎存在于每一个关键流程上的扩展点定义，我们可以丰富 Dubbo 的功能或实现与其他微服务配套系统的对接，包括 Transaction、Tracing 目前都有通过 SPI 扩展的实现方案，具体可以参见 Dubbo 扩展性的详情，也可以在 <a target="_blank" rel="noopener" href="https://github.com/apache/dubbo-spi-extensions">apache&#x2F;dubbo-spi-extensions</a> 项目中发现与更多的扩展实现。</p>
+<p>Dubbo 在支持微服务集群方面有着非常大的规模与非常久的实践经验积累，是最具有企业规模化微服务实践话语权的框架之一。</p>
+<p>Dubbo3 的设计是面向<strong>云原生</strong>的：</p>
+<ul>
+<li>首先是对云原生基础设施与部署架构的支持，包括 Kubernetes、Service Mesh 等。</li>
+<li>另一方面，Dubbo 众多核心组件都已面向云原生升级，包括 Triple 协议、统一路由规则、对多语言支持。</li>
+</ul>
+<h2 id="Dubbo3-新特性"><a href="#Dubbo3-新特性" class="headerlink" title="Dubbo3 新特性"></a>Dubbo3 新特性</h2><h3 id="全新服务发现模型"><a href="#全新服务发现模型" class="headerlink" title="全新服务发现模型"></a>全新服务发现模型</h3><p>相比于 2.x 版本中的基于<code>接口</code>粒度的服务发现机制，3.x 引入了全新的<a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/concepts/service-discovery">基于应用粒度的服务发现机制</a>， 新模型带来两方面的巨大优势：</p>
+<ul>
+<li><strong>进一步提升了 Dubbo3 在大规模集群实践中的性能与稳定性</strong>。新模型可大幅提高系统资源利用率，降低 Dubbo 地址的单机内存消耗（50%），降低注册中心集群的存储与推送压力（90%）， Dubbo 可支持集群规模步入百万实例层次。</li>
+<li><strong>打通与其他异构微服务体系的地址互发现障碍</strong>。新模型使得 Dubbo3 能实现与异构微服务体系如 Spring Cloud、Kubernetes Service、gRPC 等，在地址发现层面的互通， 为连通 Dubbo 与其他微服务体系提供可行方案。</li>
+</ul>
+<h3 id="下一代-RPC-通信协议"><a href="#下一代-RPC-通信协议" class="headerlink" title="下一代 RPC 通信协议"></a>下一代 RPC 通信协议</h3><p>定义了全新的 RPC 通信协议 – Triple，一句话概括 Triple：它是基于 HTTP&#x2F;2 上构建的 RPC 协议，完全兼容 gRPC，并在此基础上扩展出了更丰富的语义。 使用 Triple 协议，用户将获得以下能力</p>
+<ul>
+<li>更容易到适配网关、Mesh 架构，Triple 协议让 Dubbo 更方便的与各种网关、Sidecar 组件配合工作。</li>
+<li>多语言友好，推荐配合 Protobuf 使用 Triple 协议，使用 IDL 定义服务，使用 Protobuf 编码业务数据。</li>
+<li>流式通信支持。Triple 协议支持 Request Stream、Response Stream、Bi-direction Stream</li>
+</ul>
+<h3 id="云原生"><a href="#云原生" class="headerlink" title="云原生"></a>云原生</h3><p>Dubbo3 构建的业务应用可直接部署在 VM、Container、Kubernetes 等平台，Dubbo3 很好的解决了 Dubbo 服务与调度平台之间的生命周期对齐，Dubbo 服务发现地址 与容器平台绑定的问题。</p>
+<p>在服务发现层面，Dubbo3 支持与 <a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/new-in-dubbo3/">Kubernetes Native Service</a> 的融合，目前限于 Headless Service。</p>
+<p>Dubbo3 规划了两种形态的 Service Mesh 方案，在不同的业务场景、不同的迁移阶段、不同的基础设施保障情况下，Dubbo 都会有 Mesh 方案可供选择， 而这进一步的都可以通过统一的控制面进行治理。</p>
+<ul>
+<li>经典的基于 Sidecar 的 Service Mesh</li>
+<li>无 Sidecar 的 Proxyless Mesh</li>
+</ul>
+<p>用户在 Dubbo2 中熟知的路由规则，在 3.x 中将被一套<a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docs/concepts/traffic-management"><code>统一的流量治理规则</code></a>取代，这套统一流量规则将覆盖未来 Dubbo3 的 Service Mesh、SDK 等多种部署形态， 实现对整套微服务体系的治理。</p>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><p>定义服务</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><strong>官方</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/apache/dubbo">Dubbo Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh-cn/">Dubbo 官方文档</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/5bdbcd/" title="Dubbo 快速入门">https://dunwu.github.io/blog/pages/5bdbcd/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
+              <a href="/blog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+              <a href="/blog/tags/Dubbo/" rel="tag"># Dubbo</a>
+              <a href="/blog/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%BA%94%E7%94%A8/" rel="tag"># 分布式应用</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/e32c7e/" rel="prev" title="服务容错">
+                  <i class="fa fa-angle-left"></i> 服务容错
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/496a7e/" rel="next" title="源码级深度理解 Java SPI">
+                  源码级深度理解 Java SPI <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"c2060e859dc3771ff52f4f7a7983e979"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

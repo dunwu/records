@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="MongoDB 分片分片集群简介当 MongoDB 需要存储海量数据时，单节点不足以存储全量数据，且可能无法提供令人满意的吞吐量。所以，可以通过 MongoDB 分片机制来支持水平扩展。 分片集群特点对应用完全透明 数据自动均衡 动态扩容 提供三种分片方式 分片集群组件MongoDB 分片集群含以下组件：  shard：每个分片包含分片数据的子集。每个分片都可以部署为副本集。 mongos：mon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB 分片">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/ad08f5/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="MongoDB 分片分片集群简介当 MongoDB 需要存储海量数据时，单节点不足以存储全量数据，且可能无法提供令人满意的吞吐量。所以，可以通过 MongoDB 分片机制来支持水平扩展。 分片集群特点对应用完全透明 数据自动均衡 动态扩容 提供三种分片方式 分片集群组件MongoDB 分片集群含以下组件：  shard：每个分片包含分片数据的子集。每个分片都可以部署为副本集。 mongos：mon">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920210057.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920212159.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920212157.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920213343.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920213345.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920214854.svg">
+<meta property="article:published_time" content="2020-09-20T15:12:17.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.419Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="文档数据库">
+<meta property="article:tag" content="MongoDB">
+<meta property="article:tag" content="分片">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920210057.svg">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/ad08f5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/ad08f5/","path":"/pages/ad08f5/","title":"MongoDB 分片"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MongoDB 分片 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MongoDB-%E5%88%86%E7%89%87"><span class="nav-number">1.</span> <span class="nav-text">MongoDB 分片</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">分片集群简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">分片集群特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E7%BB%84%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">分片集群组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E7%9A%84%E5%88%86%E5%B8%83"><span class="nav-number">1.1.3.</span> <span class="nav-text">分片集群的分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%8A%82%E7%82%B9-mongos"><span class="nav-number">1.1.4.</span> <span class="nav-text">路由节点 mongos</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87-Key"><span class="nav-number">1.2.</span> <span class="nav-text">分片 Key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.</span> <span class="nav-text">分片策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash-%E5%88%86%E7%89%87"><span class="nav-number">1.3.1.</span> <span class="nav-text">Hash 分片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E5%88%86%E7%89%87"><span class="nav-number">1.3.2.</span> <span class="nav-text">范围分片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%8C%BA%E5%9F%9F"><span class="nav-number">1.4.</span> <span class="nav-text">分片集群中的区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/ad08f5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MongoDB 分片 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MongoDB 分片<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/04.%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/01.MongoDB/09.MongoDB%E5%88%86%E7%89%87.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-20 23:12:17" itemprop="dateCreated datePublished" datetime="2020-09-20T23:12:17+08:00">2020-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">文档数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/MongoDB/" itemprop="url" rel="index"><span itemprop="name">MongoDB</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MongoDB-分片"><a href="#MongoDB-分片" class="headerlink" title="MongoDB 分片"></a>MongoDB 分片</h1><h2 id="分片集群简介"><a href="#分片集群简介" class="headerlink" title="分片集群简介"></a>分片集群简介</h2><p>当 MongoDB 需要存储海量数据时，单节点不足以存储全量数据，且可能无法提供令人满意的吞吐量。所以，可以通过 MongoDB 分片机制来支持水平扩展。</p>
+<h3 id="分片集群特点"><a href="#分片集群特点" class="headerlink" title="分片集群特点"></a>分片集群特点</h3><p>对应用完全透明</p>
+<p>数据自动均衡</p>
+<p>动态扩容</p>
+<p>提供三种分片方式</p>
+<h3 id="分片集群组件"><a href="#分片集群组件" class="headerlink" title="分片集群组件"></a>分片集群组件</h3><p>MongoDB 分片集群含以下组件：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/core/sharded-cluster-shards/">shard</a>：每个分片包含分片数据的子集。每个分片都可以部署为副本集。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/core/sharded-cluster-query-router/">mongos</a>：mongos 充当查询路由器，在客户端应用程序和分片集群之间提供接口。从 MongoDB 4.4 开始，mongos 可以支持 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/core/sharded-cluster-query-router/#mongos-hedged-reads">hedged reads</a> 以最大程度地减少延迟。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/core/sharded-cluster-config-servers/">config servers</a>：提供集群元数据存储和分片数据分布的映射。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920210057.svg" alt="img"></p>
+<h3 id="分片集群的分布"><a href="#分片集群的分布" class="headerlink" title="分片集群的分布"></a>分片集群的分布</h3><p><strong>MongoDB 复制集以 collection 为单位</strong>，将数据分布在集群中的各个分片上。最多允许 1024 个分片。</p>
+<p>MongoDB 复制集的分片之间数据不重复，只有当所有分片都正常时，才能完整工作。</p>
+<p>MongoDB 数据库可以同时包含分片和未分片的集合的 collection。分片 collection 会分布在集群中各节点上。而未分片的 collection 存储在主节点上。每个数据库都有其自己的主节点。</p>
+<p>分片和未分片的 collection：</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920212159.svg" alt="img"></p>
+<h3 id="路由节点-mongos"><a href="#路由节点-mongos" class="headerlink" title="路由节点 mongos"></a>路由节点 mongos</h3><p>要连接 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-sharded-cluster">MongoDB 分片集群</a>，必须连接到 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-mongos"><code>mongos</code></a> 路由器。这包括分片和未分片的 collection。客户端不应该连接到单个分片节点进行读写操作。</p>
+<p>连接 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos"><code>mongos</code></a> 的方式和连接 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod"><code>mongod</code></a> 相同，例如通过 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo"><code>mongo</code></a> shell 或 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/drivers/?jump=docs">MongoDB 驱动程序</a>。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920212157.svg" alt="img"></p>
+<p>路由节点的作用：</p>
+<ul>
+<li>提供集群的单一入口</li>
+<li>转发应用端请求</li>
+<li>选择合适数据节点进行读写</li>
+<li>合并多个数据节点的返回</li>
+</ul>
+<p>一般，路由节点 mongos 建议至少 2 个。</p>
+<h2 id="分片-Key"><a href="#分片-Key" class="headerlink" title="分片 Key"></a>分片 Key</h2><p>MongoDB 使用分片 Key 在各个分片之间分发 collection 的 document。分片 Key 由 document 中的一个或多个字段组成。</p>
+<ul>
+<li><p>从 MongoDB 4.4 开始，分片 collection 中的 document 可能缺少分片 Key 字段。在跨分片分布文档时，缺少分片 Key 字段将被视为具有空值，但在路由查询时则不会。</p>
+</li>
+<li><p>在 MongoDB 4.2 及更早版本中，分片 Key 字段必须在每个 document 中存在一个分片 collection。</p>
+</li>
+</ul>
+<p>在分片 collection 时选择分片 Key。</p>
+<ul>
+<li>从 MongoDB 4.4 开始，您可以通过在现有 Key 中添加一个或多个后缀字段来优化 collection 的分片 Key。</li>
+<li>在 MongoDB 4.2 和更低版本中，无法在分片后更改分片 Key 的选择。</li>
+</ul>
+<p>document 的分片键值决定了其在各个分片中的分布</p>
+<ul>
+<li>从 MongoDB 4.2 开始，除非您的分片 Key 字段是不可变的_id 字段，否则您可以更新 document 的分片键值。</li>
+<li>在 MongoDB 4.0 及更低版本中，文档的分片 Key 字段值是不可变的。</li>
+</ul>
+<p>分片 Key 索引：要对已填充的 collection 进行分片，该 collection 必须具有以分片 Key 开头的索引。分片一个空 collection 时，如果该 collection 还没有针对指定分片 Key 的适当索引，则 MongoDB 会创建支持索引。</p>
+<p>分片 Key 策略：分片 Key 的选择会影响分片集群的性能，效率和可伸缩性。分片 Key 及其后备索引的选择也会影响集群可以使用的分片策略。</p>
+<p>MongoDB 分区将数据分片。每个分块都有基于分片 Key 的上下限。</p>
+<p>为了在整个集群中的所有分片上实现块的均匀分布，均衡器在后台运行，并在各分片上迁移块。</p>
+<h2 id="分片策略"><a href="#分片策略" class="headerlink" title="分片策略"></a>分片策略</h2><p>MongoDB 支持两种分片策略：Hash 分片和范围分片。</p>
+<h3 id="Hash-分片"><a href="#Hash-分片" class="headerlink" title="Hash 分片"></a>Hash 分片</h3><p>Hash 分片策略会先计算分片 Key 字段值的哈希值；然后，根据分片键值为每个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-chunk">chunk</a> 分配一个范围。</p>
+<blockquote>
+<p>注意：使用哈希索引解析查询时，MongoDB 会自动计算哈希值，应用程序不需要计算哈希。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920213343.svg" alt="img"></p>
+<p>尽管分片 Key 范围可能是“接近”的，但它们的哈希值不太可能在同一 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-chunk">chunk</a> 上。基于 Hash 的数据分发有助于更均匀的数据分布，尤其是在分片 Key 单调更改的数据集中。</p>
+<p>但是，Hash 分片意味着对分片 Key 做范围查询时不太可能针对单个分片，从而导致更多的集群范围内的广播操作。</p>
+<h3 id="范围分片"><a href="#范围分片" class="headerlink" title="范围分片"></a>范围分片</h3><p>范围分片根据分片 Key 值将数据划分为多个范围。然后，根据分片 Key 值为每个 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-chunk">chunk</a> 分配一个范围。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920213345.svg" alt="img"></p>
+<p>值比较近似的一系列分片 Key 更有可能驻留在同一 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-chunk">chunk</a> 上。范围分片的效率取决于选择的分片 Key。分片 Key 考虑不周全会导致数据分布不均，这可能会削弱分片的某些优势或导致性能瓶颈。</p>
+<h2 id="分片集群中的区域"><a href="#分片集群中的区域" class="headerlink" title="分片集群中的区域"></a>分片集群中的区域</h2><p>区域可以提高跨多个数据中心的分片集群的数据局部性。</p>
+<p>在分片集群中，可以基于分片 Key 创建分片数据<a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-zone">区域</a>。可以将每个区域与集群中的一个或多个分片关联。分片可以与任意数量的区域关联。在平衡的集群中，MongoDB 仅将区域覆盖的 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/glossary/#term-chunk">chunk</a> 迁移到与该区域关联的分片。</p>
+<p>每个区域覆盖一个或多个分片 Key 值范围。区域覆盖的每个范围始终包括其上下边界。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200920214854.svg" alt="img"></p>
+<p>在定义要覆盖的区域的新范围时，必须使用分片 Key 中包含的字段。如果使用复合分片 Key，则范围必须包含分片 Key 的前缀。</p>
+<p>选择分片 Key 时，应考虑将来可能使用的区域。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><strong>官方</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mongodb.com/">MongoDB 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mongodb/mongo">MongoDB Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://university.mongodb.com/">MongoDB 官方免费教程</a></li>
+</ul>
+</li>
+<li><strong>教程</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/mongodb/mongodb-tutorial.html">MongoDB 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/course/intro/100040001">MongoDB 高手课</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/ad08f5/" title="MongoDB 分片">https://dunwu.github.io/blog/pages/ad08f5/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%96%87%E6%A1%A3%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 文档数据库</a>
+              <a href="/blog/tags/MongoDB/" rel="tag"># MongoDB</a>
+              <a href="/blog/tags/%E5%88%86%E7%89%87/" rel="tag"># 分片</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/7b0caf/" rel="prev" title="Mysql 面试">
+                  <i class="fa fa-angle-left"></i> Mysql 面试
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/505407/" rel="next" title="MongoDB 复制">
+                  MongoDB 复制 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"8c66f63fccee59610af2b78a28bf26e1"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

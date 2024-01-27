@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="HDFS 入门 HDFS 是 Hadoop 分布式文件系统。 关键词：分布式、文件系统  HDFS 简介HDFS 是 Hadoop Distributed File System 的缩写，即 Hadoop 的分布式文件系统。 HDFS 是一种用于存储具有流数据访问模式的超大文件的文件系统，它运行在廉价的机器集群上。 HDFS 的设计目标是管理数以千计的服务器、数以万计的磁盘，将这么大规模的服务器计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS 入门">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/3cd48f/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="HDFS 入门 HDFS 是 Hadoop 分布式文件系统。 关键词：分布式、文件系统  HDFS 简介HDFS 是 Hadoop Distributed File System 的缩写，即 Hadoop 的分布式文件系统。 HDFS 是一种用于存储具有流数据访问模式的超大文件的文件系统，它运行在廉价的机器集群上。 HDFS 的设计目标是管理数以千计的服务器、数以万计的磁盘，将这么大规模的服务器计">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-architecture.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-read.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-write.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200224203958.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-replica.png">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-1.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-2.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-3.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-read-1.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-1.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-2.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-3.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-4.jpg">
+<meta property="og:image" content="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-5.jpg">
+<meta property="article:published_time" content="2020-02-24T13:14:47.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.435Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="HDFS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-architecture.png">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/3cd48f/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/3cd48f/","path":"/pages/3cd48f/","title":"HDFS 入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>HDFS 入门 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HDFS-%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">HDFS 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">HDFS 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">HDFS 的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">1.1.2.</span> <span class="nav-text">HDFS 的缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">HDFS 架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode"><span class="nav-number">1.2.1.</span> <span class="nav-text">NameNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataNode"><span class="nav-number">1.2.2.</span> <span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">1.2.3.</span> <span class="nav-text">命名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Block-%E6%95%B0%E6%8D%AE%E5%9D%97"><span class="nav-number">1.2.4.</span> <span class="nav-text">Block 数据块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Client"><span class="nav-number">1.2.5.</span> <span class="nav-text">Client</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">1.3.</span> <span class="nav-text">HDFS 数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E8%AF%BB%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">HDFS 读文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">HDFS 写文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-%E6%95%B0%E6%8D%AE%E5%A4%8D%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">HDFS 数据复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="nav-number">1.5.</span> <span class="nav-text">HDFS 高可用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode-%E7%9A%84-HA-%E6%9C%BA%E5%88%B6"><span class="nav-number">1.5.1.</span> <span class="nav-text">NameNode 的 HA 机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.2.</span> <span class="nav-text">元数据文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8-QJM-%E5%AE%9E%E7%8E%B0%E5%85%83%E6%95%B0%E6%8D%AE%E9%AB%98%E5%8F%AF%E7%94%A8"><span class="nav-number">1.5.3.</span> <span class="nav-text">利用 QJM 实现元数据高可用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%EF%BC%9A%E5%9B%BE%E8%A7%A3-HDFS-%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.</span> <span class="nav-text">附：图解 HDFS 存储原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E5%86%99%E6%95%B0%E6%8D%AE%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">HDFS 写数据原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E8%AF%BB%E6%95%B0%E6%8D%AE%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.2.</span> <span class="nav-text">HDFS 读数据原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E6%95%85%E9%9A%9C%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%85%B6%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="nav-number">1.6.3.</span> <span class="nav-text">HDFS 故障类型和其检测方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.7.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/3cd48f/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="HDFS 入门 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HDFS 入门<a href="https://github.com/dunwu/blog/blob/master/source/_posts/16.%E5%A4%A7%E6%95%B0%E6%8D%AE/01.hadoop/01.hdfs/01.HDFS%E5%85%A5%E9%97%A8.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-24 21:14:47" itemprop="dateCreated datePublished" datetime="2020-02-24T21:14:47+08:00">2020-02-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/hadoop/" itemprop="url" rel="index"><span itemprop="name">hadoop</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/hadoop/hdfs/" itemprop="url" rel="index"><span itemprop="name">hdfs</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="HDFS-入门"><a href="#HDFS-入门" class="headerlink" title="HDFS 入门"></a>HDFS 入门</h1><blockquote>
+<p><strong>HDFS 是 Hadoop 分布式文件系统。</strong></p>
+<p>关键词：分布式、文件系统</p>
+</blockquote>
+<h2 id="HDFS-简介"><a href="#HDFS-简介" class="headerlink" title="HDFS 简介"></a>HDFS 简介</h2><p><strong>HDFS</strong> 是 <strong>Hadoop Distributed File System</strong> 的缩写，即 Hadoop 的分布式文件系统。</p>
+<p>HDFS 是一种用于存储具有流数据访问模式的超大文件的文件系统，它运行在廉价的机器集群上。</p>
+<p>HDFS 的设计目标是管理数以千计的服务器、数以万计的磁盘，将这么大规模的服务器计算资源当作一个单一的存储系统进行管理，对应用程序提供数以 PB 计的存储容量，让应用程序像使用普通文件系统一样存储大规模的文件数据。</p>
+<p>HDFS 是在一个大规模分布式服务器集群上，对数据分片后进行并行读写及冗余存储。因为 HDFS 可以部署在一个比较大的服务器集群上，集群中所有服务器的磁盘都可供 HDFS 使用，所以整个 HDFS 的存储空间可以达到 PB 级容量。</p>
+<h3 id="HDFS-的优点"><a href="#HDFS-的优点" class="headerlink" title="HDFS 的优点"></a>HDFS 的优点</h3><ul>
+<li><strong>高容错</strong> - 数据冗余多副本，副本丢失后自动恢复</li>
+<li><strong>高可用</strong> - NameNode HA、安全模式</li>
+<li><strong>高扩展</strong> - 能够处理 10K 节点的规模；处理数据达到 GB、TB、甚至 PB 级别的数据；能够处理百万规模以上的文件数量，数量相当之大。</li>
+<li><strong>批处理</strong> - 流式数据访问；数据位置暴露给计算框架</li>
+<li><strong>构建在廉价商用机器上</strong> - 提供了容错和恢复机制</li>
+</ul>
+<h3 id="HDFS-的缺点"><a href="#HDFS-的缺点" class="headerlink" title="HDFS 的缺点"></a>HDFS 的缺点</h3><ul>
+<li><strong>不适合低延迟数据访问</strong> - 适合高吞吐率的场景，就是在某一时间内写入大量的数据。但是它在低延时的情况下是不行的，比如毫秒级以内读取数据，它是很难做到的。</li>
+<li><strong>不适合大量小文件存储</strong><ul>
+<li>存储大量小文件(这里的小文件是指小于 HDFS 系统的 Block 大小的文件（默认 64M）)的话，它会占用 NameNode 大量的内存来存储文件、目录和块信息。这样是不可取的，因为 NameNode 的内存总是有限的。</li>
+<li>磁盘寻道时间超过读取时间</li>
+</ul>
+</li>
+<li><strong>不支持并发写入</strong> - 一个文件同时只能有一个写入者</li>
+<li><strong>不支持文件随机修改</strong> - 仅支持追加写入</li>
+</ul>
+<h2 id="HDFS-架构"><a href="#HDFS-架构" class="headerlink" title="HDFS 架构"></a>HDFS 架构</h2><p><strong>HDFS 采用主从架构</strong>，由单个 NameNode(NN) 和多个 DataNode(DN) 组成。</p>
+<p>集群中的 Datanode 一般是一个节点一个，负责管理它所在节点上的存储。HDFS 暴露了文件系统的名字空间，用户能够以文件的形式在上面存储数据。从内部看，一个文件其实被分成一个或多个数据块，这些块存储在一组 Datanode 上。Namenode 执行文件系统的名字空间操作，比如打开、关闭、重命名文件或目录。它也负责确定数据块到具体 Datanode 节点的映射。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-architecture.png" alt="img"></p>
+<h3 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h3><p><strong>NameNode 负责管理文件系统的命名空间以及客户端对文件的访问</strong>。NameNode 的职责：</p>
+<ul>
+<li>管理命名空间</li>
+<li>管理元数据：文件的位置、所有者、权限、数据块等</li>
+<li>管理 Block 副本策略：默认 3 个副本</li>
+<li>处理客户端读写请求，为 DataNode 分配任务</li>
+</ul>
+<h3 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h3><p><strong>DataNode 负责文件数据的存储和读写操作，HDFS 将文件数据分割成若干数据块（Block），每个 DataNode 存储一部分数据块，这样文件就分布存储在整个 HDFS 服务器集群中</strong>。</p>
+<ul>
+<li>存储 Block 和数据校验和</li>
+<li>执行客户端发送的读写操作</li>
+<li>通过心跳机制定期（默认 3 秒）向 NameNode 汇报运行状态和 Block 列表信息</li>
+<li>集群启动时，DataNode 向 NameNode 提供 Block 列表信息</li>
+</ul>
+<h3 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h3><p>HDFS 的 <code>文件系统命名空间</code> 的层次结构与大多数文件系统类似 (如 Linux)， 支持目录和文件的创建、移动、删除和重命名等操作，支持配置用户和访问权限，但不支持硬链接和软连接。<code>NameNode</code> 负责维护文件系统名称空间，记录对名称空间或其属性的任何更改。</p>
+<h3 id="Block-数据块"><a href="#Block-数据块" class="headerlink" title="Block 数据块"></a>Block 数据块</h3><ul>
+<li>HDFS 最小存储单元</li>
+<li>文件写入 HDFS 会被切分成若干个 Block</li>
+<li>Block 大小固定，默认为 128MB，可自定义</li>
+<li>若一个 Block 的大小小于设定值，不会占用整个块空间</li>
+<li>默认情况下每个 Block 有 3 个副本</li>
+</ul>
+<h3 id="Client"><a href="#Client" class="headerlink" title="Client"></a>Client</h3><ul>
+<li>将文件切分为 Block 数据块</li>
+<li>与 NameNode 交互，获取文件元数据</li>
+<li>与 DataNode 交互，读取或写入数据</li>
+<li>管理 HDFS</li>
+</ul>
+<h2 id="HDFS-数据流"><a href="#HDFS-数据流" class="headerlink" title="HDFS 数据流"></a>HDFS 数据流</h2><h3 id="HDFS-读文件"><a href="#HDFS-读文件" class="headerlink" title="HDFS 读文件"></a>HDFS 读文件</h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-read.png" alt="img"></p>
+<ol>
+<li>客户端调用 FileSyste 对象的 open() 方法在分布式文件系统中<strong>打开要读取的文件</strong>。</li>
+<li>分布式文件系统通过使用 RPC（远程过程调用）来调用 namenode，<strong>确定文件起始块的位置</strong>。</li>
+<li>分布式文件系统的 DistributedFileSystem 类返回一个支持文件定位的输入流 FSDataInputStream 对象，FSDataInputStream 对象接着封装 DFSInputStream 对象（<strong>存储着文件起始几个块的 datanode 地址</strong>），客户端对这个输入流调用 read()方法。</li>
+<li>DFSInputStream 连接距离最近的 datanode，通过反复调用 read 方法，<strong>将数据从 datanode 传输到客户端</strong>。</li>
+<li>到达块的末端时，DFSInputStream 关闭与该 datanode 的连接，<strong>寻找下一个块的最佳 datanode</strong>。</li>
+<li>客户端完成读取，对 FSDataInputStream 调用 close()方法<strong>关闭连接</strong>。</li>
+</ol>
+<h3 id="HDFS-写文件"><a href="#HDFS-写文件" class="headerlink" title="HDFS 写文件"></a>HDFS 写文件</h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-write.png" alt="img"></p>
+<ol>
+<li>客户端通过对 DistributedFileSystem 对象调用 create() 函数来<strong>新建文件</strong>。</li>
+<li>分布式文件系统对 namenod 创建一个 RPC 调用，在文件系统的<strong>命名空间中新建一个文件</strong>。</li>
+<li>Namenode 对新建文件进行检查无误后，分布式文件系统返回给客户端一个 FSDataOutputStream 对象，FSDataOutputStream 对象封装一个 DFSoutPutstream 对象，负责处理 namenode 和 datanode 之间的通信，<strong>客户端开始写入数据</strong>。</li>
+<li>FSDataOutputStream 将<strong>数据分成一个一个的数据包，写入内部队列“数据队列”</strong>，DataStreamer 负责将数据包依次流式传输到由一组 namenode 构成的管线中。</li>
+<li>DFSOutputStream 维护着确认队列来等待 datanode 收到确认回执，<strong>收到管道中所有 datanode 确认后，数据包从确认队列删</strong>除。</li>
+<li><strong>客户端完成数据的写入</strong>，对数据流调用 close() 方法。</li>
+<li>namenode <strong>确认完成</strong>。</li>
+</ol>
+<h2 id="HDFS-数据复制"><a href="#HDFS-数据复制" class="headerlink" title="HDFS 数据复制"></a>HDFS 数据复制</h2><p>由于 Hadoop 被设计运行在廉价的机器上，这意味着硬件是不可靠的，为了保证容错性，HDFS 提供了数据复制机制。HDFS 将每一个文件存储为一系列<strong>块</strong>，每个块由多个副本来保证容错，块的大小和复制因子可以自行配置（默认情况下，块大小是 128M，默认复制因子是 3）。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200224203958.png" alt="img"></p>
+<p><strong>Namenode 全权管理数据块的复制</strong>，它周期性地从集群中的每个 Datanode 接收心跳信号和块状态报告(Blockreport)。接收到心跳信号意味着该 Datanode 节点工作正常。块状态报告包含了一个该 Datanode 上所有数据块的列表。</p>
+<p><img src="https://raw.githubusercontent.com/dunwu/images/master/cs/bigdata/hdfs/hdfs-replica.png" alt="img"></p>
+<p>大型的 HDFS 实例在通常分布在多个机架的多台服务器上，不同机架上的两台服务器之间通过交换机进行通讯。在大多数情况下，同一机架中的服务器间的网络带宽大于不同机架中的服务器之间的带宽。因此 HDFS 采用机架感知副本放置策略，对于常见情况，当复制因子为 3 时，HDFS 的放置策略是：</p>
+<ul>
+<li>副本 1：放在 Client 所在节点<ul>
+<li>对于远程 Client，系统会随机选择节点</li>
+</ul>
+</li>
+<li>副本 2：放在不同的机架节点上</li>
+<li>副本 3：放在与第二个副本同一机架的不同节点上</li>
+<li>副本 N：随机选择</li>
+<li>节点选择：同等条件下优先选择空闲节点</li>
+</ul>
+<p>为了最大限度地减少带宽消耗和读取延迟，HDFS 在执行读取请求时，优先读取距离读取器最近的副本。如果在与读取器节点相同的机架上存在副本，则优先选择该副本。如果 HDFS 群集跨越多个数据中心，则优先选择本地数据中心上的副本。</p>
+<h2 id="HDFS-高可用"><a href="#HDFS-高可用" class="headerlink" title="HDFS 高可用"></a>HDFS 高可用</h2><p>数据存储故障容错</p>
+<p>磁盘介质在存储过程中受环境或者老化影响，其存储的数据可能会出现错乱。HDFS 的应对措施是，对于存储在 DataNode 上的数据块，计算并存储校验和（CheckSum）。在读取数据的时候，重新计算读取出来的数据的校验和，如果校验不正确就抛出异常，应用程序捕获异常后就到其他 DataNode 上读取备份数据。</p>
+<p>磁盘故障容错</p>
+<p>如果 DataNode 监测到本机的某块磁盘损坏，就将该块磁盘上存储的所有 BlockID 报告给 NameNode，NameNode 检查这些数据块还在哪些 DataNode 上有备份，通知相应的 DataNode 服务器将对应的数据块复制到其他服务器上，以保证数据块的备份数满足要求。</p>
+<p>DataNode 故障容错</p>
+<p>DataNode 会通过心跳和 NameNode 保持通信，如果 DataNode 超时未发送心跳，NameNode 就会认为这个 DataNode 已经宕机失效，立即查找这个 DataNode 上存储的数据块有哪些，以及这些数据块还存储在哪些服务器上，随后通知这些服务器再复制一份数据块到其他服务器上，保证 HDFS 存储的数据块备份数符合用户设置的数目，即使再出现服务器宕机，也不会丢失数据。</p>
+<p>NameNode 故障容错</p>
+<p>NameNode 是整个 HDFS 的核心，记录着 HDFS 文件分配表信息，所有的文件路径和数据块存储信息都保存在 NameNode，如果 NameNode 故障，整个 HDFS 系统集群都无法使用；如果 NameNode 上记录的数据丢失，整个集群所有 DataNode 存储的数据也就没用了。</p>
+<h3 id="NameNode-的-HA-机制"><a href="#NameNode-的-HA-机制" class="headerlink" title="NameNode 的 HA 机制"></a>NameNode 的 HA 机制</h3><p>NameNode 通过 Active NameNode 和 Standby NameNode 实现主备。</p>
+<ul>
+<li><strong>Active NameNode</strong> - 是正在工作的 NameNode；</li>
+<li><strong>Standby NameNode</strong> - 是备份的 NameNode。</li>
+</ul>
+<p>Active NameNode 宕机后，Standby NameNode 快速升级为新的 Active NameNode。</p>
+<p>Standby NameNode 周期性同步 edits 编辑日志，定期合并 fsimage 与 edits 到本地磁盘。</p>
+<p>Hadoop 3.0 允许配置多个 Standby NameNode。</p>
+<h3 id="元数据文件"><a href="#元数据文件" class="headerlink" title="元数据文件"></a>元数据文件</h3><ul>
+<li><strong>edits（编辑日志文件）</strong> - 保存了自最新检查点（Checkpoint）之后的所有文件更新操作。</li>
+<li><strong>fsimage（元数据检查点镜像文件）</strong> - 保存了文件系统中所有的目录和文件信息，如：某个目录下有哪些子目录和文件，以及文件名、文件副本数、文件由哪些 Block 组成等。</li>
+</ul>
+<p>Active NameNode 内存中有一份最新的元数据（&#x3D; fsimage + edits）。</p>
+<p>Standby NameNode 在检查点定期将内存中的元数据保存到 fsimage 文件中。</p>
+<h3 id="利用-QJM-实现元数据高可用"><a href="#利用-QJM-实现元数据高可用" class="headerlink" title="利用 QJM 实现元数据高可用"></a>利用 QJM 实现元数据高可用</h3><blockquote>
+<p>基于 Paxos 算法</p>
+</blockquote>
+<p>QJM 机制（Quorum Journal Manager）</p>
+<p>只要保证 Quorum（法定人数）数量的操作成功，就认为这是一次最终成功的操作</p>
+<p>QJM 共享存储系统</p>
+<ul>
+<li>部署奇数（2N+1）个 JournalNode</li>
+<li>JournalNode 负责存储 edits 编辑日志</li>
+<li>写 edits 的时候，只要超过半数（N+1）的 JournalNode 返回成功，就代表本次写入成功</li>
+<li>最多可容忍 N 个 JournalNode 宕机</li>
+</ul>
+<p>利用 ZooKeeper 实现 Active 节点选举。</p>
+<h2 id="附：图解-HDFS-存储原理"><a href="#附：图解-HDFS-存储原理" class="headerlink" title="附：图解 HDFS 存储原理"></a>附：图解 HDFS 存储原理</h2><blockquote>
+<p>说明：以下图片引用自博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hudiefenmu/article/details/37655491">翻译经典 HDFS 原理讲解漫画</a></p>
+</blockquote>
+<h3 id="HDFS-写数据原理"><a href="#HDFS-写数据原理" class="headerlink" title="HDFS 写数据原理"></a>HDFS 写数据原理</h3><p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-1.jpg" alt="img"></p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-2.jpg" alt="img"></p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-write-3.jpg" alt="img"></p>
+<h3 id="HDFS-读数据原理"><a href="#HDFS-读数据原理" class="headerlink" title="HDFS 读数据原理"></a>HDFS 读数据原理</h3><p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-read-1.jpg" alt="img"></p>
+<h3 id="HDFS-故障类型和其检测方法"><a href="#HDFS-故障类型和其检测方法" class="headerlink" title="HDFS 故障类型和其检测方法"></a>HDFS 故障类型和其检测方法</h3><p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-1.jpg" alt="img"></p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-2.jpg" alt="img"></p>
+<p><strong>第二部分：读写故障的处理</strong></p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-3.jpg" alt="img"></p>
+<p><strong>第三部分：DataNode 故障处理</strong></p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-4.jpg" alt="img"></p>
+<p><strong>副本布局策略</strong>：</p>
+<p><img src="https://github.com/heibaiying/BigData-Notes/raw/master/pictures/hdfs-tolerance-5.jpg" alt="img"></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html">HDFS 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/caiyisen/p/7395843.html">HDFS 知识点总结</a></li>
+<li><a target="_blank" rel="noopener" href="http://shop.oreilly.com/product/0636920033448.do">《Hadoop: The Definitive Guide, Fourth Edition》</a> by Tom White</li>
+<li><a target="_blank" rel="noopener" href="http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_design.html">http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_design.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/hudiefenmu/article/details/37655491">翻译经典 HDFS 原理讲解漫画</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/3cd48f/" title="HDFS 入门">https://dunwu.github.io/blog/pages/3cd48f/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/blog/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/blog/tags/HDFS/" rel="tag"># HDFS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/90aeb6/" rel="prev" title="HDFS 运维">
+                  <i class="fa fa-angle-left"></i> HDFS 运维
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/94f791/" rel="next" title="hive-ops">
+                  hive-ops <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"a31a4c6924739371b65edd2b019444c0"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

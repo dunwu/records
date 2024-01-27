@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="SQL Cheat Sheet查找数据的查询SELECT: 用于从数据库中选择数据 SELECT * FROM table_name;  DISTINCT: 用于过滤掉重复的值并返回指定列的行 SELECT DISTINCT column_name;  WHERE: 用于过滤记录&#x2F;行 SELECT column1, column2 FROM table_name WHERE condit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Cheat Sheet">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/e438a7/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="SQL Cheat Sheet查找数据的查询SELECT: 用于从数据库中选择数据 SELECT * FROM table_name;  DISTINCT: 用于过滤掉重复的值并返回指定列的行 SELECT DISTINCT column_name;  WHERE: 用于过滤记录&#x2F;行 SELECT column1, column2 FROM table_name WHERE condit">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-16T06:17:08.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.415Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="关系型数据库">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/e438a7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/e438a7/","path":"/pages/e438a7/","title":"SQL Cheat Sheet"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SQL Cheat Sheet | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL-Cheat-Sheet"><span class="nav-number">1.</span> <span class="nav-text">SQL Cheat Sheet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.1.</span> <span class="nav-text">查找数据的查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT-%E7%94%A8%E4%BA%8E%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">SELECT: 用于从数据库中选择数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DISTINCT-%E7%94%A8%E4%BA%8E%E8%BF%87%E6%BB%A4%E6%8E%89%E9%87%8D%E5%A4%8D%E7%9A%84%E5%80%BC%E5%B9%B6%E8%BF%94%E5%9B%9E%E6%8C%87%E5%AE%9A%E5%88%97%E7%9A%84%E8%A1%8C"><span class="nav-number">1.1.2.</span> <span class="nav-text">DISTINCT: 用于过滤掉重复的值并返回指定列的行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WHERE-%E7%94%A8%E4%BA%8E%E8%BF%87%E6%BB%A4%E8%AE%B0%E5%BD%95-%E8%A1%8C"><span class="nav-number">1.1.3.</span> <span class="nav-text">WHERE: 用于过滤记录&#x2F;行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ORDER-BY-%E7%94%A8%E4%BA%8E%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E6%8E%92%E5%BA%8F%EF%BC%8C%E5%8D%87%E5%BA%8F%EF%BC%88ASC%EF%BC%89%E6%88%96%E8%80%85%E9%99%8D%E5%BA%8F%EF%BC%88DESC%EF%BC%89"><span class="nav-number">1.1.4.</span> <span class="nav-text">ORDER BY: 用于结果集的排序，升序（ASC）或者降序（DESC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT-TOP-%E7%94%A8%E4%BA%8E%E6%8C%87%E5%AE%9A%E4%BB%8E%E8%A1%A8%E9%A1%B6%E9%83%A8%E8%BF%94%E5%9B%9E%E7%9A%84%E8%AE%B0%E5%BD%95%E6%95%B0"><span class="nav-number">1.1.5.</span> <span class="nav-text">SELECT TOP: 用于指定从表顶部返回的记录数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LIKE-%E7%94%A8%E4%BA%8E%E6%90%9C%E7%B4%A2%E5%88%97%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9A%E6%A8%A1%E5%BC%8F%EF%BC%8CWHERE-%E5%AD%90%E5%8F%A5%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.6.</span> <span class="nav-text">LIKE: 用于搜索列中的特定模式，WHERE 子句中使用的运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IN-%E7%94%A8%E4%BA%8E%E5%9C%A8-WHERE-%E5%AD%90%E5%8F%A5%E4%B8%AD%E6%8C%87%E5%AE%9A%E5%A4%9A%E4%B8%AA%E5%80%BC%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.7.</span> <span class="nav-text">IN: 用于在 WHERE 子句中指定多个值的运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BETWEEN-%E7%94%A8%E4%BA%8E%E8%BF%87%E6%BB%A4%E7%BB%99%E5%AE%9A%E8%8C%83%E5%9B%B4%E7%9A%84%E5%80%BC%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.8.</span> <span class="nav-text">BETWEEN: 用于过滤给定范围的值的运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NULL-%E4%BB%A3%E8%A1%A8%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AE%B5%E6%B2%A1%E6%9C%89%E5%80%BC"><span class="nav-number">1.1.9.</span> <span class="nav-text">NULL: 代表一个字段没有值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AS-%E7%94%A8%E4%BA%8E%E7%BB%99%E8%A1%A8%E6%88%96%E8%80%85%E5%88%97%E5%88%86%E9%85%8D%E5%88%AB%E5%90%8D"><span class="nav-number">1.1.10.</span> <span class="nav-text">AS: 用于给表或者列分配别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UNION-%E7%94%A8%E4%BA%8E%E7%BB%84%E5%90%88%E4%B8%A4%E4%B8%AA%E6%88%96%E8%80%85%E5%A4%9A%E4%B8%AA-SELECT-%E8%AF%AD%E5%8F%A5%E7%9A%84%E7%BB%93%E6%9E%9C%E9%9B%86%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.11.</span> <span class="nav-text">UNION: 用于组合两个或者多个 SELECT 语句的结果集的运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ANY-ALL-%E7%94%A8%E4%BA%8E%E6%A3%80%E6%9F%A5-WHERE-%E6%88%96-HAVING-%E5%AD%90%E5%8F%A5%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E5%AD%90%E6%9F%A5%E8%AF%A2%E6%9D%A1%E4%BB%B6%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.12.</span> <span class="nav-text">ANY|ALL: 用于检查 WHERE 或 HAVING 子句中使用的子查询条件的运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GROUP-BY-%E9%80%9A%E5%B8%B8%E4%B8%8E%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0%EF%BC%88COUNT%EF%BC%8CMAX%EF%BC%8CMIN%EF%BC%8CSUM%EF%BC%8CAVG%EF%BC%89%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8%EF%BC%8C%E7%94%A8%E4%BA%8E%E5%B0%86%E7%BB%93%E6%9E%9C%E9%9B%86%E5%88%86%E7%BB%84%E4%B8%BA%E4%B8%80%E5%88%97%E6%88%96%E5%A4%9A%E5%88%97"><span class="nav-number">1.1.13.</span> <span class="nav-text">GROUP BY: 通常与聚合函数（COUNT，MAX，MIN，SUM，AVG）一起使用，用于将结果集分组为一列或多列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HAVING-HAVING-%E5%AD%90%E5%8F%A5%E6%8C%87%E5%AE%9A-SELECT-%E8%AF%AD%E5%8F%A5%E5%BA%94%E4%BB%85%E8%BF%94%E5%9B%9E%E8%81%9A%E5%90%88%E5%80%BC%E6%BB%A1%E8%B6%B3%E6%8C%87%E5%AE%9A%E6%9D%A1%E4%BB%B6%E7%9A%84%E8%A1%8C%E3%80%82%E5%AE%83%E8%A2%AB%E6%B7%BB%E5%8A%A0%E5%88%B0-SQL-%E8%AF%AD%E8%A8%80%E4%B8%AD%EF%BC%8C%E5%9B%A0%E4%B8%BA-WHERE-%E5%85%B3%E9%94%AE%E5%AD%97%E4%B8%8D%E8%83%BD%E4%B8%8E%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8%E3%80%82"><span class="nav-number">1.1.14.</span> <span class="nav-text">HAVING: HAVING 子句指定 SELECT 语句应仅返回聚合值满足指定条件的行。它被添加到 SQL 语言中，因为 WHERE 关键字不能与聚合函数一起使用。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.2.</span> <span class="nav-text">修改数据的查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#INSERT-INTO-%E7%94%A8%E4%BA%8E%E5%9C%A8%E8%A1%A8%E4%B8%AD%E6%8F%92%E5%85%A5%E6%96%B0%E8%AE%B0%E5%BD%95-%E8%A1%8C"><span class="nav-number">1.2.1.</span> <span class="nav-text">INSERT INTO: 用于在表中插入新记录&#x2F;行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UPDATE-%E7%94%A8%E4%BA%8E%E4%BF%AE%E6%94%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%8E%B0%E6%9C%89%E8%AE%B0%E5%BD%95-%E8%A1%8C"><span class="nav-number">1.2.2.</span> <span class="nav-text">UPDATE: 用于修改表中的现有记录&#x2F;行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DELETE-%E7%94%A8%E4%BA%8E%E5%88%A0%E9%99%A4%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%8E%B0%E6%9C%89%E8%AE%B0%E5%BD%95-%E8%A1%8C"><span class="nav-number">1.2.3.</span> <span class="nav-text">DELETE: 用于删除表中的现有记录&#x2F;行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.3.</span> <span class="nav-text">聚合查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#COUNT-%E8%BF%94%E5%9B%9E%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">COUNT: 返回出现次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MIN-and-MAX-%E8%BF%94%E5%9B%9E%E6%89%80%E9%80%89%E5%88%97%E7%9A%84%E6%9C%80%E5%B0%8F-%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">1.3.2.</span> <span class="nav-text">MIN() and MAX(): 返回所选列的最小&#x2F;最大值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AVG-%E8%BF%94%E5%9B%9E%E6%95%B0%E5%AD%97%E5%88%97%E7%9A%84%E5%B9%B3%E5%9D%87%E5%80%BC"><span class="nav-number">1.3.3.</span> <span class="nav-text">AVG(): 返回数字列的平均值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUM-%E8%BF%94%E5%9B%9E%E6%95%B0%E5%80%BC%E5%88%97%E7%9A%84%E6%80%BB%E5%92%8C"><span class="nav-number">1.3.4.</span> <span class="nav-text">SUM(): 返回数值列的总和</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.4.</span> <span class="nav-text">连接查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#INNER-JOIN-%E5%86%85%E8%BF%9E%E6%8E%A5%EF%BC%8C%E8%BF%94%E5%9B%9E%E5%9C%A8%E4%B8%A4%E5%BC%A0%E8%A1%A8%E4%B8%AD%E5%85%B7%E6%9C%89%E5%8C%B9%E9%85%8D%E5%80%BC%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-number">1.4.1.</span> <span class="nav-text">INNER JOIN: 内连接，返回在两张表中具有匹配值的记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LEFT-OUTER-JOIN-%E5%B7%A6%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%8C%E8%BF%94%E5%9B%9E%E5%B7%A6%E8%A1%A8%EF%BC%88table1%EF%BC%89%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E8%AE%B0%E5%BD%95%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%8F%B3%E8%A1%A8%E4%B8%AD%E7%9A%84%E5%8C%B9%E9%85%8D%E8%AE%B0%E5%BD%95%EF%BC%88table2%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">LEFT (OUTER) JOIN: 左外连接，返回左表（table1）中的所有记录，以及右表中的匹配记录（table2）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RIGHT-OUTER-JOIN-%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%8C%E8%BF%94%E5%9B%9E%E5%8F%B3%E8%A1%A8%EF%BC%88table2%EF%BC%89%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E8%AE%B0%E5%BD%95%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%B7%A6%E8%A1%A8%EF%BC%88table1%EF%BC%89%E4%B8%AD%E5%8C%B9%E9%85%8D%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-number">1.4.3.</span> <span class="nav-text">RIGHT (OUTER) JOIN: 右外连接，返回右表（table2）中的所有记录，以及左表（table1）中匹配的记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FULL-OUTER-JOIN-%E5%85%A8%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%8C%E5%85%A8%E8%BF%9E%E6%8E%A5%E6%98%AF%E5%B7%A6%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%B9%B6%E9%9B%86-%E8%BF%9E%E6%8E%A5%E8%A1%A8%E5%8C%85%E5%90%AB%E8%A2%AB%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%A1%A8%E7%9A%84%E6%89%80%E6%9C%89%E8%AE%B0%E5%BD%95-%E5%A6%82%E6%9E%9C%E7%BC%BA%E5%B0%91%E5%8C%B9%E9%85%8D%E7%9A%84%E8%AE%B0%E5%BD%95-%E4%BB%A5-NULL-%E5%A1%AB%E5%85%85%E3%80%82"><span class="nav-number">1.4.4.</span> <span class="nav-text">FULL (OUTER) JOIN: 全外连接，全连接是左右外连接的并集. 连接表包含被连接的表的所有记录, 如果缺少匹配的记录, 以 NULL 填充。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Self-JOIN-%E8%87%AA%E8%BF%9E%E6%8E%A5%EF%BC%8C%E8%A1%A8%E8%87%AA%E8%BA%AB%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.4.5.</span> <span class="nav-text">Self JOIN: 自连接，表自身连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.5.</span> <span class="nav-text">视图查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE-%E5%88%9B%E5%BB%BA%E8%A7%86%E5%9B%BE"><span class="nav-number">1.5.1.</span> <span class="nav-text">CREATE: 创建视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELECT-%E6%A3%80%E7%B4%A2%E8%A7%86%E5%9B%BE"><span class="nav-number">1.5.2.</span> <span class="nav-text">SELECT: 检索视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DROP-%E5%88%A0%E9%99%A4%E8%A7%86%E5%9B%BE"><span class="nav-number">1.5.3.</span> <span class="nav-text">DROP: 删除视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%A1%A8%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.6.</span> <span class="nav-text">修改表的查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ADD-%E6%B7%BB%E5%8A%A0%E5%AD%97%E6%AE%B5"><span class="nav-number">1.6.1.</span> <span class="nav-text">ADD: 添加字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MODIFY-%E4%BF%AE%E6%94%B9%E5%AD%97%E6%AE%B5%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.6.2.</span> <span class="nav-text">MODIFY: 修改字段数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DROP-%E5%88%A0%E9%99%A4%E5%AD%97%E6%AE%B5"><span class="nav-number">1.6.3.</span> <span class="nav-text">DROP: 删除字段</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/e438a7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SQL Cheat Sheet | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQL Cheat Sheet<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/03.%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/01.%E7%BB%BC%E5%90%88/99.SqlCheatSheet.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-16 14:17:08" itemprop="dateCreated datePublished" datetime="2022-07-16T14:17:08+08:00">2022-07-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">关系型数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%BB%BC%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">综合</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="SQL-Cheat-Sheet"><a href="#SQL-Cheat-Sheet" class="headerlink" title="SQL Cheat Sheet"></a>SQL Cheat Sheet</h1><h2 id="查找数据的查询"><a href="#查找数据的查询" class="headerlink" title="查找数据的查询"></a>查找数据的查询</h2><h3 id="SELECT-用于从数据库中选择数据"><a href="#SELECT-用于从数据库中选择数据" class="headerlink" title="SELECT: 用于从数据库中选择数据"></a><strong>SELECT</strong>: 用于从数据库中选择数据</h3><ul>
+<li><code>SELECT</code> * <code>FROM</code> table_name;</li>
+</ul>
+<h3 id="DISTINCT-用于过滤掉重复的值并返回指定列的行"><a href="#DISTINCT-用于过滤掉重复的值并返回指定列的行" class="headerlink" title="DISTINCT: 用于过滤掉重复的值并返回指定列的行"></a><strong>DISTINCT</strong>: 用于过滤掉重复的值并返回指定列的行</h3><ul>
+<li><code>SELECT DISTINCT</code> column_name;</li>
+</ul>
+<h3 id="WHERE-用于过滤记录-行"><a href="#WHERE-用于过滤记录-行" class="headerlink" title="WHERE: 用于过滤记录&#x2F;行"></a><strong>WHERE</strong>: 用于过滤记录&#x2F;行</h3><ul>
+<li><code>SELECT</code> column1, column2 <code>FROM</code> table_name <code>WHERE</code> condition;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE</code> condition1 <code>AND</code> condition2;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE</code> condition1 <code>OR</code> condition2;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE NOT</code> condition;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE</code> condition1 <code>AND</code> (condition2 <code>OR</code> condition3);</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE EXISTS</code> (<code>SELECT</code> column_name <code>FROM</code> table_name <code>WHERE</code> condition);</li>
+</ul>
+<h3 id="ORDER-BY-用于结果集的排序，升序（ASC）或者降序（DESC）"><a href="#ORDER-BY-用于结果集的排序，升序（ASC）或者降序（DESC）" class="headerlink" title="ORDER BY: 用于结果集的排序，升序（ASC）或者降序（DESC）"></a><strong>ORDER BY</strong>: 用于结果集的排序，升序（ASC）或者降序（DESC）</h3><ul>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>ORDER BY</code> column;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>ORDER BY</code> column <code>DESC</code>;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>ORDER BY</code> column1 <code>ASC</code>, column2 <code>DESC</code>;</li>
+</ul>
+<h3 id="SELECT-TOP-用于指定从表顶部返回的记录数"><a href="#SELECT-TOP-用于指定从表顶部返回的记录数" class="headerlink" title="SELECT TOP: 用于指定从表顶部返回的记录数"></a><strong>SELECT TOP</strong>: 用于指定从表顶部返回的记录数</h3><ul>
+<li><code>SELECT TOP</code> number columns_names <code>FROM</code> table_name <code>WHERE</code> condition;</li>
+<li><code>SELECT TOP</code> percent columns_names <code>FROM</code> table_name <code>WHERE</code> condition;</li>
+<li>并非所有数据库系统都支持<code>SELECT TOP</code>。 MySQL 中是<code>LIMIT</code>子句</li>
+<li><code>SELECT</code> column_names <code>FROM</code> table_name <code>LIMIT</code> offset, count;</li>
+</ul>
+<h3 id="LIKE-用于搜索列中的特定模式，WHERE-子句中使用的运算符"><a href="#LIKE-用于搜索列中的特定模式，WHERE-子句中使用的运算符" class="headerlink" title="LIKE: 用于搜索列中的特定模式，WHERE 子句中使用的运算符"></a><strong>LIKE</strong>: 用于搜索列中的特定模式，WHERE 子句中使用的运算符</h3><ul>
+<li>% (percent sign) 是一个表示零个，一个或多个字符的通配符</li>
+<li>_ (underscore) 是一个表示单个字符通配符</li>
+<li><code>SELECT</code> column_names <code>FROM</code> table_name <code>WHERE</code> column_name <code>LIKE</code> pattern;</li>
+<li><code>LIKE</code> ‘a%’ （查找任何以“a”开头的值）</li>
+<li><code>LIKE</code> ‘%a’ （查找任何以“a”结尾的值）</li>
+<li><code>LIKE</code> ‘%or%’ （查找任何包含“or”的值）</li>
+<li><code>LIKE</code> ‘_r%’ （查找任何第二位是“r”的值）</li>
+<li><code>LIKE</code> ‘a*%*%’ （查找任何以“a”开头且长度至少为 3 的值）</li>
+<li><code>LIKE</code> ‘[a-c]%’（查找任何以“a”或“b”或“c”开头的值）</li>
+</ul>
+<h3 id="IN-用于在-WHERE-子句中指定多个值的运算符"><a href="#IN-用于在-WHERE-子句中指定多个值的运算符" class="headerlink" title="IN: 用于在 WHERE 子句中指定多个值的运算符"></a><strong>IN</strong>: 用于在 WHERE 子句中指定多个值的运算符</h3><ul>
+<li>本质上，IN 运算符是多个 OR 条件的简写</li>
+<li><code>SELECT</code> column_names <code>FROM</code> table_name <code>WHERE</code> column_name <code>IN</code> (value1, value2, …);</li>
+<li><code>SELECT</code> column_names <code>FROM</code> table_name <code>WHERE</code> column_name <code>IN</code> (<code>SELECT STATEMENT</code>);</li>
+</ul>
+<h3 id="BETWEEN-用于过滤给定范围的值的运算符"><a href="#BETWEEN-用于过滤给定范围的值的运算符" class="headerlink" title="BETWEEN: 用于过滤给定范围的值的运算符"></a><strong>BETWEEN</strong>: 用于过滤给定范围的值的运算符</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table_name <code>WHERE</code> column_name <code>BETWEEN</code> value1 <code>AND</code> value2;</li>
+<li><code>SELECT</code> * <code>FROM</code> Products <code>WHERE</code> (column_name <code>BETWEEN</code> value1 <code>AND</code> value2) <code>AND NOT</code> column_name2 <code>IN</code> (value3, value4);</li>
+<li><code>SELECT</code> * <code>FROM</code> Products <code>WHERE</code> column_name <code>BETWEEN</code> #01&#x2F;07&#x2F;1999# AND #03&#x2F;12&#x2F;1999#;</li>
+</ul>
+<h3 id="NULL-代表一个字段没有值"><a href="#NULL-代表一个字段没有值" class="headerlink" title="NULL: 代表一个字段没有值"></a><strong>NULL</strong>: 代表一个字段没有值</h3><ul>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE</code> column_name <code>IS NULL</code>;</li>
+<li><code>SELECT</code> * <code>FROM</code> table_name <code>WHERE</code> column_name <code>IS NOT NULL</code>;</li>
+</ul>
+<h3 id="AS-用于给表或者列分配别名"><a href="#AS-用于给表或者列分配别名" class="headerlink" title="AS: 用于给表或者列分配别名"></a><strong>AS</strong>: 用于给表或者列分配别名</h3><ul>
+<li><code>SELECT</code> column_name <code>AS</code> alias_name <code>FROM</code> table_name;</li>
+<li><code>SELECT</code> column_name <code>FROM</code> table_name <code>AS</code> alias_name;</li>
+<li><code>SELECT</code> column_name <code>AS</code> alias_name1, column_name2 <code>AS</code> alias_name2;</li>
+<li><code>SELECT</code> column_name1, column_name2 + ‘, ‘ + column_name3 <code>AS</code> alias_name;</li>
+</ul>
+<h3 id="UNION-用于组合两个或者多个-SELECT-语句的结果集的运算符"><a href="#UNION-用于组合两个或者多个-SELECT-语句的结果集的运算符" class="headerlink" title="UNION: 用于组合两个或者多个 SELECT 语句的结果集的运算符"></a><strong>UNION</strong>: 用于组合两个或者多个 SELECT 语句的结果集的运算符</h3><ul>
+<li>每个 SELECT 语句必须拥有相同的列数</li>
+<li>列必须拥有相似的数据类型</li>
+<li>每个 SELECT 语句中的列也必须具有相同的顺序</li>
+<li><code>SELECT</code> columns_names <code>FROM</code> table1 <code>UNION SELECT</code> column_name <code>FROM</code> table2;</li>
+<li><code>UNION</code> 仅允许选择不同的值, <code>UNION ALL</code> 允许重复</li>
+</ul>
+<h3 id="ANY-ALL-用于检查-WHERE-或-HAVING-子句中使用的子查询条件的运算符"><a href="#ANY-ALL-用于检查-WHERE-或-HAVING-子句中使用的子查询条件的运算符" class="headerlink" title="ANY|ALL: 用于检查 WHERE 或 HAVING 子句中使用的子查询条件的运算符"></a><strong>ANY|ALL</strong>: 用于检查 WHERE 或 HAVING 子句中使用的子查询条件的运算符</h3><ul>
+<li><code>ANY</code> 如果任何子查询值满足条件，则返回 true。</li>
+<li><code>ALL</code> 如果所有子查询值都满足条件，则返回 true。</li>
+<li><code>SELECT</code> columns_names <code>FROM</code> table1 <code>WHERE</code> column_name operator (<code>ANY</code>|<code>ALL</code>) (<code>SELECT</code> column_name <code>FROM</code> table_name <code>WHERE</code> condition);</li>
+</ul>
+<h3 id="GROUP-BY-通常与聚合函数（COUNT，MAX，MIN，SUM，AVG）一起使用，用于将结果集分组为一列或多列"><a href="#GROUP-BY-通常与聚合函数（COUNT，MAX，MIN，SUM，AVG）一起使用，用于将结果集分组为一列或多列" class="headerlink" title="GROUP BY: 通常与聚合函数（COUNT，MAX，MIN，SUM，AVG）一起使用，用于将结果集分组为一列或多列"></a><strong>GROUP BY</strong>: 通常与聚合函数（COUNT，MAX，MIN，SUM，AVG）一起使用，用于将结果集分组为一列或多列</h3><ul>
+<li><code>SELECT</code> column_name1, COUNT(column_name2) <code>FROM</code> table_name <code>WHERE</code> condition <code>GROUP BY</code> column_name1 <code>ORDER BY</code> COUNT(column_name2) DESC;</li>
+</ul>
+<h3 id="HAVING-HAVING-子句指定-SELECT-语句应仅返回聚合值满足指定条件的行。它被添加到-SQL-语言中，因为-WHERE-关键字不能与聚合函数一起使用。"><a href="#HAVING-HAVING-子句指定-SELECT-语句应仅返回聚合值满足指定条件的行。它被添加到-SQL-语言中，因为-WHERE-关键字不能与聚合函数一起使用。" class="headerlink" title="HAVING: HAVING 子句指定 SELECT 语句应仅返回聚合值满足指定条件的行。它被添加到 SQL 语言中，因为 WHERE 关键字不能与聚合函数一起使用。"></a><strong>HAVING</strong>: HAVING 子句指定 SELECT 语句应仅返回聚合值满足指定条件的行。它被添加到 SQL 语言中，因为 WHERE 关键字不能与聚合函数一起使用。</h3><ul>
+<li><code>SELECT</code> <code>COUNT</code>(column_name1), column_name2 <code>FROM</code> table <code>GROUP BY</code> column_name2 <code>HAVING</code> <code>COUNT(</code>column_name1<code>)</code> &gt; 5;</li>
+</ul>
+<h2 id="修改数据的查询"><a href="#修改数据的查询" class="headerlink" title="修改数据的查询"></a>修改数据的查询</h2><h3 id="INSERT-INTO-用于在表中插入新记录-行"><a href="#INSERT-INTO-用于在表中插入新记录-行" class="headerlink" title="INSERT INTO: 用于在表中插入新记录&#x2F;行"></a><strong>INSERT INTO</strong>: 用于在表中插入新记录&#x2F;行</h3><ul>
+<li><code>INSERT INTO</code> table_name (column1, column2) <code>VALUES</code> (value1, value2);</li>
+<li><code>INSERT INTO</code> table_name <code>VALUES</code> (value1, value2 …);</li>
+</ul>
+<h3 id="UPDATE-用于修改表中的现有记录-行"><a href="#UPDATE-用于修改表中的现有记录-行" class="headerlink" title="UPDATE: 用于修改表中的现有记录&#x2F;行"></a><strong>UPDATE</strong>: 用于修改表中的现有记录&#x2F;行</h3><ul>
+<li><code>UPDATE</code> table_name <code>SET</code> column1 &#x3D; value1, column2 &#x3D; value2 <code>WHERE</code> condition;</li>
+<li><code>UPDATE</code> table_name <code>SET</code> column_name &#x3D; value;</li>
+</ul>
+<h3 id="DELETE-用于删除表中的现有记录-行"><a href="#DELETE-用于删除表中的现有记录-行" class="headerlink" title="DELETE: 用于删除表中的现有记录&#x2F;行"></a><strong>DELETE</strong>: 用于删除表中的现有记录&#x2F;行</h3><ul>
+<li><code>DELETE FROM</code> table_name <code>WHERE</code> condition;</li>
+<li><code>DELETE</code> * <code>FROM</code> table_name;</li>
+</ul>
+<h2 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h2><h3 id="COUNT-返回出现次数"><a href="#COUNT-返回出现次数" class="headerlink" title="COUNT: 返回出现次数"></a><strong>COUNT</strong>: 返回出现次数</h3><ul>
+<li><code>SELECT COUNT (DISTINCT</code> column_name<code>)</code>;</li>
+</ul>
+<h3 id="MIN-and-MAX-返回所选列的最小-最大值"><a href="#MIN-and-MAX-返回所选列的最小-最大值" class="headerlink" title="MIN() and MAX(): 返回所选列的最小&#x2F;最大值"></a><strong>MIN() and MAX()</strong>: 返回所选列的最小&#x2F;最大值</h3><ul>
+<li><code>SELECT MIN (</code>column_names<code>) FROM</code> table_name <code>WHERE</code> condition;</li>
+<li><code>SELECT MAX (</code>column_names<code>) FROM</code> table_name <code>WHERE</code> condition;</li>
+</ul>
+<h3 id="AVG-返回数字列的平均值"><a href="#AVG-返回数字列的平均值" class="headerlink" title="AVG(): 返回数字列的平均值"></a><strong>AVG()</strong>: 返回数字列的平均值</h3><ul>
+<li><code>SELECT AVG (</code>column_name<code>) FROM</code> table_name <code>WHERE</code> condition;</li>
+</ul>
+<h3 id="SUM-返回数值列的总和"><a href="#SUM-返回数值列的总和" class="headerlink" title="SUM(): 返回数值列的总和"></a><strong>SUM()</strong>: 返回数值列的总和</h3><ul>
+<li><code>SELECT SUM (</code>column_name<code>) FROM</code> table_name <code>WHERE</code> condition;</li>
+</ul>
+<h2 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h2><h3 id="INNER-JOIN-内连接，返回在两张表中具有匹配值的记录"><a href="#INNER-JOIN-内连接，返回在两张表中具有匹配值的记录" class="headerlink" title="INNER JOIN: 内连接，返回在两张表中具有匹配值的记录"></a><strong>INNER JOIN</strong>: 内连接，返回在两张表中具有匹配值的记录</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table1 <code>INNER JOIN</code> table2 <code>ON</code> table1.column_name&#x3D;table2.column_name;</li>
+<li><code>SELECT</code> table1.column_name1, table2.column_name2, table3.column_name3 <code>FROM</code> ((table1 <code>INNER JOIN</code> table2 <code>ON</code> relationship) <code>INNER JOIN</code> table3 <code>ON</code> relationship);</li>
+</ul>
+<h3 id="LEFT-OUTER-JOIN-左外连接，返回左表（table1）中的所有记录，以及右表中的匹配记录（table2）"><a href="#LEFT-OUTER-JOIN-左外连接，返回左表（table1）中的所有记录，以及右表中的匹配记录（table2）" class="headerlink" title="LEFT (OUTER) JOIN: 左外连接，返回左表（table1）中的所有记录，以及右表中的匹配记录（table2）"></a><strong>LEFT (OUTER) JOIN</strong>: 左外连接，返回左表（table1）中的所有记录，以及右表中的匹配记录（table2）</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table1 <code>LEFT JOIN</code> table2 <code>ON</code> table1.column_name&#x3D;table2.column_name;</li>
+</ul>
+<h3 id="RIGHT-OUTER-JOIN-右外连接，返回右表（table2）中的所有记录，以及左表（table1）中匹配的记录"><a href="#RIGHT-OUTER-JOIN-右外连接，返回右表（table2）中的所有记录，以及左表（table1）中匹配的记录" class="headerlink" title="RIGHT (OUTER) JOIN: 右外连接，返回右表（table2）中的所有记录，以及左表（table1）中匹配的记录"></a><strong>RIGHT (OUTER) JOIN</strong>: 右外连接，返回右表（table2）中的所有记录，以及左表（table1）中匹配的记录</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table1 <code>RIGHT JOIN</code> table2 <code>ON</code> table1.column_name&#x3D;table2.column_name;</li>
+</ul>
+<h3 id="FULL-OUTER-JOIN-全外连接，全连接是左右外连接的并集-连接表包含被连接的表的所有记录-如果缺少匹配的记录-以-NULL-填充。"><a href="#FULL-OUTER-JOIN-全外连接，全连接是左右外连接的并集-连接表包含被连接的表的所有记录-如果缺少匹配的记录-以-NULL-填充。" class="headerlink" title="FULL (OUTER) JOIN: 全外连接，全连接是左右外连接的并集. 连接表包含被连接的表的所有记录, 如果缺少匹配的记录, 以 NULL 填充。"></a><strong>FULL (OUTER) JOIN</strong>: 全外连接，全连接是左右外连接的并集. 连接表包含被连接的表的所有记录, 如果缺少匹配的记录, 以 NULL 填充。</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table1 <code>FULL OUTER JOIN</code> table2 <code>ON</code> table1.column_name&#x3D;table2.column_name;</li>
+</ul>
+<h3 id="Self-JOIN-自连接，表自身连接"><a href="#Self-JOIN-自连接，表自身连接" class="headerlink" title="Self JOIN: 自连接，表自身连接"></a><strong>Self JOIN</strong>: 自连接，表自身连接</h3><ul>
+<li><code>SELECT</code> column_names <code>FROM</code> table1 T1, table1 T2 <code>WHERE</code> condition;</li>
+</ul>
+<h2 id="视图查询"><a href="#视图查询" class="headerlink" title="视图查询"></a>视图查询</h2><h3 id="CREATE-创建视图"><a href="#CREATE-创建视图" class="headerlink" title="CREATE: 创建视图"></a><strong>CREATE</strong>: 创建视图</h3><ul>
+<li><code>CREATE VIEW</code> view_name <code>AS SELECT</code> column1, column2 <code>FROM</code> table_name <code>WHERE</code> condition;</li>
+</ul>
+<h3 id="SELECT-检索视图"><a href="#SELECT-检索视图" class="headerlink" title="SELECT: 检索视图"></a><strong>SELECT</strong>: 检索视图</h3><ul>
+<li><code>SELECT</code> * <code>FROM</code> view_name;</li>
+</ul>
+<h3 id="DROP-删除视图"><a href="#DROP-删除视图" class="headerlink" title="DROP: 删除视图"></a><strong>DROP</strong>: 删除视图</h3><ul>
+<li><code>DROP VIEW</code> view_name;</li>
+</ul>
+<h2 id="修改表的查询"><a href="#修改表的查询" class="headerlink" title="修改表的查询"></a>修改表的查询</h2><h3 id="ADD-添加字段"><a href="#ADD-添加字段" class="headerlink" title="ADD: 添加字段"></a><strong>ADD</strong>: 添加字段</h3><ul>
+<li><code>ALTER TABLE</code> table_name <code>ADD</code> column_name column_definition;</li>
+</ul>
+<h3 id="MODIFY-修改字段数据类型"><a href="#MODIFY-修改字段数据类型" class="headerlink" title="MODIFY: 修改字段数据类型"></a><strong>MODIFY</strong>: 修改字段数据类型</h3><ul>
+<li><code>ALTER TABLE</code> table_name <code>MODIFY</code> column_name column_type;</li>
+</ul>
+<h3 id="DROP-删除字段"><a href="#DROP-删除字段" class="headerlink" title="DROP: 删除字段"></a><strong>DROP</strong>: 删除字段</h3><ul>
+<li><code>ALTER TABLE</code> table_name <code>DROP COLUMN</code> column_name;</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/e438a7/" title="SQL Cheat Sheet">https://dunwu.github.io/blog/pages/e438a7/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 关系型数据库</a>
+              <a href="/blog/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/34699b/" rel="prev" title="《SQL 必知必会》笔记">
+                  <i class="fa fa-angle-left"></i> 《SQL 必知必会》笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/1ee347/" rel="next" title="《MySQL 实战 45 讲》笔记">
+                  《MySQL 实战 45 讲》笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"b1aeb2470da2ca360563595ce6c897af"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

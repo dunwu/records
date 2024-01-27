@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="JavaSE📖 内容 Java 面试总结 💯  Java 基础特性 Java 开发环境 Java 基础语法特性 Java 基本数据类型 Java 面向对象 Java 方法 Java 数组 Java 枚举 Java 控制语句 Java 异常 Java 泛型 Java 反射 Java 注解 Java String 类型  Java 高级特性 Java 正则从入门到精通 - 关键词：Pattern、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaSE">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/69d2f8/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="JavaSE📖 内容 Java 面试总结 💯  Java 基础特性 Java 开发环境 Java 基础语法特性 Java 基本数据类型 Java 面向对象 Java 方法 Java 数组 Java 枚举 Java 控制语句 Java 异常 Java 泛型 Java 反射 Java 注解 Java String 类型  Java 高级特性 Java 正则从入门到精通 - 关键词：Pattern、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200221175550.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200630205329.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200221175827.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200628154803.png">
+<meta property="article:published_time" content="2022-05-06T01:19:33.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.391Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JavaSE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20200221175550.png">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/69d2f8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/69d2f8/","path":"/pages/69d2f8/","title":"JavaSE"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaSE | Dunwu Blog</title><meta name="robots" content="noindex">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JavaSE"><span class="nav-number">1.</span> <span class="nav-text">JavaSE</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%96-%E5%86%85%E5%AE%B9"><span class="nav-number">1.1.</span> <span class="nav-text">📖 内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.1.</span> <span class="nav-text">Java 基础特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.2.</span> <span class="nav-text">Java 高级特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E5%AE%B9%E5%99%A8"><span class="nav-number">1.1.3.</span> <span class="nav-text">Java 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-IO"><span class="nav-number">1.1.4.</span> <span class="nav-text">Java IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E5%B9%B6%E5%8F%91"><span class="nav-number">1.1.5.</span> <span class="nav-text">Java 并发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.1.6.</span> <span class="nav-text">Java 虚拟机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%9A-%E8%B5%84%E6%96%99"><span class="nav-number">1.2.</span> <span class="nav-text">📚 资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9A%AA-%E4%BC%A0%E9%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">🚪 传送</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/69d2f8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaSE | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaSE<a href="https://github.com/dunwu/blog/blob/master/source/_posts/01.Java/01.JavaSE/README.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-06 09:19:33" itemprop="dateCreated datePublished" datetime="2022-05-06T09:19:33+08:00">2022-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/Java/JavaSE/" itemprop="url" rel="index"><span itemprop="name">JavaSE</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="JavaSE"><a href="#JavaSE" class="headerlink" title="JavaSE"></a>JavaSE</h1><h2 id="📖-内容"><a href="#📖-内容" class="headerlink" title="📖 内容"></a>📖 内容</h2><blockquote>
+<p><a href="99.Java%E9%9D%A2%E8%AF%95.md">Java 面试总结</a> 💯</p>
+</blockquote>
+<h3 id="Java-基础特性"><a href="#Java-基础特性" class="headerlink" title="Java 基础特性"></a><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7">Java 基础特性</a></h3><ul>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/00.Java%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83.md">Java 开发环境</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/01.Java%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95.md">Java 基础语法特性</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/02.Java%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md">Java 基本数据类型</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/03.Java%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.md">Java 面向对象</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/04.Java%E6%96%B9%E6%B3%95.md">Java 方法</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/05.Java%E6%95%B0%E7%BB%84.md">Java 数组</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/06.Java%E6%9E%9A%E4%B8%BE.md">Java 枚举</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/07.Java%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5.md">Java 控制语句</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/08.Java%E5%BC%82%E5%B8%B8.md">Java 异常</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/09.Java%E6%B3%9B%E5%9E%8B.md">Java 泛型</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/10.Java%E5%8F%8D%E5%B0%84.md">Java 反射</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/11.Java%E6%B3%A8%E8%A7%A3.md">Java 注解</a></li>
+<li><a href="01.%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/42.JavaString%E7%B1%BB%E5%9E%8B.md">Java String 类型</a></li>
+</ul>
+<h3 id="Java-高级特性"><a href="#Java-高级特性" class="headerlink" title="Java 高级特性"></a><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7">Java 高级特性</a></h3><ul>
+<li><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/01.Java%E6%AD%A3%E5%88%99.md">Java 正则从入门到精通</a> - 关键词：<code>Pattern</code>、<code>Matcher</code>、<code>捕获与非捕获</code>、<code>反向引用</code>、<code>零宽断言</code>、<code>贪婪与懒惰</code>、<code>元字符</code>、<code>DFA</code>、<code>NFA</code></li>
+<li><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/02.Java%E7%BC%96%E7%A0%81%E5%92%8C%E5%8A%A0%E5%AF%86.md">Java 编码和加密</a> - 关键词：<code>Base64</code>、<code>消息摘要</code>、<code>数字签名</code>、<code>对称加密</code>、<code>非对称加密</code>、<code>MD5</code>、<code>SHA</code>、<code>HMAC</code>、<code>AES</code>、<code>DES</code>、<code>DESede</code>、<code>RSA</code></li>
+<li><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/03.Java%E5%9B%BD%E9%99%85%E5%8C%96.md">Java 国际化</a> - 关键词：<code>Locale</code>、<code>ResourceBundle</code>、<code>NumberFormat</code>、<code>DateFormat</code>、<code>MessageFormat</code></li>
+<li><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/04.JDK8.md">Java JDK8</a> - 关键词：<code>Stream</code>、<code>lambda</code>、<code>Optional</code>、<code>@FunctionalInterface</code></li>
+<li><a href="02.%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/05.JavaSPI.md">Java SPI</a> - 关键词：<code>SPI</code>、<code>ClassLoader</code></li>
+</ul>
+<h3 id="Java-容器"><a href="#Java-容器" class="headerlink" title="Java 容器"></a><a href="03.%E5%AE%B9%E5%99%A8">Java 容器</a></h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200221175550.png" alt="img"></p>
+<ul>
+<li><a href="03.%E5%AE%B9%E5%99%A8/01.Java%E5%AE%B9%E5%99%A8%E7%AE%80%E4%BB%8B.md">Java 容器简介</a> - 关键词：<code>Collection</code>、<code>泛型</code>、<code>Iterable</code>、<code>Iterator</code>、<code>Comparable</code>、<code>Comparator</code>、<code>Cloneable</code>、<code>fail-fast</code></li>
+<li><a href="03.%E5%AE%B9%E5%99%A8/02.Java%E5%AE%B9%E5%99%A8%E4%B9%8BList.md">Java 容器之 List</a> - 关键词：<code>List</code>、<code>ArrayList</code>、<code>LinkedList</code></li>
+<li><a href="03.%E5%AE%B9%E5%99%A8/03.Java%E5%AE%B9%E5%99%A8%E4%B9%8BMap.md">Java 容器之 Map</a> - 关键词：<code>Map</code>、<code>HashMap</code>、<code>TreeMap</code>、<code>LinkedHashMap</code>、<code>WeakHashMap</code></li>
+<li><a href="03.%E5%AE%B9%E5%99%A8/04.Java%E5%AE%B9%E5%99%A8%E4%B9%8BSet.md">Java 容器之 Set</a> - 关键词：<code>Set</code>、<code>HashSet</code>、<code>TreeSet</code>、<code>LinkedHashSet</code>、<code>EmumSet</code></li>
+<li><a href="03.%E5%AE%B9%E5%99%A8/05.Java%E5%AE%B9%E5%99%A8%E4%B9%8BQueue.md">Java 容器之 Queue</a> - 关键词：<code>Queue</code>、<code>Deque</code>、<code>ArrayDeque</code>、<code>LinkedList</code>、<code>PriorityQueue</code></li>
+<li><a href="03.%E5%AE%B9%E5%99%A8/06.Java%E5%AE%B9%E5%99%A8%E4%B9%8BStream.md">Java 容器之 Stream</a></li>
+</ul>
+<h3 id="Java-IO"><a href="#Java-IO" class="headerlink" title="Java IO"></a><a href="04.IO">Java IO</a></h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200630205329.png" alt="img"></p>
+<ul>
+<li><a href="04.IO/01.JavaIO%E6%A8%A1%E5%9E%8B.md">Java IO 模型</a> - 关键词：<code>InputStream</code>、<code>OutputStream</code>、<code>Reader</code>、<code>Writer</code>、<code>阻塞</code></li>
+<li><a href="04.IO/02.JavaNIO.md">Java NIO</a> - 关键词：<code>Channel</code>、<code>Buffer</code>、<code>Selector</code>、<code>非阻塞</code>、<code>多路复用</code></li>
+<li><a href="04.IO/03.Java%E5%BA%8F%E5%88%97%E5%8C%96.md">Java 序列化</a> - 关键词：<code>Serializable</code>、<code>serialVersionUID</code>、<code>transient</code>、<code>Externalizable</code>、<code>writeObject</code>、<code>readObject</code></li>
+<li><a href="04.IO/04.Java%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.md">Java 网络编程</a> - 关键词：<code>Socket</code>、<code>ServerSocket</code>、<code>DatagramPacket</code>、<code>DatagramSocket</code></li>
+<li><a href="04.IO/05.JavaIO%E5%B7%A5%E5%85%B7%E7%B1%BB.md">Java IO 工具类</a> - 关键词：<code>File</code>、<code>RandomAccessFile</code>、<code>System</code>、<code>Scanner</code></li>
+</ul>
+<h3 id="Java-并发"><a href="#Java-并发" class="headerlink" title="Java 并发"></a><a href="05.%E5%B9%B6%E5%8F%91">Java 并发</a></h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200221175827.png" alt="img"></p>
+<ul>
+<li><a href="05.%E5%B9%B6%E5%8F%91/01.Java%E5%B9%B6%E5%8F%91%E7%AE%80%E4%BB%8B.md">Java 并发简介</a> - 关键词：<code>进程</code>、<code>线程</code>、<code>安全性</code>、<code>活跃性</code>、<code>性能</code>、<code>死锁</code>、<code>饥饿</code>、<code>上下文切换</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/02.Java%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80.md">Java 线程基础</a> - 关键词：<code>Thread</code>、<code>Runnable</code>、<code>Callable</code>、<code>Future</code>、<code>wait</code>、<code>notify</code>、<code>notifyAll</code>、<code>join</code>、<code>sleep</code>、<code>yeild</code>、<code>线程状态</code>、<code>线程通信</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/03.Java%E5%B9%B6%E5%8F%91%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6.md">Java 并发核心机制</a> - 关键词：<code>synchronized</code>、<code>volatile</code>、<code>CAS</code>、<code>ThreadLocal</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/04.Java%E9%94%81.md">Java 并发锁</a> - 关键词：<code>AQS</code>、<code>ReentrantLock</code>、<code>ReentrantReadWriteLock</code>、<code>Condition</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/05.Java%E5%8E%9F%E5%AD%90%E7%B1%BB.md">Java 原子类</a> - 关键词：<code>CAS</code>、<code>Atomic</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/06.Java%E5%B9%B6%E5%8F%91%E5%92%8C%E5%AE%B9%E5%99%A8.md">Java 并发容器</a> - 关键词：<code>ConcurrentHashMap</code>、<code>CopyOnWriteArrayList</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/07.Java%E7%BA%BF%E7%A8%8B%E6%B1%A0.md">Java 线程池</a> - 关键词：<code>Executor</code>、<code>ExecutorService</code>、<code>ThreadPoolExecutor</code>、<code>Executors</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/08.Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E7%B1%BB.md">Java 并发工具类</a> - 关键词：<code>CountDownLatch</code>、<code>CyclicBarrier</code>、<code>Semaphore</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/09.Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.md">Java 内存模型</a> - 关键词：<code>JMM</code>、<code>volatile</code>、<code>synchronized</code>、<code>final</code>、<code>Happens-Before</code>、<code>内存屏障</code></li>
+<li><a href="05.%E5%B9%B6%E5%8F%91/10.ForkJoin%E6%A1%86%E6%9E%B6.md">ForkJoin 框架</a></li>
+</ul>
+<h3 id="Java-虚拟机"><a href="#Java-虚拟机" class="headerlink" title="Java 虚拟机"></a><a href="06.JVM">Java 虚拟机</a></h3><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20200628154803.png" alt="img"></p>
+<ul>
+<li><a href="06.JVM/01.JVM%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.md">JVM 体系结构</a></li>
+<li><a href="06.JVM/02.JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F.md">JVM 内存区域</a> - 关键词：<code>程序计数器</code>、<code>虚拟机栈</code>、<code>本地方法栈</code>、<code>堆</code>、<code>方法区</code>、<code>运行时常量池</code>、<code>直接内存</code>、<code>OutOfMemoryError</code>、<code>StackOverflowError</code></li>
+<li><a href="06.JVM/03.JVM%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86.md">JVM 垃圾收集</a> - 关键词：<code>GC Roots</code>、<code>Serial</code>、<code>Parallel</code>、<code>CMS</code>、<code>G1</code>、<code>Minor GC</code>、<code>Full GC</code></li>
+<li><a href="06.JVM/04.JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD.md">JVM 类加载</a> - 关键词：<code>ClassLoader</code>、<code>双亲委派</code></li>
+<li><a href="06.JVM/05.JVM%E5%AD%97%E8%8A%82%E7%A0%81.md">JVM 字节码</a> - 关键词：<code>bytecode</code>、<code>asm</code>、<code>javassist</code></li>
+<li><a href="06.JVM/11.JVM%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7.md">JVM 命令行工具</a> - 关键词：<code>jps</code>、<code>jstat</code>、<code>jmap</code> 、<code>jstack</code>、<code>jhat</code>、<code>jinfo</code></li>
+<li><a href="06.JVM/12.JVM_GUI%E5%B7%A5%E5%85%B7.md">JVM GUI 工具</a> - 关键词：<code>jconsole</code>、<code>jvisualvm</code>、<code>MAT</code>、<code>JProfile</code>、<code>Arthas</code></li>
+<li><a href="06.JVM/21.JVM%E5%AE%9E%E6%88%98.md">JVM 实战</a> - 关键词：<code>配置</code>、<code>调优</code></li>
+<li><a href="06.JVM/22.Java%E6%95%85%E9%9A%9C%E8%AF%8A%E6%96%AD.md">Java 故障诊断</a> - 关键词：<code>CPU</code>、<code>内存</code>、<code>磁盘</code>、<code>网络</code>、<code>GC</code></li>
+</ul>
+<h2 id="📚-资料"><a href="#📚-资料" class="headerlink" title="📚 资料"></a>📚 资料</h2><ul>
+<li><strong>书籍</strong><ul>
+<li>Java 四大名著<ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/2130190/">《Java 编程思想（Thinking in java）》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/26880667/">《Java 核心技术 卷 I 基础知识》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/27165931/">《Java 核心技术 卷 II 高级特性》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/30412517/">《Effective Java》</a></li>
+</ul>
+</li>
+<li>Java 并发<ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/10484692/">《Java 并发编程实战》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/26591326/">《Java 并发编程的艺术》</a></li>
+</ul>
+</li>
+<li>Java 虚拟机<ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/34907497/">《深入理解 Java 虚拟机》</a></li>
+</ul>
+</li>
+<li>Java 入门<ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/2000732/">《O’Reilly：Head First Java》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/3246499/">《疯狂 Java 讲义》</a></li>
+</ul>
+</li>
+<li>其他<ul>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/2243615/">《Head First 设计模式》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/1438754/">《Java 网络编程》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/25861566/">《Java 加密与解密的艺术》</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/27605355/">《阿里巴巴 Java 开发手册》</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>教程、社区</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/java/java-tutorial.html">Runoob Java 教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/iluwatar/java-design-patterns">java-design-patterns</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/TheAlgorithms/Java">Java</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/82">《Java 核心技术面试精讲》</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100028001">《Java 性能调优实战》</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100047701">《Java 业务开发常见错误 100 例》</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100010301">深入拆解 Java 虚拟机</a></li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/intro/100023901">《Java 并发编程实战》</a></li>
+</ul>
+</li>
+<li><strong>面试</strong><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/CyC2018/CS-Notes">CS-Notes</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Snailclimb/JavaGuide">JavaGuide</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/doocs/advanced-java">advanced-java</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="🚪-传送"><a href="#🚪-传送" class="headerlink" title="🚪 传送"></a>🚪 传送</h2><p>◾ 💧 <a href="https://dunwu.github.io/waterdrop/">钝悟的 IT 知识图谱</a> ◾</p>
+<!-- flag of hidden posts -->
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/69d2f8/" title="JavaSE">https://dunwu.github.io/blog/pages/69d2f8/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/Java/" rel="tag"># Java</a>
+              <a href="/blog/tags/JavaSE/" rel="tag"># JavaSE</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"7e2436a43a1c742a7502ba04f84b90fe"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

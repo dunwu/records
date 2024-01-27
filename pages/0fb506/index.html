@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/uploads/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/uploads/favicon.ico">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"dunwu.github.io","root":"/blog/","images":"/blog/images","scheme":"Pisces","darkmode":true,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/blog/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/blog/js/config.js"></script>
+
+    <meta name="description" content="Elasticsearch 简介Elasticsearch 是一个基于 Lucene 的搜索和数据分析工具，它提供了一个分布式服务。Elasticsearch 是遵从 Apache 开源条款的一款开源产品，是当前主流的企业级搜索引擎。 它用于全文搜索、结构化搜索、分析以及将这三者混合使用：  维基百科使用 Elasticsearch 提供全文搜索并高亮关键字，以及**输入实时搜索(search-a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 简介">
+<meta property="og:url" content="https://dunwu.github.io/blog/pages/0fb506/index.html">
+<meta property="og:site_name" content="Dunwu Blog">
+<meta property="og:description" content="Elasticsearch 简介Elasticsearch 是一个基于 Lucene 的搜索和数据分析工具，它提供了一个分布式服务。Elasticsearch 是遵从 Apache 开源条款的一款开源产品，是当前主流的企业级搜索引擎。 它用于全文搜索、结构化搜索、分析以及将这三者混合使用：  维基百科使用 Elasticsearch 提供全文搜索并高亮关键字，以及**输入实时搜索(search-a">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20220108215559.PNG">
+<meta property="article:published_time" content="2022-02-22T13:01:01.000Z">
+<meta property="article:modified_time" content="2024-01-27T15:32:48.423Z">
+<meta property="article:author" content="钝悟 ◾ Dunwu">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="搜索引擎数据库">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/dunwu/images/master/snap/20220108215559.PNG">
+
+
+<link rel="canonical" href="https://dunwu.github.io/blog/pages/0fb506/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://dunwu.github.io/blog/pages/0fb506/","path":"/pages/0fb506/","title":"Elasticsearch 简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Elasticsearch 简介 | Dunwu Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/blog/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Dunwu Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">大道至简，知易行难</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/blog/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">326</span></a></li><li class="menu-item menu-item-categories"><a href="/blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">137</span></a></li><li class="menu-item menu-item-archives"><a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">461</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Elasticsearch-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">Elasticsearch 特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2"><span class="nav-number">1.2.</span> <span class="nav-text">Elasticsearch 发展历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-%E6%A6%82%E5%BF%B5"><span class="nav-number">1.3.</span> <span class="nav-text">Elasticsearch 概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%91%E5%AE%9E%E6%97%B6%EF%BC%88NRT%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">近实时（NRT）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%EF%BC%88Index%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">索引（Index）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">倒排索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-template"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">index template</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dynamic-template"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">dynamic template</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%EF%BC%88Type%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">类型（Type）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%EF%BC%88Document%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">文档（Document）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">文档的元数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%EF%BC%88Node%EF%BC%89"><span class="nav-number">1.3.5.</span> <span class="nav-text">节点（Node）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%AE%80%E4%BB%8B"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">节点简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.5.2.</span> <span class="nav-text">节点类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.5.3.</span> <span class="nav-text">节点配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%EF%BC%88Cluster%EF%BC%89"><span class="nav-number">1.3.6.</span> <span class="nav-text">集群（Cluster）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E7%AE%80%E4%BB%8B"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">集群简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E5%81%A5%E5%BA%B7"><span class="nav-number">1.3.6.2.</span> <span class="nav-text">集群健康</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%89%87%EF%BC%88Shards%EF%BC%89"><span class="nav-number">1.3.7.</span> <span class="nav-text">分片（Shards）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%89%87%E7%AE%80%E4%BB%8B"><span class="nav-number">1.3.7.1.</span> <span class="nav-text">分片简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E5%88%86%E7%89%87%E5%92%8C%E5%89%AF%E5%88%86%E7%89%87"><span class="nav-number">1.3.7.2.</span> <span class="nav-text">主分片和副分片</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%EF%BC%88Replicas%EF%BC%89"><span class="nav-number">1.3.8.</span> <span class="nav-text">副本（Replicas）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.4.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="钝悟 ◾ Dunwu"
+      src="/blog/uploads/avatar.gif">
+  <p class="site-author-name" itemprop="name">钝悟 ◾ Dunwu</p>
+  <div class="site-description" itemprop="description">钝悟的个人博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/blog/archives/">
+          <span class="site-state-item-count">461</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/blog/categories/">
+        <span class="site-state-item-count">137</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/blog/tags/">
+        <span class="site-state-item-count">326</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dunwu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;dunwu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:forbreak@163.com" title="E-Mail → mailto:forbreak@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dunwu.github.io/blog/pages/0fb506/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.gif">
+      <meta itemprop="name" content="钝悟 ◾ Dunwu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dunwu Blog">
+      <meta itemprop="description" content="钝悟的个人博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Elasticsearch 简介 | Dunwu Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elasticsearch 简介<a href="https://github.com/dunwu/blog/blob/master/source/_posts/12.%E6%95%B0%E6%8D%AE%E5%BA%93/07.%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/01.Elasticsearch/03.Elasticsearch%E7%AE%80%E4%BB%8B.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-22 21:01:01" itemprop="dateCreated datePublished" datetime="2022-02-22T21:01:01+08:00">2022-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-01-27 23:32:48" itemprop="dateModified" datetime="2024-01-27T23:32:48+08:00">2024-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">搜索引擎数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Elasticsearch-简介"><a href="#Elasticsearch-简介" class="headerlink" title="Elasticsearch 简介"></a>Elasticsearch 简介</h1><p>Elasticsearch 是一个基于 Lucene 的搜索和数据分析工具，它提供了一个分布式服务。Elasticsearch 是遵从 Apache 开源条款的一款开源产品，是当前主流的企业级搜索引擎。</p>
+<p>它用于全文搜索、结构化搜索、分析以及将这三者混合使用：</p>
+<ul>
+<li>维基百科使用 Elasticsearch 提供全文搜索并高亮关键字，以及**输入实时搜索(search-as-you-type)<strong>和</strong>搜索纠错(did-you-mean)**等搜索建议功能。</li>
+<li>英国卫报使用 Elasticsearch 结合用户日志和社交网络数据提供给他们的编辑以实时的反馈，以便及时了解公众对新发表的文章的回应。</li>
+<li>StackOverflow 结合全文搜索与地理位置查询，以及<strong>more-like-this</strong>功能来找到相关的问题和答案。</li>
+<li>Github 使用 Elasticsearch 检索 1300 亿行的代码。</li>
+</ul>
+<h2 id="Elasticsearch-特点"><a href="#Elasticsearch-特点" class="headerlink" title="Elasticsearch 特点"></a>Elasticsearch 特点</h2><ul>
+<li>分布式的实时文件存储，每个字段都被索引并可被搜索；</li>
+<li>分布式的实时分析搜索引擎；</li>
+<li>可弹性扩展到上百台服务器规模，处理 PB 级结构化或非结构化数据；</li>
+<li>开箱即用（安装即可使用），它提供了许多合理的缺省值，并对初学者隐藏了复杂的搜索引擎理论。只需很少的学习既可在生产环境中使用。</li>
+</ul>
+<h2 id="Elasticsearch-发展历史"><a href="#Elasticsearch-发展历史" class="headerlink" title="Elasticsearch 发展历史"></a>Elasticsearch 发展历史</h2><ul>
+<li><p>2010 年 2 月 8 日，Elasticsearch 第一个公开版本发布。</p>
+</li>
+<li><p>2010 年 5 月 14 日，发布第一个具有里程碑意义的初始版本 <strong>0.7.0</strong> ，具有如下特征：</p>
+</li>
+<li><p>Zen Discovery 自动发现模块；</p>
+<ul>
+<li>支持 Groovy Client；</li>
+</ul>
+</li>
+<li><p>简单的插件管理机制；</p>
+<ul>
+<li>更好地支持 icu 分词器；</li>
+</ul>
+</li>
+<li><p>更多的管理 api。</p>
+</li>
+<li><p>2013 年初，GitHub 抛弃了 Solr，采取 ElasticSearch 来做其 PB 级的搜索。</p>
+</li>
+<li><p>2014 年 2 月 14 日，发布 <strong>1.0.0</strong> 版本，增加如下重要特性：</p>
+</li>
+<li><p>支持 Snapshot&#x2F;Restore API 备份恢复 API；</p>
+<ul>
+<li>支持聚合分析 Aggregations；</li>
+</ul>
+</li>
+<li><p>支持 cat api；</p>
+<ul>
+<li>支持断路器；</li>
+</ul>
+</li>
+<li><p>引入 Doc values。</p>
+</li>
+<li><p>2015 年 10 月 28 日，发布 <strong>2.0.0</strong> 版本，有如下重要特性：</p>
+</li>
+<li><p>增加了 Pipleline Aggregations；</p>
+<ul>
+<li>query&#x2F;filter 查询合并，都合并到 query 中，根据不同的上下文执行不同的查询；</li>
+</ul>
+</li>
+<li><p>压缩存储可配置；</p>
+<ul>
+<li>Rivers 模块被移除；</li>
+</ul>
+</li>
+<li><p>Multicast 组播发现被移除，成为一个插件，生产环境必须配置单播地址。</p>
+</li>
+<li><p>2016 年 10 月 26 日，发布 <strong>5.0.0</strong> 版本，有如下重大特性变化：</p>
+</li>
+<li><p>Lucene 6.x 的支持，磁盘空间少一半；索引时间少一半；查询性能提升 25%；支持 IPV6；</p>
+<ul>
+<li>Internal Engine 级别移除了用于避免同一文档并发更新的竞争锁，带来 15%-20% 的性能提升；</li>
+</ul>
+</li>
+<li><p>Shrink API，它可将分片数进行收缩成它的因数，如之前你是 15 个分片，你可以收缩成 5 个或者 3 个又或者 1 个，那么我们就可以想象成这样一种场景，在写入压力非常大的收集阶段，设置足够多的索引，充分利用 shard 的并行写能力，索引写完之后收缩成更少的 shard，提高查询性能；</p>
+<ul>
+<li>提供了第一个 Java 原生的 REST 客户端 SDK；</li>
+</ul>
+</li>
+<li><p>IngestNode，之前如果需要对数据进行加工，都是在索引之前进行处理，比如 logstash 可以对日志进行结构化和转换，现在直接在 es 就可以处理了；</p>
+<ul>
+<li>提供了 Painless 脚本，代替 Groovy 脚本；</li>
+<li>移除 site plugins，就是说 head、bigdesk 都不能直接装 es 里面了，不过可以部署独立站点（反正都是静态文件）或开发 kibana 插件；</li>
+<li>新增 Sliced Scroll 类型，现在 Scroll 接口可以并发来进行数据遍历了。每个 Scroll 请求，可以分成多个 Slice 请求，可以理解为切片，各 Slice 独立并行，利用 Scroll 重建或者遍历要快很多倍；</li>
+<li>新增了 Profile API；</li>
+<li>新增了 Rollover API；</li>
+<li>新增 Reindex；</li>
+<li>引入新的字段类型 Text&#x2F;Keyword 来替换 String；</li>
+<li>限制索引请求大小，避免大量并发请求压垮 ES；</li>
+<li>限制单个请求的 shards 数量，默认 1000 个。</li>
+</ul>
+</li>
+<li><p>2017 年 8 月 31 日，发布 <strong>6.0.0</strong> 版本，具有如下重要特性：</p>
+</li>
+<li><p>稀疏性 Doc Values 的支持；</p>
+<ul>
+<li>Index Sorting，即索引阶段的排序；</li>
+</ul>
+</li>
+<li><p>顺序号的支持，每个 es 的操作都有一个顺序编号（类似增量设计）；</p>
+<ul>
+<li>无缝滚动升级；</li>
+</ul>
+</li>
+<li><p>从 6.0 开始不支持一个 index 里面存在多个 type；</p>
+<ul>
+<li>Index-template inheritance，索引版本的继承，目前索引模板是所有匹配的都会合并，这样会造成索引模板有一些冲突问题， 6.0 将会只匹配一个，索引创建时也会进行验证；</li>
+<li>Load aware shard routing， 基于负载的请求路由，目前的搜索请求是全节点轮询，那么性能最慢的节点往往会造成整体的延迟增加，新的实现方式将基于队列的耗费时间自动调节队列长度，负载高的节点的队列长度将减少，让其他节点分摊更多的压力，搜索和索引都将基于这种机制；</li>
+<li>已经关闭的索引将也支持 replica 的自动处理，确保数据可靠。</li>
+</ul>
+</li>
+<li><p>2019 年 4 月 10 日，发布 <strong>7.0.0</strong> 版本，具有如下重要特性：</p>
+</li>
+<li><p>集群连接变化：TransportClient 被废弃，es7 的 java 代码，只能使用 restclient；对于 java 编程，建议采用 High-level-rest-client 的方式操作 ES 集群；</p>
+<ul>
+<li>ES 程序包默认打包 jdk：7.x 版本的程序包大小变成 300MB+，对比 6.x，包大了 200MB+，这正是 JDK 的大小；</li>
+</ul>
+</li>
+<li><p>采用基于 Lucene 9.0；</p>
+<ul>
+<li>正式废除单个索引下多 Type 的支持，es6 时，官方就提到了 es7 会删除 type，并且 es6 时，已经规定每一个 index 只能有一个 type。在 es7 中，使用默认的 _doc 作为 type，官方说在 8.x 版本会彻底移除 type。api 请求方式也发送变化，如获得某索引的某 ID 的文档：GET index&#x2F;_doc&#x2F;id 其中 index 和 id 为具体的值；</li>
+</ul>
+</li>
+<li><p>引入了真正的内存断路器，它可以更精准地检测出无法处理的请求，并防止它们使单个节点不稳定；</p>
+<ul>
+<li>Zen2 是 Elasticsearch 的全新集群协调层，提高了可靠性、性能和用户体验，变得更快、更安全，并更易于使用。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Elasticsearch-概念"><a href="#Elasticsearch-概念" class="headerlink" title="Elasticsearch 概念"></a>Elasticsearch 概念</h2><p>下列有一些概念是 Elasticsearch 的核心。从一开始就理解这些概念将极大地帮助简化学习 Elasticsearch 的过程。</p>
+<h3 id="近实时（NRT）"><a href="#近实时（NRT）" class="headerlink" title="近实时（NRT）"></a>近实时（NRT）</h3><p>Elasticsearch 是一个近乎实时的搜索平台。这意味着<strong>从索引文档到可搜索文档的时间有一点延迟</strong>（通常是一秒）。</p>
+<h3 id="索引（Index）"><a href="#索引（Index）" class="headerlink" title="索引（Index）"></a>索引（Index）</h3><p>索引在不同语境，有着不同的含义</p>
+<ul>
+<li>索引（名词）：一个 <strong>索引</strong> 类似于传统关系数据库中的一个 <strong>数据库</strong> ，是一个存储关系型文档的容器。 索引 (<em>index</em>) 的复数词为 indices 或 indexes 。索引实际上是指向一个或者多个<strong>物理分片</strong>的<strong>逻辑命名空间</strong> 。</li>
+<li>索引（动词）：索引一个文档 就是存储一个文档到一个 <em>索引</em> （名词）中以便被检索和查询。这非常类似于 SQL 语句中的 <code>INSERT</code> 关键词，除了文档已存在时，新文档会替换旧文档情况之外。</li>
+<li>倒排索引：关系型数据库通过增加一个索引比如一个 B 树索引到指定的列上，以便提升数据检索速度。Elasticsearch 和 Lucene 使用了一个叫做 <strong>倒排索引</strong> 的结构来达到相同的目的。</li>
+</ul>
+<p>索引的 Mapping 和 Setting</p>
+<ul>
+<li><strong><code>Mapping</code></strong> 定义文档字段的类型</li>
+<li><strong><code>Setting</code></strong> 定义不同的数据分布</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... any settings ... <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mappings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;type_one&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... any mappings ... <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type_two&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> ... any mappings ... <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h4><p><img src="https://raw.githubusercontent.com/dunwu/images/master/snap/20220108215559.PNG" alt="img"></p>
+<h4 id="index-template"><a href="#index-template" class="headerlink" title="index template"></a>index template</h4><p>**<code>index template</code>**（索引模板）帮助用户设定 Mapping 和 Setting，并按照一定的规则，自动匹配到新创建的索引之上。</p>
+<ul>
+<li>模板仅在一个索引被创建时，才会产生作用。修改模板不会影响已创建的索引。</li>
+<li>你可以设定多个索引模板，这些设置会被 merge 在一起。</li>
+<li>你可以指定 order 的数值，控制 merge 的过程。</li>
+</ul>
+<p>当新建一个索引时</p>
+<ul>
+<li>应用 ES 默认的 Mapping 和 Setting</li>
+<li>应用 order 数值低的 index template 中的设定</li>
+<li>应用 order 数值高的 index template 中的设定，之前的设定会被覆盖</li>
+<li>应用创建索引是，用户所指定的 Mapping 和 Setting，并覆盖之前模板中的设定。</li>
+</ul>
+<p>示例：创建默认索引模板</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">PUT _template/template_default</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;index_patterns&quot;</span>: [<span class="string">&quot;*&quot;</span>],</span><br><span class="line">  <span class="string">&quot;order&quot;</span>: 0,</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: 1,</span><br><span class="line">  <span class="string">&quot;settings&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;number_of_shards&quot;</span>: 1,</span><br><span class="line">    <span class="string">&quot;number_of_replicas&quot;</span>: 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /_template/template_test</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;index_patterns&quot;</span>: [<span class="string">&quot;test*&quot;</span>],</span><br><span class="line">  <span class="string">&quot;order&quot;</span>: 1,</span><br><span class="line">  <span class="string">&quot;settings&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;number_of_shards&quot;</span>: 1,</span><br><span class="line">    <span class="string">&quot;number_of_replicas&quot;</span>: 2</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;date_detection&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="string">&quot;numeric_detection&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看索引模板</span></span><br><span class="line">GET /_template/template_default</span><br><span class="line">GET /_template/temp*</span><br><span class="line"></span><br><span class="line"><span class="comment">#写入新的数据，index以test开头</span></span><br><span class="line">PUT testtemplate/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;someNumber&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;someDate&quot;</span>: <span class="string">&quot;2019/01/01&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">GET testtemplate/_mapping</span><br><span class="line">GET testtemplate/_settings</span><br><span class="line"></span><br><span class="line">PUT testmy</span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">&quot;settings&quot;</span>:&#123;</span><br><span class="line">		<span class="string">&quot;number_of_replicas&quot;</span>:5</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT testmy/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;key&quot;</span>: <span class="string">&quot;value&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET testmy/_settings</span><br><span class="line">DELETE testmy</span><br><span class="line">DELETE /_template/template_default</span><br><span class="line">DELETE /_template/template_test</span><br></pre></td></tr></table></figure>
+
+<h4 id="dynamic-template"><a href="#dynamic-template" class="headerlink" title="dynamic template"></a>dynamic template</h4><ul>
+<li>根据 ES 识别的数据类型，结合字段名称，来动态设定字段类型<ul>
+<li>所有的字符串类型都设定成 Keyword，或者关闭 keyword 字段。</li>
+<li>is 开头的字段都设置成 boolean</li>
+<li>long_ 开头的都设置成 long 类型</li>
+</ul>
+</li>
+<li>dynamic template 是定义在某个索引的 Mapping 中</li>
+<li>template 有一个名称</li>
+<li>匹配规则是一个数组</li>
+<li>为匹配到字段设置 Mapping</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Dynaminc Mapping 根据类型和字段名</span></span><br><span class="line">DELETE my_index</span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;firstName&quot;</span>: <span class="string">&quot;Ruan&quot;</span>,</span><br><span class="line">  <span class="string">&quot;isVIP&quot;</span>: <span class="string">&quot;true&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET my_index/_mapping</span><br><span class="line"></span><br><span class="line">DELETE my_index</span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;dynamic_templates&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;strings_as_boolean&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;match_mapping_type&quot;</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">          <span class="string">&quot;match&quot;</span>: <span class="string">&quot;is*&quot;</span>,</span><br><span class="line">          <span class="string">&quot;mapping&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;boolean&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;strings_as_keywords&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;match_mapping_type&quot;</span>: <span class="string">&quot;string&quot;</span>,</span><br><span class="line">          <span class="string">&quot;mapping&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;keyword&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">GET my_index/_mapping</span><br><span class="line"></span><br><span class="line">DELETE my_index</span><br><span class="line"><span class="comment">#结合路径</span></span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;dynamic_templates&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="string">&quot;full_name&quot;</span>: &#123;</span><br><span class="line">          <span class="string">&quot;path_match&quot;</span>: <span class="string">&quot;name.*&quot;</span>,</span><br><span class="line">          <span class="string">&quot;path_unmatch&quot;</span>: <span class="string">&quot;*.middle&quot;</span>,</span><br><span class="line">          <span class="string">&quot;mapping&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">            <span class="string">&quot;copy_to&quot;</span>: <span class="string">&quot;full_name&quot;</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">GET my_index/_mapping</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PUT my_index/_doc/1</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;first&quot;</span>: <span class="string">&quot;John&quot;</span>,</span><br><span class="line">    <span class="string">&quot;middle&quot;</span>: <span class="string">&quot;Winston&quot;</span>,</span><br><span class="line">    <span class="string">&quot;last&quot;</span>: <span class="string">&quot;Lennon&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GET my_index/_search?q=full_name:John</span><br><span class="line">DELETE my_index</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型（Type）"><a href="#类型（Type）" class="headerlink" title="类型（Type）"></a><del>类型（Type）</del></h3><p><del>type 是一个逻辑意义上的分类或者叫分区，允许在同一索引中建立多个 type。本质是相当于一个过滤条件，高版本将会废弃 type 概念。</del></p>
+<blockquote>
+<p><del><strong>6.0.0 版本及之后，废弃 type</strong></del></p>
+</blockquote>
+<h3 id="文档（Document）"><a href="#文档（Document）" class="headerlink" title="文档（Document）"></a>文档（Document）</h3><p>Elasticsearch 是面向文档的，<strong>文档是所有可搜索数据的最小单位</strong>。</p>
+<p>Elasticsearch 使用 <a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Json"><em>JSON</em></a> 作为文档的序列化格式。</p>
+<p>在索引&#x2F;类型中，可以根据需要存储任意数量的文档。</p>
+<p>每个文档都有一个 <strong>Unique ID</strong></p>
+<ul>
+<li>用户可以自己指定</li>
+<li>或通过 Elasticsearch 自动生成</li>
+</ul>
+<h4 id="文档的元数据"><a href="#文档的元数据" class="headerlink" title="文档的元数据"></a>文档的元数据</h4><p>一个文档不仅仅包含它的数据 ，也包含<strong>元数据</strong> —— 有关文档的信息。</p>
+<ul>
+<li><code>_index</code>：文档在哪存放</li>
+<li><code>_type</code>：文档表示的对象类别</li>
+<li><code>_id</code>：文档唯一标识</li>
+<li><code>_source</code>：文档的原始 Json 数据</li>
+<li><code>_all</code>：整合所有字段内容到该字段，已被废除</li>
+<li><code>_version</code>：文档的版本信息</li>
+<li><code>_score</code>：相关性打分</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;_index&quot;</span><span class="punctuation">:</span> <span class="string">&quot;megacorp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;_type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;employee&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;_version&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;found&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;_source&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Smith&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">25</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;about&quot;</span><span class="punctuation">:</span> <span class="string">&quot;I love to go rock climbing&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;interests&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;sports&quot;</span><span class="punctuation">,</span> <span class="string">&quot;music&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="节点（Node）"><a href="#节点（Node）" class="headerlink" title="节点（Node）"></a>节点（Node）</h3><h4 id="节点简介"><a href="#节点简介" class="headerlink" title="节点简介"></a>节点简介</h4><p>一个运行中的 Elasticsearch 实例称为一个<strong>节点</strong>。</p>
+<p>Elasticsearch 实例本质上是一个 Java 进程。一台机器上可以运行多个 Elasticsearch 进程，但是生产环境建议一台机器上只运行一个 Elasticsearch 进程</p>
+<p>每个节点都有名字，通过配置文件配置，或启动时通过 <code>-E node.name=node1</code> 指定。</p>
+<p>每个节点在启动后，会分配一个 UID，保存在 <code>data</code> 目录下。</p>
+<h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><ul>
+<li><strong>主节点（master node）</strong>：每个节点都保存了集群的状态，只有 master 节点才能修改集群的状态信息（保证数据一致性）。<strong>集群状态</strong>，维护了以下信息：<ul>
+<li>所有的节点信息</li>
+<li>所有的索引和其相关的 mapping 和 setting 信息</li>
+<li>分片的路由信息</li>
+</ul>
+</li>
+<li><strong>候选节点（master eligible node）</strong>：master eligible 节点可以参加选主流程。第一个启动的节点，会将自己选举为 mater 节点。<ul>
+<li>每个节点启动后，默认为 master eligible 节点，可以通过配置 <code>node.master: false</code> 禁止</li>
+</ul>
+</li>
+<li><strong>数据节点（data node）</strong>：负责保存分片数据。</li>
+<li><strong>协调节点（coordinating node）</strong>：负责接收客户端的请求，将请求分发到合适的接地那，最终把结果汇集到一起。每个 Elasticsearch 节点默认都是协调节点（coordinating node）。</li>
+<li><strong>冷&#x2F;热节点（warm&#x2F;hot node）</strong>：针对不同硬件配置的数据节点（data node），用来实现 Hot &amp; Warm 架构，降低集群部署的成本。</li>
+<li><strong>机器学习节点（machine learning node）</strong>：负责执行机器学习的 Job，用来做异常检测。</li>
+</ul>
+<h4 id="节点配置"><a href="#节点配置" class="headerlink" title="节点配置"></a>节点配置</h4><table>
+<thead>
+<tr>
+<th>配置参数</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node.master</td>
+<td>true</td>
+<td>是否为主节点</td>
+</tr>
+<tr>
+<td>node.data</td>
+<td>true</td>
+<td>是否为数据节点</td>
+</tr>
+<tr>
+<td>node.ingest</td>
+<td>true</td>
+<td></td>
+</tr>
+<tr>
+<td>node.ml</td>
+<td>true</td>
+<td>是否为机器学习节点（需要开启 x-pack）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>建议</strong></p>
+<p>开发环境中一个节点可以承担多种角色。但是，在生产环境中，节点应该设置为单一角色。</p>
+</blockquote>
+<h3 id="集群（Cluster）"><a href="#集群（Cluster）" class="headerlink" title="集群（Cluster）"></a>集群（Cluster）</h3><h4 id="集群简介"><a href="#集群简介" class="headerlink" title="集群简介"></a>集群简介</h4><p>拥有相同 <code>cluster.name</code> 配置的 Elasticsearch 节点组成一个<strong>集群</strong>。 <code>cluster.name</code> 默认名为 <code>elasticsearch</code>，可以通过配置文件修改，或启动时通过 <code>-E cluster.name=xxx</code> 指定。</p>
+<p>当有节点加入集群中或者从集群中移除节点时，集群将会重新平均分布所有的数据。</p>
+<p>当一个节点被选举成为主节点时，它将负责管理集群范围内的所有变更，例如增加、删除索引，或者增加、删除节点等。 而主节点并不需要涉及到文档级别的变更和搜索等操作，所以当集群只拥有一个主节点的情况下，即使流量增加，它也不会成为瓶颈。 任何节点都可以成为主节点。</p>
+<p>作为用户，我们可以将请求发送到集群中的任何节点 ，包括主节点。 每个节点都知道任意文档所处的位置，并且能够将我们的请求直接转发到存储我们所需文档的节点。 无论我们将请求发送到哪个节点，它都能负责从各个包含我们所需文档的节点收集回数据，并将最终结果返回給客户端。 Elasticsearch 对这一切的管理都是透明的。</p>
+<h4 id="集群健康"><a href="#集群健康" class="headerlink" title="集群健康"></a>集群健康</h4><p>Elasticsearch 的集群监控信息中包含了许多的统计数据，其中最为重要的一项就是 <em>集群健康</em> ， 它在 <code>status</code> 字段中展示为 <code>green</code> 、 <code>yellow</code> 或者 <code>red</code> 。</p>
+<p>在一个不包含任何索引的空集群中，它将会有一个类似于如下所示的返回内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;cluster_name&quot;</span> : <span class="string">&quot;elasticsearch&quot;</span>,</span><br><span class="line">  <span class="string">&quot;status&quot;</span> : <span class="string">&quot;green&quot;</span>,</span><br><span class="line">  <span class="string">&quot;timed_out&quot;</span> : <span class="literal">false</span>,</span><br><span class="line">  <span class="string">&quot;number_of_nodes&quot;</span> : <span class="number">1</span>,</span><br><span class="line">  <span class="string">&quot;number_of_data_nodes&quot;</span> : <span class="number">1</span>,</span><br><span class="line">  <span class="string">&quot;active_primary_shards&quot;</span> : <span class="number">5</span>,</span><br><span class="line">  <span class="string">&quot;active_shards&quot;</span> : <span class="number">5</span>,</span><br><span class="line">  <span class="string">&quot;relocating_shards&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;initializing_shards&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;unassigned_shards&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;delayed_unassigned_shards&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;number_of_pending_tasks&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;number_of_in_flight_fetch&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;task_max_waiting_in_queue_millis&quot;</span> : <span class="number">0</span>,</span><br><span class="line">  <span class="string">&quot;active_shards_percent_as_number&quot;</span> : <span class="number">100.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>status</code> 字段指示着当前集群在总体上是否工作正常。它的三种颜色含义如下：</p>
+<ul>
+<li>**<code>green</code>**：所有的主分片和副本分片都正常运行。</li>
+<li>**<code>yellow</code>**：所有的主分片都正常运行，但不是所有的副本分片都正常运行。</li>
+<li>**<code>red</code>**：有主分片没能正常运行。</li>
+</ul>
+<h3 id="分片（Shards）"><a href="#分片（Shards）" class="headerlink" title="分片（Shards）"></a>分片（Shards）</h3><h4 id="分片简介"><a href="#分片简介" class="headerlink" title="分片简介"></a>分片简介</h4><p>索引实际上是指向一个或者多个<strong>物理分片</strong>的<strong>逻辑命名空间</strong> 。</p>
+<p>一个分片是一个底层的工作单元 ，它仅保存了全部数据中的一部分。一个分片可以视为一个 Lucene 的实例，并且它本身就是一个完整的搜索引擎。 我们的文档被存储和索引到分片内，但是应用程序是直接与索引而不是与分片进行交互。</p>
+<p>Elasticsearch 是利用分片将数据分发到集群内各处的。分片是数据的容器，文档保存在分片内，分片又被分配到集群内的各个节点里。 当你的集群规模扩大或者缩小时， Elasticsearch 会自动的在各节点中迁移分片，使得数据仍然均匀分布在集群里。</p>
+<h4 id="主分片和副分片"><a href="#主分片和副分片" class="headerlink" title="主分片和副分片"></a>主分片和副分片</h4><p>分片分为主分片（Primary Shard）和副分片（Replica Shard）。</p>
+<p>主分片：用于解决数据水平扩展的问题。通过主分片，可以将数据分布到集群内不同节点上。</p>
+<ul>
+<li>索引内任意一个文档都归属于一个主分片。</li>
+<li>主分片数在索引创建时指定，后序不允许修改，除非 Reindex</li>
+</ul>
+<p>副分片（Replica Shard）：用于解决数据高可用的问题。副分片是主分片的拷贝。副本分片作为硬件故障时保护数据不丢失的冗余备份，并为搜索和返回文档等读操作提供服务。</p>
+<ul>
+<li>副分片数可以动态调整</li>
+<li>增加副本数，还可以在一定程度上提高服务的可用性（读取的吞吐）</li>
+</ul>
+<p>对于生产环境中分片的设定，需要提前做好容量规划</p>
+<p>分片数过小</p>
+<ul>
+<li>无法水平扩展</li>
+<li>单个分片的数量太大，导致数据重新分配耗时</li>
+</ul>
+<p>分片数过大</p>
+<ul>
+<li>影响搜索结果的相关性打分，影响统计结果的准确性</li>
+<li>单节点上过多的分片，会导致资源浪费，同时也会影响性能</li>
+</ul>
+<h3 id="副本（Replicas）"><a href="#副本（Replicas）" class="headerlink" title="副本（Replicas）"></a>副本（Replicas）</h3><p>副本主要是针对主分片（Shards）的复制，Elasticsearch 中主分片可以拥有 0 个或多个的副本。</p>
+<p>副本分片的主要目的就是为了故障转移。</p>
+<p>分片副本很重要，主要有两个原因：</p>
+<ul>
+<li>它在分片或节点发生故障时提供高可用性。因此，副本分片永远不会在与其复制的主分片相同的节点；</li>
+<li>副本分片也可以接受搜索的请求，可以并行搜索，从而提高系统的吞吐量。</li>
+</ul>
+<blockquote>
+<p>每个 Elasticsearch 分片都是 Lucene 索引。单个 Lucene 索引中可以包含最大数量的文档。截止 LUCENE-5843，限制是 2,147,483,519（&#x3D; <code>Integer.MAX_VALUE</code> - 128）文档。您可以使用_cat&#x2F;shardsAPI 监控分片大小。</p>
+</blockquote>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.elastic.co/">Elasticsearch 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.knowledgedict.com/tutorial/elasticsearch-intro.html">Elasticsearch 简介</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>钝悟 ◾ Dunwu
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://dunwu.github.io/blog/pages/0fb506/" title="Elasticsearch 简介">https://dunwu.github.io/blog/pages/0fb506/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/blog/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 搜索引擎数据库</a>
+              <a href="/blog/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/pages/293175/" rel="prev" title="Elasticsearch 索引">
+                  <i class="fa fa-angle-left"></i> Elasticsearch 索引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/pages/201e43/" rel="next" title="ElasticSearch Java API 之 High Level REST Client">
+                  ElasticSearch Java API 之 High Level REST Client <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2015 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">钝悟 ◾ Dunwu</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">3.5m</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">53:28</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/dunwu/blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/blog/js/comments.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/blog/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/blog/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '32px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#100f2c',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"dunwu","repo":"blog","client_id":"c45bc13ca1d3d3aa4836","client_secret":"1907a9f0c22087badad3938e1d7dcba9078f88ac","admin_user":"dunwu","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"7220f39d87ff896e73e32933f25adfd4"}</script>
+<script src="/blog/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
